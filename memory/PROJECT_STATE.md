@@ -9,8 +9,8 @@
 | Champ | Valeur |
 |---|---|
 | Phase courante | **Phase 1 — Foundation (en cours)** |
-| Prompt en cours | `05` ✅ |
-| Dernier prompt complété | `05` (Process + WhyCorex + SaasSection + CtaSection — homepage complète) |
+| Prompt en cours | `06` ✅ |
+| Dernier prompt complété | `06` (Page booking — formulaire 5 étapes + calendrier + file d'attente) |
 | Date dernière maj | 2026-05-09 |
 | Branche de dev | `claude/init-corex-project-qdFMv` |
 
@@ -22,7 +22,7 @@
 |---|---|---|
 | 1 | Foundation (Next.js, Supabase, i18n, Vercel) | **en cours** (déploiement Vercel restant) |
 | 2 | Pages publiques (homepage, digitalisation, saas, about, responsive) | **homepage complète** ; pages dédiées Digitalisation / SaaS / About restent en placeholder |
-| 3 | Système de booking (form 5 étapes, créneaux, reschedule, file d'attente, emails) | non démarré |
+| 3 | Système de booking (form 5 étapes, créneaux, reschedule, file d'attente, emails) | **form 5 étapes + calendrier + file d'attente OK** ; reschedule + emails restent (Prompt 06.1+) |
 | 4 | Dashboard admin (auth, KPIs, réservations, dispos, file, leads, emails admin) | non démarré |
 | 5 | Polish & lancement (SEO, perf, mobile, cross-browser, DNS, analytics) | non démarré |
 
@@ -127,6 +127,24 @@
 | `src/app/[locale]/page.tsx` (modifié) | Compose les **8 sections** : Hero, Offers, ExamplesDigital, ExamplesSaas, Process, WhyCorex, SaasSection, CtaSection |
 | `src/messages/{fr,en}.json` (modifiés) | Ajout blocs `process.{label,title,desc,step1..4}`, `why.{label,title,item1..6}`, `saas.{label,title,desc,step1..4}`, `cta.{title,desc,btn}` |
 
+### Prompt 06
+| Chemin | Rôle |
+|---|---|
+| `src/lib/types/booking.ts` | Types `Service`, `Profile`, `BookingStatus`, `Urgency`, `BookingState`, `TimeSlot`, `AvailabilityRule`, `AvailabilityBlock`, `Reservation` + `EMPTY_BOOKING_STATE` |
+| `src/lib/booking/availability.ts` | Fonctions pures `generateSlots`, `isDateBlocked`, `hasAvailableSlots`, `hasAnySlotInNext30Days`, helpers `dateKey`. Convention `0=Lun..6=Dim`, weekends auto-bloqués (CDC §10.2), créneaux générés à la volée |
+| `src/lib/booking/actions.ts` | Server Actions `getAvailabilityData`, `createReservation` (re-check slot avant insert + insert lead `source='booking'`), `createQueueEntry` (insert queue + lead `source='queue'`). Validation email/champs obligatoires |
+| `src/components/booking/ProgressBar.tsx` | Barre gradient 3px + label étape + compteur N/5 |
+| `src/components/booking/OptionButton.tsx` | Card option avec icône, titre, desc, indicateur check vert vif, hover translate-x |
+| `src/components/booking/BookingCalendar.tsx` | Calendrier custom 7 cols (Lun→Dim), navigation mois (current → +2), past/weekend/blocked désactivés, créneaux 3 cols sous calendrier, slot booké barré opacity 25% |
+| `src/components/booking/ContactForm.tsx` | 4 champs : prénom/nom (grid 2), email, tel, entreprise. Style dark glassmorphism focus vert vif |
+| `src/components/booking/ConfirmationScreen.tsx` | Cercle check `popIn` + h2 + message 24h + recap card 5 lignes + retour site |
+| `src/components/booking/QueueFallback.tsx` | Formulaire urgence (3 options) → `createQueueEntry` → écran confirmation |
+| `src/app/[locale]/rendez-vous/page.tsx` | Page client 2 colonnes : panel gauche vert (logo Blanc + tagline + 4 features), panel droit noir (ProgressBar + 6 steps animés `fadeInUp` + bottom-nav). Détection auto `queueMode` via `hasAnySlotInNext30Days` |
+| `src/app/[locale]/(public)/layout.tsx` | **Refactor** — Navbar/Footer désormais portés par ce route group ; booking et admin n'héritent plus de la nav publique |
+| `src/app/[locale]/layout.tsx` (modifié) | Plus de Navbar/Footer ; juste html/body + NextIntlClientProvider |
+| `src/app/[locale]/(public)/{page,digitalisation,saas-builder,a-propos}` | Pages publiques déplacées dans le route group `(public)` |
+| `supabase/seed.sql` | Données de test — 2 règles (Mar/Mer/Jeu matin 9-12, Mar/Jeu après-midi 14-17) + 1 blocage T+21j à exécuter manuellement dans Supabase |
+
 ---
 
 ## Problèmes connus
@@ -142,6 +160,6 @@
 
 ## Prochaine étape
 
-**Prompt 06 — Page booking** (formulaire typeform-like 5 étapes)
+**Prompt 07 — Dashboard Admin** (auth + vue d'ensemble + réservations)
 
-Cible : page `/[locale]/rendez-vous` avec layout 2 colonnes (gauche fond vert branding, droite fond noir formulaire), progress bar gradient, 5 étapes avec transitions horizontales (service → projet → profil → créneau → coordonnées) puis confirmation. Logique calendrier custom + génération créneaux à partir des règles Supabase.
+Cible : page `/[locale]/admin` protégée par Supabase Auth (login email + mdp), vue d'ensemble avec KPIs temps réel, tableau réservations récentes, mini-cal, et page `/admin/reservations` avec filtres + actions Confirmer/Annuler/Détail.
