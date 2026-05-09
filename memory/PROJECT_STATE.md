@@ -90,6 +90,9 @@
 | `src/app/[locale]/layout.tsx` (modifié) | Intègre `<Navbar/>` + `<main pt-16>` + `<Footer/>` |
 | `src/app/[locale]/page.tsx` (modifié) | Homepage temporaire brandée (logo + h1 + desc + CTA vert vif) |
 | `src/messages/{fr,en}.json` (modifiés) | Clés `nav.bookingShort` + bloc `footer` complet (col1/2/3, copyright, madeWith) |
+| `src/app/icon.png` (ajouté) | Favicon (copie de `Corex_Logo_icon.png`) — convention Next.js `app/icon.png`. Default `favicon.ico` du scaffold supprimé. |
+| `public/logos/Corex_Logo_{Blanc,color,icon}.png` | Uploadés par le client en parallèle (rebase pris en compte) |
+| `public/icons/Corex_Logo_icon.png` | Uploadé par le client |
 
 ---
 
@@ -100,8 +103,7 @@
 3. **Déploiement Vercel non effectué** — étape manuelle, à faire par l'utilisateur (link repo → Vercel project → set env vars `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL`).
 4. **Warning Next 16** — `middleware` est renommé `proxy` (non bloquant, le build passe). À migrer plus tard.
 5. **Slugs EN partagés** — la config `next-intl` actuelle utilise des slugs partagés (`/en/rendez-vous` répond 200, `/en/booking` répond 404). Pour avoir les URLs CDC `/en/booking` et `/en/about`, ajouter la config `pathnames` (`defineRouting`) au Prompt 03 ou Phase 2.
-6. **Logos PNG manquants** — `Corex_Logo_{Blanc,color,icon}.png` ne sont pas encore uploadés dans `public/logos/`. Le Navbar/Footer/homepage référencent `Corex_Logo_Blanc.png` via `<Image>` ; le tag s'affiche mais l'image sera "broken" jusqu'à upload par le client. Le favicon reste celui par défaut du scaffold.
-7. **Contradiction visuelle Navbar** — la nav a un fond blanc (`rgba(255,255,255,0.93)`) mais le prompt impose `Corex_Logo_Blanc.png` (logo blanc). Une fois les PNG uploadés, le logo blanc sera quasi invisible sur la nav. À adresser : soit nav fond sombre, soit utiliser `Corex_Logo_color.png` dans la nav. Décision de design à prendre par le client.
+6. **Contradiction visuelle Navbar** — la nav a un fond blanc (`rgba(255,255,255,0.93)`) mais le prompt impose `Corex_Logo_Blanc.png` (logo blanc). Maintenant que les PNG sont uploadés, le logo blanc sera quasi invisible sur la nav. À adresser : soit nav fond sombre, soit utiliser `Corex_Logo_color.png` dans la nav. Décision de design à prendre par le client.
 
 ---
 
