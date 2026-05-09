@@ -9,8 +9,8 @@
 | Champ | Valeur |
 |---|---|
 | Phase courante | **Phase 1 — Foundation (en cours)** |
-| Prompt en cours | `07` ✅ |
-| Dernier prompt complété | `07` (Correctifs visuels homepage + Dashboard Admin complet) |
+| Prompt en cours | `08` ✅ |
+| Dernier prompt complété | `08` (Pages Digitalisation + SaaS Builder + À propos) |
 | Date dernière maj | 2026-05-09 |
 | Branche de dev | `claude/init-corex-project-qdFMv` |
 
@@ -21,7 +21,7 @@
 | # | Phase | Statut |
 |---|---|---|
 | 1 | Foundation (Next.js, Supabase, i18n, Vercel) | **en cours** (déploiement Vercel restant) |
-| 2 | Pages publiques (homepage, digitalisation, saas, about, responsive) | **homepage complète** ; pages dédiées Digitalisation / SaaS / About restent en placeholder |
+| 2 | Pages publiques (homepage, digitalisation, saas, about, responsive) | **OK** — homepage + Digitalisation + SaaS Builder + À propos toutes complètes (Phase 2 close) |
 | 3 | Système de booking (form 5 étapes, créneaux, reschedule, file d'attente, emails) | **form 5 étapes + calendrier + file d'attente OK** ; reschedule + emails restent (Prompt 06.1+) |
 | 4 | Dashboard admin (auth, KPIs, réservations, dispos, file, leads, emails admin) | **auth + 5 pages OK** ; mini-cal avec marqueurs RV + emails admin restent (Prompt 07.1+) |
 | 5 | Polish & lancement (SEO, perf, mobile, cross-browser, DNS, analytics) | non démarré |
@@ -169,6 +169,14 @@
 | `src/app/[locale]/admin/(dash)/file-attente/page.tsx` | Client page : 3 stats + cards expandable avec rang/urgence/desc, actions Inviter / Rejeter |
 | `src/app/[locale]/admin/(dash)/leads/page.tsx` | Client page : search input + filtres pills (service + source) + bouton **Export CSV** (génération côté client + download) |
 
+### Prompt 08
+| Chemin | Rôle |
+|---|---|
+| `src/app/[locale]/(public)/digitalisation/page.tsx` | Page Digitalisation (5 sections) : Hero noir + 6 cards services (ERP/CRM/E-commerce/Site/Auto/API avec icônes SVG inline) + `<ExamplesDigital>` + `<Process>` + `<CtaSection>`. Metadata SEO. 100% inline styles. |
+| `src/app/[locale]/(public)/saas-builder/page.tsx` | Page SaaS Builder (6 sections) : Hero noir + 3 profils (Startup/Entrepreneur/PME) + 4 étapes process détaillées avec semaines + 5 stack badges fond noir + `<ExamplesSaas>` + `<CtaSection>`. Metadata SEO. 100% inline styles. |
+| `src/app/[locale]/(public)/a-propos/page.tsx` | Page À propos (4 sections) : Hero noir + Mission grid 2 cols (texte + 3 valeurs Honnêteté/Excellence/Impact) + 2 cards offres (liens vers Digital/SaaS) + `<CtaSection>`. Metadata SEO. 100% inline styles. |
+| `src/components/layout/Navbar.tsx` (modifié) | Liens nav : "Nos offres" → `/digitalisation`, "SaaS Builder" → `/saas-builder` (au lieu d'ancres home) |
+
 ---
 
 ## Problèmes connus
@@ -184,6 +192,6 @@
 
 ## Prochaine étape
 
-**Prompt 08 — Pages Digitalisation + SaaS Builder + À propos**
+**Prompt 09 — Emails + page reschedule + polish final**
 
-Cible : remplir les 3 pages publiques restantes encore en placeholder. Hero dédié + sections détaillées par offre selon CDC §3.3-3.4. Page À propos avec vision/équipe/positionnement (sans mention Canada).
+Cible : implémenter les emails transactionnels (Resend ou SendGrid via Edge Function) — confirmation, annulation simple, annulation avec reschedule, invitation file. Page `/rendez-vous/replanifier/[token]` complète (validation token, pré-remplissage, ré-insertion). SEO/sitemap/robots, performance, polish.
