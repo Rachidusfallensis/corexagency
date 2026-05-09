@@ -1,0 +1,26 @@
+{
+  "nav": {
+    "offers": "Our services",
+    "howItWorks": "How it works",
+    "saasBuilder": "SaaS Builder",
+    "booking": "Book a call"
+  },
+  "hero": {
+    "badge": "Your tech partner",
+    "title": "Your tech partner,",
+    "titleEm": "from day one.",
+    "desc": "We digitalize your operations and turn your ideas into SaaS products. One team, two expertises, concrete results.",
+    "ctaPrimary": "Discover our services",
+    "ctaSecondary": "Book a call"
+  },
+  "offers": {
+    "label": "Our services",
+    "title": "Two expertises, one vision.",
+    "desc": "Whether you're a company looking to digitalize or an entrepreneur with a product idea, we have the right offer for you."
+  },
+  "footer": {
+    "tagline": "Your tech partner, from day one.",
+    "copyright": "© 2026 Corex. All rights reserved.",
+    "madeWith": "Made with ♥ by Corex"
+  }
+}
