@@ -9,8 +9,8 @@
 | Champ | Valeur |
 |---|---|
 | Phase courante | **Phase 1 — Foundation (en cours)** |
-| Prompt en cours | `01` ✅ |
-| Dernier prompt complété | `01` (Setup Next.js + Supabase + i18n + DB schema) |
+| Prompt en cours | `01.1` ✅ |
+| Dernier prompt complété | `01.1` (assets — public/logos + assets.ts) |
 | Date dernière maj | 2026-05-09 |
 | Branche de dev | `claude/init-corex-project-qdFMv` |
 
@@ -73,6 +73,14 @@
 | `src/components/layout/{Navbar,Footer}.tsx` | Composants layout placeholders |
 | `src/components/{ui,booking,admin}/.gitkeep` | Dossiers vides préservés |
 | `supabase/schema.sql` | Migration SQL (5 tables + RLS) — à exécuter |
+
+### Prompt 01.1
+| Chemin | Rôle |
+|---|---|
+| `public/logos/.gitkeep` + `README.md` | Dossier logos (uploadés manuellement par le client) |
+| `public/images/.gitkeep` | Dossier images |
+| `public/icons/.gitkeep` | Dossier icônes |
+| `src/lib/assets.ts` | Chemins centralisés (`LOGOS`) + tailles standard (`LOGO_SIZES`) |
 
 ---
 
