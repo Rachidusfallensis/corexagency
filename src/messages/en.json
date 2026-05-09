@@ -3,7 +3,8 @@
     "offers": "Our services",
     "howItWorks": "How it works",
     "saasBuilder": "SaaS Builder",
-    "booking": "Book a call"
+    "booking": "Book a call",
+    "bookingShort": "Book →"
   },
   "hero": {
     "badge": "Your tech partner",
@@ -20,6 +21,16 @@
   },
   "footer": {
     "tagline": "Your tech partner, from day one.",
+    "col1Title": "Services",
+    "col2Title": "Company",
+    "col3Title": "Contact",
+    "digitalisation": "Digitalisation",
+    "saasBuilder": "SaaS Builder",
+    "process": "Our process",
+    "about": "About",
+    "contact": "Contact",
+    "email": "hello@corex.com",
+    "bookingLink": "Book a call",
     "copyright": "© 2026 Corex. All rights reserved.",
     "madeWith": "Made with ♥ by Corex"
   }

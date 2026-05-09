@@ -9,8 +9,8 @@
 | Champ | Valeur |
 |---|---|
 | Phase courante | **Phase 1 — Foundation (en cours)** |
-| Prompt en cours | `01.1` ✅ |
-| Dernier prompt complété | `01.1` (assets — public/logos + assets.ts) |
+| Prompt en cours | `02` ✅ |
+| Dernier prompt complété | `02` (Navbar + Footer + Layout) |
 | Date dernière maj | 2026-05-09 |
 | Branche de dev | `claude/init-corex-project-qdFMv` |
 
@@ -34,7 +34,7 @@
 - [~] Setup Supabase — clients TS créés ; **schéma SQL à exécuter manuellement** (`supabase/schema.sql`)
 - [x] Setup next-intl (FR/EN, fichiers de traduction, middleware)
 - [x] Design system : couleurs (vert profond, vert vif, noir, gris) + dégradé via `@theme` Tailwind v4
-- [ ] Layout principal (nav, footer) — placeholders en place, vrai design au Prompt 02
+- [x] Layout principal (nav fixe + blur + scroll shadow + switch FR/EN, footer 4 cols)
 - [ ] Déploiement Vercel initial
 
 ---
@@ -82,6 +82,15 @@
 | `public/icons/.gitkeep` | Dossier icônes |
 | `src/lib/assets.ts` | Chemins centralisés (`LOGOS`) + tailles standard (`LOGO_SIZES`) |
 
+### Prompt 02
+| Chemin | Rôle |
+|---|---|
+| `src/components/layout/Navbar.tsx` | Client Component — fixed top, blur, scroll shadow, switch FR/EN, CTA RV (responsive : texte court mobile) |
+| `src/components/layout/Footer.tsx` | Server Component — 4 colonnes (logo+tagline / Offres / Entreprise / Contact), responsive 1/2/4 cols |
+| `src/app/[locale]/layout.tsx` (modifié) | Intègre `<Navbar/>` + `<main pt-16>` + `<Footer/>` |
+| `src/app/[locale]/page.tsx` (modifié) | Homepage temporaire brandée (logo + h1 + desc + CTA vert vif) |
+| `src/messages/{fr,en}.json` (modifiés) | Clés `nav.bookingShort` + bloc `footer` complet (col1/2/3, copyright, madeWith) |
+
 ---
 
 ## Problèmes connus
@@ -90,12 +99,14 @@
 2. **Schéma Supabase non exécuté** — pas de connectivité Supabase depuis ce sandbox. Le SQL est dans `supabase/schema.sql`, à exécuter manuellement dans le SQL Editor avant le Prompt 02 (ou à la première utilisation des tables).
 3. **Déploiement Vercel non effectué** — étape manuelle, à faire par l'utilisateur (link repo → Vercel project → set env vars `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL`).
 4. **Warning Next 16** — `middleware` est renommé `proxy` (non bloquant, le build passe). À migrer plus tard.
-5. **Slugs EN partagés** — la config `next-intl` actuelle utilise des slugs partagés (`/en/rendez-vous` répond 200, `/en/booking` répond 404). Pour avoir les URLs CDC `/en/booking` et `/en/about`, ajouter la config `pathnames` (`defineRouting`) au Prompt 02 ou Phase 2.
+5. **Slugs EN partagés** — la config `next-intl` actuelle utilise des slugs partagés (`/en/rendez-vous` répond 200, `/en/booking` répond 404). Pour avoir les URLs CDC `/en/booking` et `/en/about`, ajouter la config `pathnames` (`defineRouting`) au Prompt 03 ou Phase 2.
+6. **Logos PNG manquants** — `Corex_Logo_{Blanc,color,icon}.png` ne sont pas encore uploadés dans `public/logos/`. Le Navbar/Footer/homepage référencent `Corex_Logo_Blanc.png` via `<Image>` ; le tag s'affiche mais l'image sera "broken" jusqu'à upload par le client. Le favicon reste celui par défaut du scaffold.
+7. **Contradiction visuelle Navbar** — la nav a un fond blanc (`rgba(255,255,255,0.93)`) mais le prompt impose `Corex_Logo_Blanc.png` (logo blanc). Une fois les PNG uploadés, le logo blanc sera quasi invisible sur la nav. À adresser : soit nav fond sombre, soit utiliser `Corex_Logo_color.png` dans la nav. Décision de design à prendre par le client.
 
 ---
 
 ## Prochaine étape
 
-**Prompt 02 — Navbar + Footer + Layout**
+**Prompt 03 — Section Hero complète**
 
-Cible : design system effectif (Astonpoliz/Heywow/Inter), Navbar fixe avec switch FR/EN, Footer 4 colonnes, layout racine reproduisant la nav du proto `corex-site.html`.
+Cible : Hero homepage fidèle au proto (badge animé, titre 2 lignes avec em vert, desc, CTAs primary/secondary, hero-visual avec 3 cards flottantes animées `floatA`).
