@@ -1,0 +1,26 @@
+{
+  "nav": {
+    "offers": "Nos offres",
+    "howItWorks": "Comment ça marche",
+    "saasBuilder": "SaaS Builder",
+    "booking": "Prendre un rendez-vous"
+  },
+  "hero": {
+    "badge": "Votre partenaire tech",
+    "title": "Your tech partner,",
+    "titleEm": "from day one.",
+    "desc": "Nous digitalisons vos opérations et transformons vos idées en produits SaaS. Une seule équipe, deux expertises, des résultats concrets.",
+    "ctaPrimary": "Découvrir nos offres",
+    "ctaSecondary": "Prendre un RV"
+  },
+  "offers": {
+    "label": "Nos offres",
+    "title": "Deux expertises, une seule vision.",
+    "desc": "Que vous soyez une entreprise qui veut se digitaliser ou un entrepreneur avec une idée de produit, on a la bonne offre pour vous."
+  },
+  "footer": {
+    "tagline": "Your tech partner, from day one.",
+    "copyright": "© 2026 Corex. Tous droits réservés.",
+    "madeWith": "Fait avec ♥ par Corex"
+  }
+}
