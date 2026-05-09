@@ -46,24 +46,24 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          <a
-            href={`${homeHref}#offres`}
+          <Link
+            href={`${homeHref}/digitalisation`}
             className="text-sm font-medium text-gray-mid hover:text-corex-black transition-colors"
           >
             {t('offers')}
-          </a>
+          </Link>
           <a
             href={`${homeHref}#processus`}
             className="text-sm font-medium text-gray-mid hover:text-corex-black transition-colors"
           >
             {t('howItWorks')}
           </a>
-          <a
-            href={`${homeHref}#saas`}
+          <Link
+            href={`${homeHref}/saas-builder`}
             className="text-sm font-medium text-gray-mid hover:text-corex-black transition-colors"
           >
             {t('saasBuilder')}
-          </a>
+          </Link>
           <Link
             href={switchHref}
             className="text-sm font-semibold tracking-wide"
