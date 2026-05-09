@@ -9,8 +9,8 @@
 | Champ | Valeur |
 |---|---|
 | Phase courante | **Phase 1 — Foundation (en cours)** |
-| Prompt en cours | `02` ✅ |
-| Dernier prompt complété | `02` (Navbar + Footer + Layout) |
+| Prompt en cours | `03` ✅ |
+| Dernier prompt complété | `03` (Hero + animations + FadeIn) |
 | Date dernière maj | 2026-05-09 |
 | Branche de dev | `claude/init-corex-project-qdFMv` |
 
@@ -94,6 +94,16 @@
 | `public/logos/Corex_Logo_{Blanc,color,icon}.png` | Uploadés par le client en parallèle (rebase pris en compte) |
 | `public/icons/Corex_Logo_icon.png` | Uploadé par le client |
 
+### Prompt 03
+| Chemin | Rôle |
+|---|---|
+| `src/components/home/Hero.tsx` | Section Hero (light bg + radial gradient + dot grid pattern, 2 colonnes, badge animé pulse-dot, h1 clamp 2.8-5.2rem avec em vert profond, CTA primary noir + secondary outline, hero-visual 380x400 avec 3 cards animées) |
+| `src/components/ui/FadeIn.tsx` | Wrapper IntersectionObserver, applique `fadeInUp` à l'entrée du viewport, prop `delay?: number` (ms) |
+| `src/app/globals.css` (modifié) | Ajout `@theme` `--animate-{floatA,floatB,fadeInUp,popIn,pulse-dot}` + 5 keyframes correspondantes |
+| `src/components/layout/Navbar.tsx` (modifié) | Logo `LOGOS.color` au lieu de `LOGOS.blanc` (résout problème connu #6) |
+| `src/app/[locale]/layout.tsx` (modifié) | `<main>` sans `pt-16` (chaque section gère son padding au-dessus) |
+| `src/app/[locale]/page.tsx` (modifié) | Affiche `<Hero/>` (placeholder précédent supprimé) |
+
 ---
 
 ## Problèmes connus
@@ -103,12 +113,12 @@
 3. **Déploiement Vercel non effectué** — étape manuelle, à faire par l'utilisateur (link repo → Vercel project → set env vars `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL`).
 4. **Warning Next 16** — `middleware` est renommé `proxy` (non bloquant, le build passe). À migrer plus tard.
 5. **Slugs EN partagés** — la config `next-intl` actuelle utilise des slugs partagés (`/en/rendez-vous` répond 200, `/en/booking` répond 404). Pour avoir les URLs CDC `/en/booking` et `/en/about`, ajouter la config `pathnames` (`defineRouting`) au Prompt 03 ou Phase 2.
-6. **Contradiction visuelle Navbar** — la nav a un fond blanc (`rgba(255,255,255,0.93)`) mais le prompt impose `Corex_Logo_Blanc.png` (logo blanc). Maintenant que les PNG sont uploadés, le logo blanc sera quasi invisible sur la nav. À adresser : soit nav fond sombre, soit utiliser `Corex_Logo_color.png` dans la nav. Décision de design à prendre par le client.
+6. ~~Contradiction visuelle Navbar~~ ✅ **Résolu prompt-03** : nav utilise désormais `Corex_Logo_color.png` (logo foncé) sur son fond blanc.
 
 ---
 
 ## Prochaine étape
 
-**Prompt 03 — Section Hero complète**
+**Prompt 04 — Sections Offres + Exemples sectoriels**
 
-Cible : Hero homepage fidèle au proto (badge animé, titre 2 lignes avec em vert, desc, CTAs primary/secondary, hero-visual avec 3 cards flottantes animées `floatA`).
+Cible : sur la homepage après le Hero, ajouter la section `#offres` (2 cards Digitalisation/SaaS Builder), puis 6 exemples Digitalisation (fond clair) + 4 exemples SaaS Builder (fond noir). Utiliser `<FadeIn>` pour les entrées au scroll.

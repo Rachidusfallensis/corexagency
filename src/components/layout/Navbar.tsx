@@ -37,7 +37,7 @@ export default function Navbar() {
       <div className="max-w-[1200px] mx-auto h-full flex items-center justify-between">
         <Link href={homeHref} className="flex items-center gap-2.5">
           <Image
-            src={LOGOS.blanc}
+            src={LOGOS.color}
             alt="Corex"
             width={LOGO_SIZES.nav.width}
             height={LOGO_SIZES.nav.height}

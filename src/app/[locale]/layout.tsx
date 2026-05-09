@@ -38,7 +38,7 @@ export default async function LocaleLayout({
       <body className="font-sans bg-corex-black text-white">
         <NextIntlClientProvider messages={messages}>
           <Navbar />
-          <main className="pt-16 min-h-screen">{children}</main>
+          <main className="min-h-screen">{children}</main>
           <Footer />
         </NextIntlClientProvider>
       </body>
