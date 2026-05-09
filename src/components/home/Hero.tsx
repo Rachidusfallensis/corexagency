@@ -26,7 +26,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative z-[1] max-w-[1200px] mx-auto w-full px-8 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div className="relative z-[1] max-w-[1200px] mx-auto w-full px-8 grid grid-cols-1 md:grid-cols-2 md:gap-20 gap-12 items-center">
         {/* LEFT */}
         <div>
           <div
@@ -82,102 +82,102 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* RIGHT — hero-visual (desktop only) */}
-        <div className="hidden md:flex justify-center">
-          <div className="relative w-[380px] h-[400px] shrink-0">
-            {/* CARD 1 — green, top-right */}
-            <div
-              className="absolute top-0 right-0 w-[280px] rounded-2xl p-6"
-              style={{
-                background: '#016B2D',
-                animation: 'floatA 5s ease-in-out infinite',
-                transform: 'rotate(3deg)',
-              }}
+        {/* RIGHT — hero-visual (desktop only): flex column, main card + 2-card row */}
+        <div className="hidden md:flex flex-col gap-4">
+          {/* MAIN CARD — green */}
+          <div
+            className="rounded-[20px] p-7"
+            style={{
+              background: '#016B2D',
+              animation: 'floatA 6s ease-in-out infinite',
+            }}
+          >
+            <span
+              className="inline-block px-3 py-1 mb-3 rounded-full text-[0.72rem] font-bold uppercase tracking-[0.06em]"
+              style={{ background: 'rgba(1,234,98,0.2)', color: '#01EA62' }}
             >
-              <span
-                className="inline-block px-3 py-1 mb-3 rounded-full text-[0.7rem] font-bold uppercase tracking-[0.06em]"
-                style={{
-                  background: 'rgba(1,234,98,0.2)',
-                  color: '#01EA62',
-                }}
-              >
-                Ce qu&apos;on fait
-              </span>
-              <h3 className="text-white text-lg font-semibold mb-2 leading-tight">
-                Deux offres, zéro compromis.
-              </h3>
-              <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                Digitalisation d&apos;entreprise ou construction de SaaS — on s&apos;engage à 100%.
-              </p>
-            </div>
+              Ce qu&apos;on fait
+            </span>
+            <h3 className="text-white text-[1.2rem] font-semibold mb-2 leading-tight">
+              Deux offres, zéro compromis.
+            </h3>
+            <p
+              className="text-[0.9rem] leading-relaxed"
+              style={{ color: 'rgba(255,255,255,0.7)' }}
+            >
+              Digitalisation d&apos;entreprise ou construction de SaaS — on s&apos;engage à 100% sur votre projet.
+            </p>
+          </div>
 
-            {/* CARD 2 — white, bottom-left */}
+          {/* ROW — 2 small cards side by side */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Small card — white "Digitalisation" */}
             <div
-              className="absolute bottom-0 left-0 w-[300px] rounded-2xl p-5 bg-white"
+              className="rounded-2xl p-5 bg-white"
               style={{
-                boxShadow: '0 8px 40px rgba(0,0,0,0.08)',
-                animation: 'floatB 6s ease-in-out infinite 0.5s',
-                transform: 'rotate(-2deg)',
+                border: '1px solid rgba(0,0,0,0.08)',
+                animation: 'floatA 5s ease-in-out infinite 0.5s',
               }}
             >
-              <span className="block mb-3 text-[0.7rem] font-bold uppercase tracking-[0.06em] text-gray-mid">
-                Services disponibles
-              </span>
+              <h4 className="text-[0.85rem] font-semibold text-corex-black mb-1">
+                Digitalisation
+              </h4>
+              <p className="text-[0.8rem] mb-2.5" style={{ color: '#6B7280' }}>
+                ERP, CRM, e-commerce, automatisations
+              </p>
               <div className="flex flex-wrap gap-1.5">
                 <span
-                  className="px-2.5 py-1 rounded-full text-[0.72rem] font-semibold"
+                  className="px-2.5 py-0.5 rounded-full text-[0.72rem] font-medium"
                   style={{ background: 'rgba(1,234,98,0.15)', color: '#016B2D' }}
                 >
                   ERP
                 </span>
                 <span
-                  className="px-2.5 py-1 rounded-full text-[0.72rem] font-semibold"
+                  className="px-2.5 py-0.5 rounded-full text-[0.72rem] font-medium"
                   style={{ background: 'rgba(1,234,98,0.15)', color: '#016B2D' }}
                 >
                   CRM
                 </span>
                 <span
-                  className="px-2.5 py-1 rounded-full text-[0.72rem] font-semibold text-corex-black"
-                  style={{ background: '#F4F6F4' }}
-                >
-                  E-commerce
-                </span>
-                <span
-                  className="px-2.5 py-1 rounded-full text-[0.72rem] font-semibold text-corex-black"
+                  className="px-2.5 py-0.5 rounded-full text-[0.72rem] font-medium text-corex-black"
                   style={{ background: '#F4F6F4' }}
                 >
                   SaaS
                 </span>
-                <span
-                  className="px-2.5 py-1 rounded-full text-[0.72rem] font-semibold text-corex-black"
-                  style={{ background: '#F4F6F4' }}
-                >
-                  Automation
-                </span>
               </div>
             </div>
 
-            {/* CARD 3 — black, center */}
+            {/* Small card — black "SaaS Builder" */}
             <div
-              className="absolute top-1/2 left-1/2 w-[200px] rounded-2xl p-4"
+              className="rounded-2xl p-5"
               style={{
                 background: '#050505',
-                transform: 'translate(-50%, -50%) rotate(1deg)',
+                animation: 'floatA 7s ease-in-out infinite 1s',
               }}
             >
-              <div className="flex gap-1.5 mb-3">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ background: '#ff5f57' }} />
-                <span className="w-2.5 h-2.5 rounded-full" style={{ background: '#ffbd2e' }} />
-                <span className="w-2.5 h-2.5 rounded-full" style={{ background: '#28ca41' }} />
-              </div>
-              <pre
-                className="text-[0.72rem] leading-[1.6] font-mono"
-                style={{ color: '#01EA62' }}
+              <h4 className="text-[0.85rem] font-semibold text-white mb-1">
+                SaaS Builder
+              </h4>
+              <p
+                className="text-[0.8rem] mb-2.5"
+                style={{ color: 'rgba(255,255,255,0.5)' }}
               >
-{`✓ ERP déployé
-✓ CRM intégré
-✓ SaaS en production`}
-              </pre>
+                De l&apos;idée au produit livré
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {['MVP', 'Design', 'Dev'].map((chip) => (
+                  <span
+                    key={chip}
+                    className="px-2.5 py-0.5 rounded-full text-[0.72rem] font-medium"
+                    style={{
+                      background: 'rgba(1,234,98,0.12)',
+                      color: '#01EA62',
+                    }}
+                  >
+                    {chip}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
