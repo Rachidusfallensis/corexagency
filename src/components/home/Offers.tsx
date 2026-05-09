@@ -31,11 +31,11 @@ export default function Offers() {
           </header>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
           {/* CARD DIGITALISATION (light) */}
-          <FadeIn>
+          <FadeIn className="h-full">
             <article
-              className="relative overflow-hidden rounded-[28px] p-10 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.09)]"
+              className="relative overflow-hidden h-full rounded-[28px] p-10 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.09)]"
               style={{ border: '1px solid rgba(0,0,0,0.07)' }}
             >
               <span
@@ -73,16 +73,16 @@ export default function Offers() {
 
               <span
                 aria-hidden
-                className="absolute -right-4 -bottom-4 w-[110px] h-[110px] rounded-full"
+                className="absolute -right-5 -bottom-5 w-[110px] h-[110px] rounded-full pointer-events-none"
                 style={{ background: '#016B2D', opacity: 0.12 }}
               />
             </article>
           </FadeIn>
 
           {/* CARD SAAS BUILDER (dark) */}
-          <FadeIn delay={120}>
+          <FadeIn delay={120} className="h-full">
             <article
-              className="relative overflow-hidden rounded-[28px] p-10 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.18)]"
+              className="relative overflow-hidden h-full rounded-[28px] p-10 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.18)]"
               style={{ background: '#016B2D' }}
             >
               <span
@@ -121,7 +121,7 @@ export default function Offers() {
 
               <span
                 aria-hidden
-                className="absolute -right-4 -bottom-4 w-[110px] h-[110px] rounded-full"
+                className="absolute -right-5 -bottom-5 w-[110px] h-[110px] rounded-full pointer-events-none"
                 style={{ background: '#01EA62', opacity: 0.12 }}
               />
             </article>

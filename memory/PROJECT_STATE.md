@@ -9,8 +9,8 @@
 | Champ | Valeur |
 |---|---|
 | Phase courante | **Phase 1 — Foundation (en cours)** |
-| Prompt en cours | `06` ✅ |
-| Dernier prompt complété | `06` (Page booking — formulaire 5 étapes + calendrier + file d'attente) |
+| Prompt en cours | `07` ✅ |
+| Dernier prompt complété | `07` (Correctifs visuels homepage + Dashboard Admin complet) |
 | Date dernière maj | 2026-05-09 |
 | Branche de dev | `claude/init-corex-project-qdFMv` |
 
@@ -23,7 +23,7 @@
 | 1 | Foundation (Next.js, Supabase, i18n, Vercel) | **en cours** (déploiement Vercel restant) |
 | 2 | Pages publiques (homepage, digitalisation, saas, about, responsive) | **homepage complète** ; pages dédiées Digitalisation / SaaS / About restent en placeholder |
 | 3 | Système de booking (form 5 étapes, créneaux, reschedule, file d'attente, emails) | **form 5 étapes + calendrier + file d'attente OK** ; reschedule + emails restent (Prompt 06.1+) |
-| 4 | Dashboard admin (auth, KPIs, réservations, dispos, file, leads, emails admin) | non démarré |
+| 4 | Dashboard admin (auth, KPIs, réservations, dispos, file, leads, emails admin) | **auth + 5 pages OK** ; mini-cal avec marqueurs RV + emails admin restent (Prompt 07.1+) |
 | 5 | Polish & lancement (SEO, perf, mobile, cross-browser, DNS, analytics) | non démarré |
 
 ---
@@ -145,6 +145,30 @@
 | `src/app/[locale]/(public)/{page,digitalisation,saas-builder,a-propos}` | Pages publiques déplacées dans le route group `(public)` |
 | `supabase/seed.sql` | Données de test — 2 règles (Mar/Mer/Jeu matin 9-12, Mar/Jeu après-midi 14-17) + 1 blocage T+21j à exécuter manuellement dans Supabase |
 
+### Prompt 07
+| Chemin | Rôle |
+|---|---|
+| `src/components/home/Hero.tsx` (corrigé) | `shrink-0` ajouté sur conteneur hero-visual 380×400 (A1) |
+| `src/components/home/Offers.tsx` (corrigé) | `items-stretch` sur grid + `h-full` sur FadeIn et `<article>` ; cercle décoratif `pointer-events-none` (A2) |
+| `src/lib/types/admin.ts` | Types `ReservationRow`, `QueueRow`, `LeadRow`, `AvailabilityRuleRow`, `AvailabilityBlockRow`, `StatsData` |
+| `src/lib/supabase/service.ts` | `createServiceClient()` — client service-role pour les écritures admin (bypass RLS, à utiliser après vérification auth) |
+| `src/lib/admin/actions.ts` | 13 Server Actions toutes protégées par `requireAdmin()` : `getStats`, `getReservations`, `confirmReservation`, `cancelReservation` (génère `reschedule_token` UUID si `withReschedule`), `getQueue`, `inviteFromQueue` (génère `invite_token`), `rejectFromQueue`, `getLeads`, `getAvailabilityRules/Blocks`, `addAvailabilityRule/Block`, `deleteAvailabilityRule/Block` |
+| `src/components/admin/StatCard.tsx` | Card KPI (icon-box coloré 36px, valeur 1.6rem, label, badge tendance optionnel) |
+| `src/components/admin/StatusBadge.tsx` | Badge statut (pending/confirmed/cancelled/waiting/invited/converted/rejected/new) avec point + label |
+| `src/components/admin/ServiceBadge.tsx` | Badge service (digitalisation bleu / saas violet / other gris) |
+| `src/components/admin/CancelModal.tsx` | Modale annulation : motif obligatoire + toggle reschedule (note conditionnelle), submit → `(reason, withReschedule)` |
+| `src/components/admin/DetailModal.tsx` | Modale détail réservation : grid info 6 cellules + description avec border-left vert + bouton confirm si `pending` |
+| `src/components/admin/Toast.tsx` | `ToastProvider` + `useToast()`, position bottom-right, success vert / danger rouge, auto-dismiss 3.5s |
+| `src/components/admin/AdminSidebar.tsx` | Sidebar 220px : logo Corex + 5 items nav (active = vert vif, dérivé via `usePathname()`), card admin "AD" en bas |
+| `src/components/admin/AdminShell.tsx` | Layout admin Client : grid sidebar 220 + main avec topbar (titre/sous-titre + notif + "Voir le site" + "Nouvelle dispo"), wraps `ToastProvider` |
+| `src/app/[locale]/admin/login/page.tsx` | Page login `'use client'` : `supabase.auth.signInWithPassword()` → redirect `/admin` ; pas dans le route group `(dash)` donc pas d'auth check |
+| `src/app/[locale]/admin/(dash)/layout.tsx` | **Auth guard Server Component** : `supabase.auth.getUser()`, redirect `/admin/login` si pas de user |
+| `src/app/[locale]/admin/(dash)/page.tsx` | Dashboard overview Server Component : 4 StatCards + tableau réservations récentes + side panel "Prochains RV" |
+| `src/app/[locale]/admin/(dash)/reservations/page.tsx` | Client page : filtres pills (statut + service), tableau complet, actions Détail (modale) / Confirmer / Annuler (modale avec reschedule), toasts |
+| `src/app/[locale]/admin/(dash)/disponibilites/page.tsx` | Client page : 2 colonnes (règles + blocages), modales d'ajout (jours toggle, durée select, dates), suppression au hover |
+| `src/app/[locale]/admin/(dash)/file-attente/page.tsx` | Client page : 3 stats + cards expandable avec rang/urgence/desc, actions Inviter / Rejeter |
+| `src/app/[locale]/admin/(dash)/leads/page.tsx` | Client page : search input + filtres pills (service + source) + bouton **Export CSV** (génération côté client + download) |
+
 ---
 
 ## Problèmes connus
@@ -160,6 +184,6 @@
 
 ## Prochaine étape
 
-**Prompt 07 — Dashboard Admin** (auth + vue d'ensemble + réservations)
+**Prompt 08 — Pages Digitalisation + SaaS Builder + À propos**
 
-Cible : page `/[locale]/admin` protégée par Supabase Auth (login email + mdp), vue d'ensemble avec KPIs temps réel, tableau réservations récentes, mini-cal, et page `/admin/reservations` avec filtres + actions Confirmer/Annuler/Détail.
+Cible : remplir les 3 pages publiques restantes encore en placeholder. Hero dédié + sections détaillées par offre selon CDC §3.3-3.4. Page À propos avec vision/équipe/positionnement (sans mention Canada).

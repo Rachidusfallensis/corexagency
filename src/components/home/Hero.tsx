@@ -84,7 +84,7 @@ export default function Hero() {
 
         {/* RIGHT — hero-visual (desktop only) */}
         <div className="hidden md:flex justify-center">
-          <div className="relative w-[380px] h-[400px]">
+          <div className="relative w-[380px] h-[400px] shrink-0">
             {/* CARD 1 — green, top-right */}
             <div
               className="absolute top-0 right-0 w-[280px] rounded-2xl p-6"
