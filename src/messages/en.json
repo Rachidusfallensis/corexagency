@@ -41,6 +41,81 @@
     "title": "Ideas we can turn into products.",
     "desc": "Examples of SaaS we can design and develop with you, from zero to production."
   },
+  "process": {
+    "label": "How it works",
+    "title": "Simple, fast, structured.",
+    "desc": "Our process is designed to move fast without sacrificing quality.",
+    "step1": {
+      "title": "Discovery call",
+      "desc": "We understand your context, needs and goals in 30 minutes."
+    },
+    "step2": {
+      "title": "Proposal",
+      "desc": "We present a clear plan — scope, timeline, budget."
+    },
+    "step3": {
+      "title": "Development",
+      "desc": "We build with regular check-ins and total transparency."
+    },
+    "step4": {
+      "title": "Delivery",
+      "desc": "Launch, training and support to ensure continuity."
+    }
+  },
+  "why": {
+    "label": "Why Corex",
+    "title": "What sets us apart.",
+    "item1": {
+      "title": "Fast delivery",
+      "desc": "We iterate quickly and deliver concrete results from the first weeks."
+    },
+    "item2": {
+      "title": "Total transparency",
+      "desc": "You see everything — progress, decisions, blockers. No bad surprises."
+    },
+    "item3": {
+      "title": "Dedicated team",
+      "desc": "Focused on your project only, not shared across 10 clients."
+    },
+    "item4": {
+      "title": "Technical expertise",
+      "desc": "Modern stack, clean code, scalable architecture. Built to last."
+    },
+    "item5": {
+      "title": "Security & sovereignty",
+      "desc": "Your data belongs to you. Secure and controlled solutions."
+    },
+    "item6": {
+      "title": "Ongoing support",
+      "desc": "The project doesn't stop at delivery. We stay to grow with you."
+    }
+  },
+  "saas": {
+    "label": "SaaS Builder",
+    "title": "From idea to product.",
+    "desc": "You've validated a problem — you just need the tech team to execute it. That's exactly what we do.",
+    "step1": {
+      "title": "Product scoping",
+      "desc": "We define the MVP scope, user stories and architecture together."
+    },
+    "step2": {
+      "title": "Design & prototype",
+      "desc": "Interactive mockups to validate the experience before coding."
+    },
+    "step3": {
+      "title": "MVP development",
+      "desc": "Fast build with the right technologies for quick market entry."
+    },
+    "step4": {
+      "title": "Launch & iteration",
+      "desc": "Go live, collect feedback, improve continuously."
+    }
+  },
+  "cta": {
+    "title": "Ready to get started?",
+    "desc": "Book a 30-minute discovery call. We'll analyze your situation and figure out the best path forward together.",
+    "btn": "Book a call"
+  },
   "footer": {
     "tagline": "Your tech partner, from day one.",
     "col1Title": "Services",

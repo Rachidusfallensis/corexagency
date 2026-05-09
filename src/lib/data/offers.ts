@@ -93,3 +93,54 @@ export const EXAMPLES_SAAS: SectorExample[] = [
     result: 'Lancement en moins de 10 semaines',
   },
 ]
+
+export const PROCESS_STEPS = [
+  { num: '01', titleKey: 'process.step1.title', descKey: 'process.step1.desc' },
+  { num: '02', titleKey: 'process.step2.title', descKey: 'process.step2.desc' },
+  { num: '03', titleKey: 'process.step3.title', descKey: 'process.step3.desc' },
+  { num: '04', titleKey: 'process.step4.title', descKey: 'process.step4.desc' },
+] as const
+
+export type WhyIcon =
+  | 'lightning'
+  | 'clock'
+  | 'users'
+  | 'code'
+  | 'shield'
+  | 'support'
+
+export const WHY_ITEMS: ReadonlyArray<{
+  icon: WhyIcon
+  titleKey: string
+  descKey: string
+}> = [
+  { icon: 'lightning', titleKey: 'why.item1.title', descKey: 'why.item1.desc' },
+  { icon: 'clock', titleKey: 'why.item2.title', descKey: 'why.item2.desc' },
+  { icon: 'users', titleKey: 'why.item3.title', descKey: 'why.item3.desc' },
+  { icon: 'code', titleKey: 'why.item4.title', descKey: 'why.item4.desc' },
+  { icon: 'shield', titleKey: 'why.item5.title', descKey: 'why.item5.desc' },
+  { icon: 'support', titleKey: 'why.item6.title', descKey: 'why.item6.desc' },
+]
+
+export const SAAS_STEPS = [
+  { num: '1', titleKey: 'saas.step1.title', descKey: 'saas.step1.desc' },
+  { num: '2', titleKey: 'saas.step2.title', descKey: 'saas.step2.desc' },
+  { num: '3', titleKey: 'saas.step3.title', descKey: 'saas.step3.desc' },
+  { num: '4', titleKey: 'saas.step4.title', descKey: 'saas.step4.desc' },
+] as const
+
+export const SAAS_PROGRESS = [
+  { label: 'Cadrage & Design', weeks: 'Semaine 1–2', pct: 100 },
+  { label: 'Backend & API', weeks: 'Semaine 3–5', pct: 80 },
+  { label: 'Frontend', weeks: 'Semaine 4–6', pct: 65 },
+  { label: 'Tests & QA', weeks: 'Semaine 7', pct: 40 },
+  { label: 'Lancement', weeks: 'Semaine 8', pct: 10 },
+] as const
+
+export const TECH_BADGES = [
+  'Next.js',
+  'Supabase',
+  'React',
+  'TypeScript',
+  'Node.js',
+] as const

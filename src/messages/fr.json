@@ -41,6 +41,81 @@
     "title": "Des idées qu'on peut transformer en produits.",
     "desc": "Exemples de SaaS qu'on peut concevoir et développer avec vous, de zéro à la mise en production."
   },
+  "process": {
+    "label": "Comment ça marche",
+    "title": "Simple, rapide, structuré.",
+    "desc": "Notre processus est conçu pour aller vite sans perdre en qualité.",
+    "step1": {
+      "title": "Appel découverte",
+      "desc": "On comprend votre contexte, vos besoins et vos objectifs en 30 minutes."
+    },
+    "step2": {
+      "title": "Proposition",
+      "desc": "On vous présente un plan clair — périmètre, délais, budget."
+    },
+    "step3": {
+      "title": "Développement",
+      "desc": "On construit avec des points de suivi réguliers et une transparence totale."
+    },
+    "step4": {
+      "title": "Livraison",
+      "desc": "Mise en production, formation et support pour assurer la continuité."
+    }
+  },
+  "why": {
+    "label": "Pourquoi Corex",
+    "title": "Ce qui nous différencie.",
+    "item1": {
+      "title": "Livraison rapide",
+      "desc": "On itère vite et livre des résultats concrets dès les premières semaines."
+    },
+    "item2": {
+      "title": "Transparence totale",
+      "desc": "Vous voyez tout — l'avancement, les décisions, les blocages. Pas de mauvaises surprises."
+    },
+    "item3": {
+      "title": "Équipe dédiée",
+      "desc": "Focalisée sur votre projet uniquement, pas mutualisée entre 10 clients."
+    },
+    "item4": {
+      "title": "Expertise technique",
+      "desc": "Stack moderne, code propre, architecture scalable. On construit pour durer."
+    },
+    "item5": {
+      "title": "Sécurité & souveraineté",
+      "desc": "Vos données vous appartiennent. Solutions sécurisées et maîtrisées."
+    },
+    "item6": {
+      "title": "Support continu",
+      "desc": "Le projet ne s'arrête pas à la livraison. On reste là pour évoluer avec vous."
+    }
+  },
+  "saas": {
+    "label": "SaaS Builder",
+    "title": "De l'idée au produit.",
+    "desc": "Vous avez validé un problème — il vous manque l'équipe tech pour l'exécuter. C'est exactement ce qu'on fait.",
+    "step1": {
+      "title": "Cadrage produit",
+      "desc": "On définit ensemble le périmètre du MVP, les user stories et l'architecture."
+    },
+    "step2": {
+      "title": "Design & prototype",
+      "desc": "Maquettes interactives pour valider l'expérience avant de coder."
+    },
+    "step3": {
+      "title": "Développement MVP",
+      "desc": "Construction rapide avec les bonnes technologies pour une mise sur marché rapide."
+    },
+    "step4": {
+      "title": "Lancement & itération",
+      "desc": "Mise en production, collecte de feedback, amélioration continue."
+    }
+  },
+  "cta": {
+    "title": "Prêt à démarrer ?",
+    "desc": "Réservez un appel découverte de 30 minutes. On analyse votre situation et on voit ensemble comment avancer.",
+    "btn": "Prendre un rendez-vous"
+  },
   "footer": {
     "tagline": "Your tech partner, from day one.",
     "col1Title": "Offres",

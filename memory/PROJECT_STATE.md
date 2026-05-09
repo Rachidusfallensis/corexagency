@@ -9,8 +9,8 @@
 | Champ | Valeur |
 |---|---|
 | Phase courante | **Phase 1 — Foundation (en cours)** |
-| Prompt en cours | `04` ✅ |
-| Dernier prompt complété | `04` (Offers + ExamplesDigital + ExamplesSaas) |
+| Prompt en cours | `05` ✅ |
+| Dernier prompt complété | `05` (Process + WhyCorex + SaasSection + CtaSection — homepage complète) |
 | Date dernière maj | 2026-05-09 |
 | Branche de dev | `claude/init-corex-project-qdFMv` |
 
@@ -21,7 +21,7 @@
 | # | Phase | Statut |
 |---|---|---|
 | 1 | Foundation (Next.js, Supabase, i18n, Vercel) | **en cours** (déploiement Vercel restant) |
-| 2 | Pages publiques (homepage, digitalisation, saas, about, responsive) | non démarré |
+| 2 | Pages publiques (homepage, digitalisation, saas, about, responsive) | **homepage complète** ; pages dédiées Digitalisation / SaaS / About restent en placeholder |
 | 3 | Système de booking (form 5 étapes, créneaux, reschedule, file d'attente, emails) | non démarré |
 | 4 | Dashboard admin (auth, KPIs, réservations, dispos, file, leads, emails admin) | non démarré |
 | 5 | Polish & lancement (SEO, perf, mobile, cross-browser, DNS, analytics) | non démarré |
@@ -116,6 +116,17 @@
 | `src/app/[locale]/page.tsx` (modifié) | Compose `<Hero/>` + `<Offers/>` + `<ExamplesDigital/>` + `<ExamplesSaas/>` |
 | `src/messages/{fr,en}.json` (modifiés) | Bloc `offers.{digital,saas}` (tag/title/desc/link) + `examplesDigital` + `examplesSaas` |
 
+### Prompt 05
+| Chemin | Rôle |
+|---|---|
+| `src/lib/data/offers.ts` (modifié) | Ajout `PROCESS_STEPS` (4), `WHY_ITEMS` (6) avec type `WhyIcon`, `SAAS_STEPS` (4), `SAAS_PROGRESS` (5 barres pct), `TECH_BADGES` (5) |
+| `src/components/home/Process.tsx` | Section `#processus` fond blanc, header + grid 1/2/4 cols, 4 cards (numéro vert vif 38px, h4, desc), hover border vert vif + translate, FadeIn cascadé |
+| `src/components/home/WhyCorex.tsx` | Section fond noir, header label vert vif + h2 blanc, grid 1/2/3 cols, 6 cards glass (border 7%/bg 2%) avec icônes SVG inline (`lightning, clock, users, code, shield, support`), hover border vert vif 30%, FadeIn cascadé |
+| `src/components/home/SaasSection.tsx` | Section `#saas` fond gris clair, grid 1/2 cols ; **Gauche** : header + 4 step-cards (numéro 32px noir, h4/p) ; **Droite** (`saas-visual`) : panel noir radius 28, 5 progress bars avec gradient `linear-gradient(90deg, #016B2D, #01EA62)` aux pct 100/80/65/40/10, 5 tech badges (Next.js, Supabase, React, TypeScript, Node.js) |
+| `src/components/home/CtaSection.tsx` | Section `#contact` fond vert deep, gradient ellipse décoratif bottom, h2 blanc + p + bouton vert vif arrondi `→ /[locale]/rendez-vous` avec hover translate-up + shadow vert |
+| `src/app/[locale]/page.tsx` (modifié) | Compose les **8 sections** : Hero, Offers, ExamplesDigital, ExamplesSaas, Process, WhyCorex, SaasSection, CtaSection |
+| `src/messages/{fr,en}.json` (modifiés) | Ajout blocs `process.{label,title,desc,step1..4}`, `why.{label,title,item1..6}`, `saas.{label,title,desc,step1..4}`, `cta.{title,desc,btn}` |
+
 ---
 
 ## Problèmes connus
@@ -131,6 +142,6 @@
 
 ## Prochaine étape
 
-**Prompt 05 — Sections Processus + Why Corex + SaaS Focus + CTA**
+**Prompt 06 — Page booking** (formulaire typeform-like 5 étapes)
 
-Cible : finaliser la homepage avec les sections restantes du proto — 4 étapes du processus, 6 cards "Pourquoi Corex" (fond noir), focus SaaS Builder avec progression MVP visuel + tech badges, CTA final fond vert profond.
+Cible : page `/[locale]/rendez-vous` avec layout 2 colonnes (gauche fond vert branding, droite fond noir formulaire), progress bar gradient, 5 étapes avec transitions horizontales (service → projet → profil → créneau → coordonnées) puis confirmation. Logique calendrier custom + génération créneaux à partir des règles Supabase.
