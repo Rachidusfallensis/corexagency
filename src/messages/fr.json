@@ -17,7 +17,29 @@
   "offers": {
     "label": "Nos offres",
     "title": "Deux expertises, une seule vision.",
-    "desc": "Que vous soyez une entreprise qui veut se digitaliser ou un entrepreneur avec une idée de produit, on a la bonne offre pour vous."
+    "desc": "Que vous soyez une entreprise qui veut se digitaliser ou un entrepreneur avec une idée de produit, on a la bonne offre pour vous.",
+    "digital": {
+      "tag": "Digitalisation",
+      "title": "Transformez votre entreprise avec les bons outils.",
+      "desc": "ERP, CRM, e-commerce, sites sur mesure, automatisations — on construit les fondations digitales de votre croissance.",
+      "link": "Voir comment ça marche"
+    },
+    "saas": {
+      "tag": "SaaS Builder",
+      "title": "De l'idée au produit.",
+      "desc": "Vous avez une idée de SaaS ? On la construit avec vous — de la conception au lancement, en passant par le MVP.",
+      "link": "En savoir plus"
+    }
+  },
+  "examplesDigital": {
+    "label": "Digitalisation — Exemples de projets",
+    "title": "Ce qu'on peut construire pour votre secteur.",
+    "desc": "Des exemples concrets de ce qu'une transformation digitale peut apporter à différents types d'entreprises."
+  },
+  "examplesSaas": {
+    "label": "SaaS Builder — Exemples de projets",
+    "title": "Des idées qu'on peut transformer en produits.",
+    "desc": "Exemples de SaaS qu'on peut concevoir et développer avec vous, de zéro à la mise en production."
   },
   "footer": {
     "tagline": "Your tech partner, from day one.",

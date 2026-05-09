@@ -9,8 +9,8 @@
 | Champ | Valeur |
 |---|---|
 | Phase courante | **Phase 1 — Foundation (en cours)** |
-| Prompt en cours | `03` ✅ |
-| Dernier prompt complété | `03` (Hero + animations + FadeIn) |
+| Prompt en cours | `04` ✅ |
+| Dernier prompt complété | `04` (Offers + ExamplesDigital + ExamplesSaas) |
 | Date dernière maj | 2026-05-09 |
 | Branche de dev | `claude/init-corex-project-qdFMv` |
 
@@ -104,6 +104,18 @@
 | `src/app/[locale]/layout.tsx` (modifié) | `<main>` sans `pt-16` (chaque section gère son padding au-dessus) |
 | `src/app/[locale]/page.tsx` (modifié) | Affiche `<Hero/>` (placeholder précédent supprimé) |
 
+### Prompt 04
+| Chemin | Rôle |
+|---|---|
+| `src/lib/data/offers.ts` | `OFFERS` (services digital + saas), `EXAMPLES_DIGITAL` (6 secteurs FR), `EXAMPLES_SAAS` (4 secteurs FR), type `SectorExample` |
+| `src/components/ui/SectionLabel.tsx` | Label uppercase tracking-wide, prop `color: 'green-deep' \| 'green-vivid'` |
+| `src/components/ui/ExampleCard.tsx` | Card 1 secteur (light ou `dark`), tag coloré, h4, desc, "→ result" |
+| `src/components/home/Offers.tsx` | Section `#offres` fond gris clair, header + 2 cards (Digital light blanche / SaaS dark verte), pills services, lien arrow gap-anim, cercle décoratif bottom-right, FadeIn par card |
+| `src/components/home/ExamplesDigital.tsx` | Section `#exemples-digital` fond blanc, header + grid 1/2/3 cols, 6 `<ExampleCard>` light avec FadeIn delay i*100 |
+| `src/components/home/ExamplesSaas.tsx` | Section `#exemples-saas` fond noir `#050505`, header label vert vif + h2 blanc, grid 1/2/3 cols, 4 `<ExampleCard dark>` avec FadeIn delay i*100 |
+| `src/app/[locale]/page.tsx` (modifié) | Compose `<Hero/>` + `<Offers/>` + `<ExamplesDigital/>` + `<ExamplesSaas/>` |
+| `src/messages/{fr,en}.json` (modifiés) | Bloc `offers.{digital,saas}` (tag/title/desc/link) + `examplesDigital` + `examplesSaas` |
+
 ---
 
 ## Problèmes connus
@@ -119,6 +131,6 @@
 
 ## Prochaine étape
 
-**Prompt 04 — Sections Offres + Exemples sectoriels**
+**Prompt 05 — Sections Processus + Why Corex + SaaS Focus + CTA**
 
-Cible : sur la homepage après le Hero, ajouter la section `#offres` (2 cards Digitalisation/SaaS Builder), puis 6 exemples Digitalisation (fond clair) + 4 exemples SaaS Builder (fond noir). Utiliser `<FadeIn>` pour les entrées au scroll.
+Cible : finaliser la homepage avec les sections restantes du proto — 4 étapes du processus, 6 cards "Pourquoi Corex" (fond noir), focus SaaS Builder avec progression MVP visuel + tech badges, CTA final fond vert profond.
