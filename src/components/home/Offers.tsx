@@ -1,158 +1,277 @@
-import Link from 'next/link'
-import { useLocale, useTranslations } from 'next-intl'
-import FadeIn from '@/components/ui/FadeIn'
-import SectionLabel from '@/components/ui/SectionLabel'
-import { OFFERS } from '@/lib/data/offers'
+import { useTranslations } from 'next-intl'
 
 export default function Offers() {
   const t = useTranslations('offers')
-  const locale = useLocale()
-  const homeHref = `/${locale}`
+
+  const digitalServices = [
+    'ERP',
+    'CRM',
+    'E-commerce',
+    'Site sur mesure',
+    'Automatisation',
+    'Intégrations API',
+  ]
+  const saasServices = [
+    'Product Design',
+    'MVP rapide',
+    'Architecture',
+    'Développement',
+    'Lancement',
+    'Itération',
+  ]
 
   return (
-    <section id="offres" className="py-24 px-8" style={{ background: '#F4F6F4' }}>
-      <div className="max-w-[1200px] mx-auto">
-        <FadeIn>
-          <header className="mb-14">
-            <SectionLabel>{t('label')}</SectionLabel>
-            <h2
-              className="font-bold text-corex-black mb-3"
+    <section id="offres" style={{ background: '#F4F6F4', padding: '6rem 0' }}>
+      <div
+        style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}
+      >
+        {/* Header */}
+        <div style={{ marginBottom: '3.5rem' }}>
+          <span
+            style={{
+              display: 'inline-block',
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              color: '#016B2D',
+              marginBottom: '0.75rem',
+            }}
+          >
+            {t('label')}
+          </span>
+          <h2
+            style={{
+              fontSize: 'clamp(2rem,4vw,3rem)',
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              marginBottom: '0.75rem',
+              color: '#050505',
+              lineHeight: 1.15,
+            }}
+          >
+            {t('title')}
+          </h2>
+          <p style={{ color: '#6B7280', maxWidth: '600px', lineHeight: 1.75 }}>
+            {t('desc')}
+          </p>
+        </div>
+
+        {/* Grid 2 cards */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '2rem',
+            alignItems: 'stretch',
+          }}
+        >
+          {/* Card Digitalisation */}
+          <div
+            style={{
+              background: '#fff',
+              borderRadius: '28px',
+              padding: '2.5rem',
+              border: '1px solid rgba(0,0,0,0.07)',
+              position: 'relative',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            {/* Décor en arrière */}
+            <div
               style={{
-                fontSize: 'clamp(2rem, 4vw, 3rem)',
-                letterSpacing: '-0.02em',
-                lineHeight: 1.15,
+                position: 'absolute',
+                right: '-15px',
+                bottom: '-15px',
+                width: '110px',
+                height: '110px',
+                borderRadius: '50%',
+                background: '#016B2D',
+                opacity: 0.08,
+                zIndex: 0,
+                pointerEvents: 'none',
               }}
-            >
-              {t('title')}
-            </h2>
-            <p className="text-base max-w-xl" style={{ color: '#6B7280' }}>
-              {t('desc')}
-            </p>
-          </header>
-        </FadeIn>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-          {/* CARD DIGITALISATION (light) */}
-          <FadeIn className="h-full">
-            <article
-              className="relative overflow-hidden h-full rounded-[28px] p-10 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.09)]"
-              style={{ border: '1px solid rgba(0,0,0,0.07)' }}
-            >
-              {/* Decorative icon — sent to back */}
+            />
+            {/* Contenu au-dessus */}
+            <div style={{ position: 'relative', zIndex: 1 }}>
               <span
-                aria-hidden
-                className="absolute pointer-events-none rounded-full"
                 style={{
-                  background: '#016B2D',
-                  opacity: 0.12,
-                  width: 110,
-                  height: 110,
-                  right: -15,
-                  bottom: -15,
-                  zIndex: 0,
+                  display: 'inline-block',
+                  background: 'rgba(1,107,45,0.08)',
+                  color: '#016B2D',
+                  padding: '0.3rem 0.85rem',
+                  borderRadius: '50px',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  marginBottom: '1.5rem',
                 }}
-              />
-
-              {/* Content layer */}
-              <div className="relative z-[1]">
-                <span
-                  className="inline-flex items-center px-3.5 py-1 mb-6 rounded-full text-[0.75rem] font-bold uppercase tracking-[0.05em]"
-                  style={{ background: 'rgba(1,107,45,0.08)', color: '#016B2D' }}
-                >
-                  {t('digital.tag')}
-                </span>
-                <h3
-                  className="text-2xl font-semibold text-corex-black mb-3"
-                  style={{ letterSpacing: '-0.02em', lineHeight: 1.2 }}
-                >
-                  {t('digital.title')}
-                </h3>
-                <p className="text-base" style={{ color: '#6B7280', lineHeight: 1.75 }}>
-                  {t('digital.desc')}
-                </p>
-                <div className="flex flex-wrap gap-[7px] my-6">
-                  {OFFERS.digitalisation.services.map((s) => (
-                    <span
-                      key={s}
-                      className="px-3.5 py-1.5 rounded-full text-[0.8rem] font-medium text-corex-black"
-                      style={{ background: '#F4F6F4' }}
-                    >
-                      {s}
-                    </span>
-                  ))}
-                </div>
-                <Link
-                  href={`${homeHref}#processus`}
-                  className="inline-flex items-center gap-2 text-[0.9rem] font-semibold text-corex-black transition-[gap] duration-200 hover:gap-3.5"
-                >
-                  {t('digital.link')} →
-                </Link>
+              >
+                {t('digital.tag')}
+              </span>
+              <h3
+                style={{
+                  fontSize: '1.5rem',
+                  fontWeight: 600,
+                  marginBottom: '0.75rem',
+                  color: '#050505',
+                  lineHeight: 1.2,
+                }}
+              >
+                {t('digital.title')}
+              </h3>
+              <p style={{ color: '#6B7280', marginBottom: '1.5rem', lineHeight: 1.75 }}>
+                {t('digital.desc')}
+              </p>
+              <div
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '7px',
+                  marginBottom: '2rem',
+                }}
+              >
+                {digitalServices.map((s) => (
+                  <span
+                    key={s}
+                    style={{
+                      padding: '0.35rem 0.85rem',
+                      borderRadius: '50px',
+                      fontSize: '0.8rem',
+                      fontWeight: 500,
+                      background: '#F4F6F4',
+                      color: '#050505',
+                    }}
+                  >
+                    {s}
+                  </span>
+                ))}
               </div>
-            </article>
-          </FadeIn>
+              <a
+                href="#processus"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  color: '#050505',
+                  textDecoration: 'none',
+                }}
+              >
+                {t('digital.link')} →
+              </a>
+            </div>
+          </div>
 
-          {/* CARD SAAS BUILDER (dark) */}
-          <FadeIn delay={120} className="h-full">
-            <article
-              className="relative overflow-hidden h-full rounded-[28px] p-10 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.18)]"
-              style={{ background: '#016B2D' }}
-            >
-              {/* Decorative icon — sent to back */}
+          {/* Card SaaS Builder */}
+          <div
+            style={{
+              background: '#016B2D',
+              borderRadius: '28px',
+              padding: '2.5rem',
+              position: 'relative',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            {/* Décor en arrière */}
+            <div
+              style={{
+                position: 'absolute',
+                right: '-15px',
+                bottom: '-15px',
+                width: '110px',
+                height: '110px',
+                borderRadius: '50%',
+                background: '#01EA62',
+                opacity: 0.1,
+                zIndex: 0,
+                pointerEvents: 'none',
+              }}
+            />
+            {/* Contenu au-dessus */}
+            <div style={{ position: 'relative', zIndex: 1 }}>
               <span
-                aria-hidden
-                className="absolute pointer-events-none rounded-full"
                 style={{
-                  background: '#01EA62',
-                  opacity: 0.12,
-                  width: 110,
-                  height: 110,
-                  right: -15,
-                  bottom: -15,
-                  zIndex: 0,
+                  display: 'inline-block',
+                  background: 'rgba(1,234,98,0.2)',
+                  color: '#01EA62',
+                  padding: '0.3rem 0.85rem',
+                  borderRadius: '50px',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  marginBottom: '1.5rem',
                 }}
-              />
-
-              {/* Content layer */}
-              <div className="relative z-[1]">
-                <span
-                  className="inline-flex items-center px-3.5 py-1 mb-6 rounded-full text-[0.75rem] font-bold uppercase tracking-[0.05em]"
-                  style={{ background: 'rgba(1,234,98,0.2)', color: '#01EA62' }}
-                >
-                  {t('saas.tag')}
-                </span>
-                <h3
-                  className="text-2xl font-semibold text-white mb-3"
-                  style={{ letterSpacing: '-0.02em', lineHeight: 1.2 }}
-                >
-                  {t('saas.title')}
-                </h3>
-                <p
-                  className="text-base"
-                  style={{ color: 'rgba(255,255,255,0.65)', lineHeight: 1.75 }}
-                >
-                  {t('saas.desc')}
-                </p>
-                <div className="flex flex-wrap gap-[7px] my-6">
-                  {OFFERS.saas.services.map((s) => (
-                    <span
-                      key={s}
-                      className="px-3.5 py-1.5 rounded-full text-[0.8rem] font-medium text-white"
-                      style={{ background: 'rgba(255,255,255,0.1)' }}
-                    >
-                      {s}
-                    </span>
-                  ))}
-                </div>
-                <Link
-                  href={`${homeHref}#saas`}
-                  className="inline-flex items-center gap-2 text-[0.9rem] font-semibold transition-[gap] duration-200 hover:gap-3.5"
-                  style={{ color: '#01EA62' }}
-                >
-                  {t('saas.link')} →
-                </Link>
+              >
+                {t('saas.tag')}
+              </span>
+              <h3
+                style={{
+                  fontSize: '1.5rem',
+                  fontWeight: 600,
+                  marginBottom: '0.75rem',
+                  color: '#fff',
+                  lineHeight: 1.2,
+                }}
+              >
+                {t('saas.title')}
+              </h3>
+              <p
+                style={{
+                  color: 'rgba(255,255,255,0.65)',
+                  marginBottom: '1.5rem',
+                  lineHeight: 1.75,
+                }}
+              >
+                {t('saas.desc')}
+              </p>
+              <div
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '7px',
+                  marginBottom: '2rem',
+                }}
+              >
+                {saasServices.map((s) => (
+                  <span
+                    key={s}
+                    style={{
+                      padding: '0.35rem 0.85rem',
+                      borderRadius: '50px',
+                      fontSize: '0.8rem',
+                      fontWeight: 500,
+                      background: 'rgba(255,255,255,0.1)',
+                      color: '#fff',
+                    }}
+                  >
+                    {s}
+                  </span>
+                ))}
               </div>
-            </article>
-          </FadeIn>
+              <a
+                href="#saas"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  color: '#01EA62',
+                  textDecoration: 'none',
+                }}
+              >
+                {t('saas.link')} →
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
