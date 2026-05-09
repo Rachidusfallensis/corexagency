@@ -9,7 +9,7 @@ export default function Hero() {
 
   return (
     <section
-      className="relative min-h-screen overflow-hidden flex items-center pt-20"
+      className="relative min-h-screen overflow-hidden flex items-start pt-20"
       style={{
         backgroundColor: '#ffffff',
         backgroundImage:
@@ -26,7 +26,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative z-[1] max-w-[1200px] mx-auto w-full px-8 grid grid-cols-1 md:grid-cols-2 md:gap-20 gap-12 items-center">
+      <div className="relative z-[1] max-w-screen-xl mx-auto w-full px-8 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 items-center">
         {/* LEFT */}
         <div>
           <div
