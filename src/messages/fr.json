@@ -3,7 +3,8 @@
     "offers": "Nos offres",
     "howItWorks": "Comment ça marche",
     "saasBuilder": "SaaS Builder",
-    "booking": "Prendre un rendez-vous"
+    "booking": "Prendre un rendez-vous",
+    "bookingShort": "RV →"
   },
   "hero": {
     "badge": "Votre partenaire tech",
@@ -20,6 +21,16 @@
   },
   "footer": {
     "tagline": "Your tech partner, from day one.",
+    "col1Title": "Offres",
+    "col2Title": "Entreprise",
+    "col3Title": "Contact",
+    "digitalisation": "Digitalisation",
+    "saasBuilder": "SaaS Builder",
+    "process": "Notre processus",
+    "about": "À propos",
+    "contact": "Contact",
+    "email": "hello@corex.com",
+    "bookingLink": "Prendre un RV",
     "copyright": "© 2026 Corex. Tous droits réservés.",
     "madeWith": "Fait avec ♥ par Corex"
   }
