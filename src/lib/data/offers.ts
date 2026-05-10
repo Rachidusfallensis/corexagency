@@ -28,7 +28,7 @@ export type SectorExample = {
   result: string
 }
 
-export const EXAMPLES_DIGITAL: SectorExample[] = [
+export const EXAMPLES_DIGITAL_FR: SectorExample[] = [
   {
     sector: 'Restauration',
     title: 'Gestion des stocks et commandes fournisseurs automatisée',
@@ -67,7 +67,49 @@ export const EXAMPLES_DIGITAL: SectorExample[] = [
   },
 ]
 
-export const EXAMPLES_SAAS: SectorExample[] = [
+export const EXAMPLES_DIGITAL_EN: SectorExample[] = [
+  {
+    sector: 'Restaurant',
+    title: 'Automated stock and supplier order management',
+    desc: 'A restaurant chain eliminates stock shortages and manual entry with a custom ERP synchronized with its suppliers.',
+    result: 'Zero shortage, zero manual entry',
+  },
+  {
+    sector: 'Real Estate',
+    title: 'Centralized CRM for prospects, visits and follow-ups',
+    desc: 'A real estate agency replaces Excel files with a CRM that automates follow-ups and gives a complete view of each prospect.',
+    result: '50% commercial time saved',
+  },
+  {
+    sector: 'Healthcare',
+    title: 'Digitalization of appointments and patient records',
+    desc: 'A dental clinic digitalizes its appointment booking, patient records and SMS reminders. The team focuses on care, not admin.',
+    result: '2h saved per employee per day',
+  },
+  {
+    sector: 'E-commerce',
+    title: 'Online store synchronized with physical store',
+    desc: 'A fashion boutique launches its online presence with unified stock management between the store and the web.',
+    result: 'Stock always up to date across all channels',
+  },
+  {
+    sector: 'Logistics',
+    title: 'Automated delivery notes and invoicing',
+    desc: 'A transport SME automates its delivery notes, driver tracking and client invoice generation.',
+    result: 'Instant invoicing at delivery',
+  },
+  {
+    sector: 'Training',
+    title: 'Registration and certification management platform',
+    desc: 'A training center replaces paper processes with a platform that manages registrations, payments and certificate delivery.',
+    result: '100% digital learner journey',
+  },
+]
+
+// Backward compat alias (default = FR)
+export const EXAMPLES_DIGITAL = EXAMPLES_DIGITAL_FR
+
+export const EXAMPLES_SAAS_FR: SectorExample[] = [
   {
     sector: 'RH',
     title: 'SaaS de gestion des congés pour TPE et PME',
@@ -93,6 +135,36 @@ export const EXAMPLES_SAAS: SectorExample[] = [
     result: 'Lancement en moins de 10 semaines',
   },
 ]
+
+export const EXAMPLES_SAAS_EN: SectorExample[] = [
+  {
+    sector: 'HR',
+    title: 'Leave management SaaS for small businesses',
+    desc: 'An HR founder launches a simple leave and absence management tool for small companies without a full HRIS.',
+    result: 'MVP delivered in 8 weeks',
+  },
+  {
+    sector: 'Legal',
+    title: 'Automatic contract generator for freelancers',
+    desc: 'A legal startup builds a tool allowing freelancers to generate compliant contracts in a few clicks, without a lawyer.',
+    result: 'Contract ready in under 5 minutes',
+  },
+  {
+    sector: 'Retail',
+    title: 'Loyalty program for local businesses',
+    desc: 'An entrepreneur develops a SaaS allowing small businesses to launch their own loyalty program without complex tech.',
+    result: 'Activated in 1 day by the merchant',
+  },
+  {
+    sector: 'Education',
+    title: 'Micro-learning platform with progress tracking',
+    desc: 'An EdTech launches a short-form learning platform with progress tracking, quizzes and automated certification.',
+    result: 'Launched in under 10 weeks',
+  },
+]
+
+// Backward compat alias (default = FR)
+export const EXAMPLES_SAAS = EXAMPLES_SAAS_FR
 
 export const PROCESS_STEPS = [
   { num: '01', titleKey: 'process.step1.title', descKey: 'process.step1.desc' },
