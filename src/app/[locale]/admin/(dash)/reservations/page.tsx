@@ -92,30 +92,15 @@ function ReservationsInner() {
 
   return (
     <>
-      <div
-        className="rounded-[18px] overflow-hidden"
-        style={{
-          background: '#111111',
-          border: '1px solid rgba(255,255,255,0.07)',
-        }}
-      >
-        <div
-          className="px-5 py-4 flex items-center justify-between"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
-        >
-          <span className="text-[0.88rem] font-semibold">Toutes les réservations</span>
-          <span
-            className="text-[0.75rem]"
-            style={{ color: 'rgba(255,255,255,0.5)' }}
-          >
+      <div className="card">
+        <div className="card-header">
+          <span className="card-title">Toutes les réservations</span>
+          <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
             {filtered.length} résultat{filtered.length > 1 ? 's' : ''}
           </span>
         </div>
 
-        <div
-          className="flex gap-2 px-5 py-3 flex-wrap"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
-        >
+        <div className="filters">
           {FILTERS.map((f) => {
             const active =
               (f.type === 'status' && statusFilter === f.value) ||
@@ -124,17 +109,12 @@ function ReservationsInner() {
               <button
                 key={`${f.type}-${f.value}`}
                 type="button"
+                className={`filter-btn${active ? ' active' : ''}`}
                 onClick={() =>
                   f.type === 'status'
                     ? setStatusFilter(f.value)
                     : setServiceFilter(f.value)
                 }
-                className="px-3 py-1.5 rounded-full text-[0.72rem] font-semibold transition-colors"
-                style={{
-                  background: active ? 'rgba(1,234,98,0.1)' : 'transparent',
-                  color: active ? '#01EA62' : 'rgba(255,255,255,0.5)',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                }}
               >
                 {f.label}
               </button>
@@ -142,94 +122,53 @@ function ReservationsInner() {
           })}
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+        <div style={{ overflowX: 'auto' }}>
+          <table>
             <thead>
               <tr>
-                {['Contact', 'Service', 'Profil', 'Créneau', 'Reçu le', 'Statut', 'Actions'].map((h) => (
-                  <th
-                    key={h}
-                    className="text-left text-[0.68rem] font-bold uppercase tracking-[0.07em] px-5 py-3 whitespace-nowrap"
-                    style={{ color: 'rgba(255,255,255,0.25)' }}
-                  >
-                    {h}
-                  </th>
-                ))}
+                <th>Contact</th>
+                <th>Service</th>
+                <th>Profil</th>
+                <th>Créneau</th>
+                <th>Reçu le</th>
+                <th>Statut</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan={7}
-                    className="px-5 py-8 text-center text-[0.85rem]"
-                    style={{ color: 'rgba(255,255,255,0.3)' }}
-                  >
+                  <td colSpan={7} style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', padding: '2rem' }}>
                     Aucune réservation.
                   </td>
                 </tr>
               ) : (
                 filtered.map((r) => (
-                  <tr
-                    key={r.id}
-                    style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}
-                  >
-                    <td className="px-5 py-3.5">
-                      <div className="text-[0.85rem] font-semibold">{r.contact_name}</div>
-                      <div
-                        className="text-[0.72rem]"
-                        style={{ color: 'rgba(255,255,255,0.5)' }}
-                      >
-                        {r.contact_email}
-                      </div>
+                  <tr key={r.id}>
+                    <td>
+                      <div className="res-name">{r.contact_name}</div>
+                      <div className="res-email">{r.contact_email}</div>
                     </td>
-                    <td className="px-5 py-3.5">
-                      <ServiceBadge service={r.service} />
+                    <td><ServiceBadge service={r.service} /></td>
+                    <td>
+                      <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
+                        {PROFILE_LABELS[r.profile] ?? r.profile}
+                      </span>
                     </td>
-                    <td
-                      className="px-5 py-3.5 text-[0.75rem]"
-                      style={{ color: 'rgba(255,255,255,0.5)' }}
-                    >
-                      {PROFILE_LABELS[r.profile] ?? r.profile}
-                    </td>
-                    <td
-                      className="px-5 py-3.5 text-[0.8rem] whitespace-nowrap"
-                      style={{ color: 'rgba(255,255,255,0.5)' }}
-                    >
-                      {formatSlot(r.slot_date, r.slot_time)}
-                    </td>
-                    <td
-                      className="px-5 py-3.5 text-[0.8rem] whitespace-nowrap"
-                      style={{ color: 'rgba(255,255,255,0.5)' }}
-                    >
-                      {formatDate(r.created_at)}
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <StatusBadge status={r.status} />
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <div className="flex gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => setDetail(r)}
-                          className="px-2.5 py-1.5 rounded-[7px] text-[0.72rem] font-semibold"
-                          style={{
-                            background: 'rgba(255,255,255,0.05)',
-                            color: 'rgba(255,255,255,0.5)',
-                          }}
-                        >
+                    <td><div className="res-date">{formatSlot(r.slot_date, r.slot_time)}</div></td>
+                    <td><div className="res-date">{formatDate(r.created_at)}</div></td>
+                    <td><StatusBadge status={r.status} /></td>
+                    <td>
+                      <div className="action-btns">
+                        <button type="button" className="action-btn view" onClick={() => setDetail(r)}>
                           Détail
                         </button>
                         {r.status === 'pending' && (
                           <button
                             type="button"
+                            className="action-btn confirm"
                             onClick={() => handleConfirm(r.id)}
                             disabled={pending}
-                            className="px-2.5 py-1.5 rounded-[7px] text-[0.72rem] font-semibold disabled:opacity-50"
-                            style={{
-                              background: 'rgba(1,234,98,0.1)',
-                              color: '#01EA62',
-                            }}
                           >
                             Confirmer
                           </button>
@@ -237,12 +176,8 @@ function ReservationsInner() {
                         {r.status !== 'cancelled' && (
                           <button
                             type="button"
+                            className="action-btn cancel"
                             onClick={() => setCancelTarget(r)}
-                            className="px-2.5 py-1.5 rounded-[7px] text-[0.72rem] font-semibold"
-                            style={{
-                              background: 'rgba(239,68,68,0.08)',
-                              color: '#EF4444',
-                            }}
                           >
                             Annuler
                           </button>
@@ -285,4 +220,3 @@ export default function ReservationsPage() {
     </AdminShell>
   )
 }
-
