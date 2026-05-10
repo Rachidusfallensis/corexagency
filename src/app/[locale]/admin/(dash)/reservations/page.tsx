@@ -136,7 +136,77 @@ function ReservationsInner() {
           })}
         </div>
 
-        <div style={{ overflowX: 'auto' }}>
+        <style>{`
+          @media (max-width: 768px) {
+            .reservations-table-wrap { display: none !important; }
+            .reservations-mobile-cards { display: flex !important; }
+          }
+          .reservations-mobile-cards { display: none; flex-direction: column; gap: 0.75rem; padding: 0.75rem; }
+        `}</style>
+
+        {/* Mobile cards */}
+        <div className="reservations-mobile-cards">
+          {filtered.length === 0 ? (
+            <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', padding: '1.5rem', fontSize: '0.85rem' }}>
+              Aucune réservation.
+            </p>
+          ) : (
+            filtered.map((r) => {
+              const adminView = utcToLocalTime(r.slot_date.slice(0, 10), r.slot_time.slice(0, 5), adminTz)
+              const dPretty = parseLocal(adminView.localDate).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })
+              return (
+                <div
+                  key={`m-${r.id}`}
+                  style={{
+                    background: '#161616',
+                    border: '1px solid rgba(255,255,255,0.07)',
+                    borderRadius: '12px',
+                    padding: '1rem',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem', gap: '0.5rem' }}>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#fff' }}>{r.contact_name}</div>
+                      <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)' }}>{r.contact_email}</div>
+                    </div>
+                    <StatusBadge status={r.status} />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '0.75rem', fontSize: '0.78rem' }}>
+                    <div>
+                      <div style={{ color: 'rgba(255,255,255,0.4)' }}>Service</div>
+                      <ServiceBadge service={r.service} />
+                    </div>
+                    <div>
+                      <div style={{ color: 'rgba(255,255,255,0.4)' }}>Profil</div>
+                      <div style={{ color: '#fff', fontWeight: 500 }}>{PROFILE_LABELS[r.profile] ?? r.profile}</div>
+                    </div>
+                    <div style={{ gridColumn: '1 / -1' }}>
+                      <div style={{ color: 'rgba(255,255,255,0.4)' }}>Créneau</div>
+                      <div style={{ color: '#01EA62', fontWeight: 500 }}>{dPretty} • {adminView.localTime}</div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <button type="button" className="action-btn view" onClick={() => setDetail(r)}>
+                      Détail
+                    </button>
+                    {r.status === 'pending' && (
+                      <button type="button" className="action-btn confirm" onClick={() => handleConfirm(r.id)} disabled={pending}>
+                        Confirmer
+                      </button>
+                    )}
+                    {r.status !== 'cancelled' && (
+                      <button type="button" className="action-btn cancel" onClick={() => setCancelTarget(r)}>
+                        Annuler
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )
+            })
+          )}
+        </div>
+
+        <div className="reservations-table-wrap" style={{ overflowX: 'auto' }}>
           <table>
             <thead>
               <tr>
