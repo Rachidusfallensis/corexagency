@@ -27,6 +27,11 @@ export default function Navbar() {
   const homeHref = `/${locale}`
   const bookingHref = `/${locale}/rendez-vous`
 
+  // On the homepage, use bare hash so smooth-scroll works in-page.
+  // Elsewhere, use absolute path so clicking goes home then scrolls.
+  const isHome = pathname === homeHref || pathname === `${homeHref}/`
+  const anchor = (id: string) => (isHome ? `#${id}` : `${homeHref}#${id}`)
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-[100] h-16 px-8 border-b border-black/[0.07] backdrop-blur-[20px] transition-shadow duration-300 ${
@@ -46,24 +51,24 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          <Link
-            href={`${homeHref}/digitalisation`}
+          <a
+            href={anchor('offres')}
             className="text-sm font-medium text-gray-mid hover:text-corex-black transition-colors"
           >
             {t('offers')}
-          </Link>
+          </a>
           <a
-            href={`${homeHref}#processus`}
+            href={anchor('processus')}
             className="text-sm font-medium text-gray-mid hover:text-corex-black transition-colors"
           >
             {t('howItWorks')}
           </a>
-          <Link
-            href={`${homeHref}/saas-builder`}
+          <a
+            href={anchor('saas')}
             className="text-sm font-medium text-gray-mid hover:text-corex-black transition-colors"
           >
             {t('saasBuilder')}
-          </Link>
+          </a>
           <Link
             href={switchHref}
             className="text-sm font-semibold tracking-wide"
