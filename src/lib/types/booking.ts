@@ -31,7 +31,37 @@ export interface AvailabilityRule {
   slot_duration: number
   valid_from: string | null
   valid_until: string | null
+  timezone?: string | null
 }
+
+export const TIMEZONES = [
+  {
+    value: 'America/Toronto',
+    label: 'Montréal / Toronto',
+    flag: '🌎',
+    offset: 'UTC-5/UTC-4',
+  },
+  {
+    value: 'Africa/Dakar',
+    label: 'Dakar',
+    flag: '🌍',
+    offset: 'UTC+0/UTC+1',
+  },
+  {
+    value: 'Europe/Paris',
+    label: 'Paris',
+    flag: '🇫🇷',
+    offset: 'UTC+1/UTC+2',
+  },
+  {
+    value: 'UTC',
+    label: 'UTC',
+    flag: '🌐',
+    offset: 'UTC+0',
+  },
+] as const
+
+export type TimezoneValue = (typeof TIMEZONES)[number]['value']
 
 export interface AvailabilityBlock {
   id: string

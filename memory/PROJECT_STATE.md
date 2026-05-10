@@ -9,8 +9,8 @@
 | Champ | Valeur |
 |---|---|
 | Phase courante | **Phase 1 — Foundation (en cours)** |
-| Prompt en cours | `10` ✅ |
-| Dernier prompt complété | `10` (Realtime notifications + reschedule + SEO + 404) |
+| Prompt en cours | `11` ✅ |
+| Dernier prompt complété | `11` (Timezone awareness — emails Resend différés) |
 | Date dernière maj | 2026-05-09 |
 | Branche de dev | `claude/init-corex-project-qdFMv` |
 
