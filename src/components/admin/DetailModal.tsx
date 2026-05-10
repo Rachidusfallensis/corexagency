@@ -22,7 +22,8 @@ const PROFILE_LABELS: Record<string, string> = {
 }
 
 function formatSlot(date: string, time: string) {
-  const d = new Date(date)
+  const [y, m, dd] = date.split('-').map(Number)
+  const d = new Date(y, (m ?? 1) - 1, dd ?? 1)
   return `${d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })} • ${time.slice(0, 5)}`
 }
 

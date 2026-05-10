@@ -11,8 +11,12 @@ const today = new Date().toLocaleDateString('fr-FR', {
   year: 'numeric',
 })
 
+function parseLocal(s: string) {
+  const [y, m, d] = s.split('-').map(Number)
+  return new Date(y, (m ?? 1) - 1, d ?? 1)
+}
 function formatSlot(date: string, time: string) {
-  const d = new Date(date)
+  const d = parseLocal(date)
   const day = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })
   return { day, time: time.slice(0, 5) }
 }
@@ -26,7 +30,7 @@ export default async function AdminOverview() {
   const recent = reservations.slice(0, 5)
   const upcoming = reservations
     .filter((r) => r.status === 'confirmed')
-    .filter((r) => new Date(r.slot_date) >= new Date())
+    .filter((r) => parseLocal(r.slot_date) >= (() => { const t = new Date(); t.setHours(0,0,0,0); return t })())
     .sort((a, b) =>
       `${a.slot_date} ${a.slot_time}`.localeCompare(`${b.slot_date} ${b.slot_time}`)
     )
