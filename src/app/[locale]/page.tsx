@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 const PROTO_CSS = `
 *{margin:0;padding:0;box-sizing:border-box}
@@ -18,7 +18,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .proto-home .container{max-width:1200px;margin:0 auto;padding:0 2rem}
 .proto-home{background:#fff;color:#050505}
 
-/* NAV */
 .proto-home nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.93);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.07);padding:1rem 2rem;transition:box-shadow 0.3s}
 .proto-home .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
 .proto-home .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
@@ -30,7 +29,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .proto-home .nav-cta{background:#050505;color:#fff;padding:0.6rem 1.4rem;border-radius:50px;text-decoration:none;font-size:0.875rem;font-weight:600;transition:all 0.2s}
 .proto-home .nav-cta:hover{background:#016B2D;transform:translateY(-1px)}
 
-/* HERO */
 .proto-home .hero{min-height:100vh;display:flex;align-items:center;padding-top:5rem;background:#fff;position:relative;overflow:hidden}
 .proto-home .hero-bg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 80% 50%,rgba(1,234,98,0.07) 0%,transparent 70%)}
 .proto-home .hero-dots{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,rgba(1,107,45,0.11) 1px,transparent 1px);background-size:32px 32px}
@@ -46,7 +44,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .proto-home .btn-secondary{background:transparent;color:#050505;padding:0.9rem 2rem;border-radius:50px;text-decoration:none;font-weight:600;font-size:0.95rem;border:1.5px solid #D1D5DB;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
 .proto-home .btn-secondary:hover{border-color:#050505;transform:translateY(-2px)}
 
-/* HERO VISUAL */
 .proto-home .hero-visual{display:flex;flex-direction:column;gap:1rem}
 .proto-home .hero-value-card{border-radius:20px;padding:1.75rem}
 .proto-home .hvc-main{background:#016B2D;color:white}
@@ -64,7 +61,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .proto-home .s-chip{background:#F4F6F4;padding:0.2rem 0.6rem;border-radius:50px;font-size:0.72rem;font-weight:500;color:#050505}
 .proto-home .s-chip.green{background:rgba(1,234,98,0.15);color:#016B2D}
 
-/* OFFRES */
 .proto-home .offers{background:#F4F6F4;padding:6rem 0}
 .proto-home .section-label{display:inline-block;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#016B2D;margin-bottom:0.75rem}
 .proto-home .section-header{margin-bottom:3.5rem}
@@ -92,7 +88,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .proto-home .offer-card.light .offer-bg-icon{background:#016B2D}
 .proto-home .offer-card.dark .offer-bg-icon{background:#01EA62}
 
-/* PROCESSUS */
 .proto-home .process-sec{padding:6rem 0}
 .proto-home .process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3rem}
 .proto-home .process-step{padding:1.75rem;border-radius:16px;background:#fff;border:1px solid rgba(0,0,0,0.07);transition:border-color 0.2s,transform 0.2s}
@@ -101,7 +96,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .proto-home .process-step h4{margin-bottom:0.4rem}
 .proto-home .process-step p{font-size:0.875rem}
 
-/* WHY */
 .proto-home .why-sec{background:#050505;padding:6rem 0}
 .proto-home .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
 .proto-home .why-card{padding:2rem;border-radius:20px;border:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.02);transition:border-color 0.2s,background 0.2s}
@@ -110,7 +104,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .proto-home .why-card h4{color:#fff;margin-bottom:0.4rem}
 .proto-home .why-card p{color:rgba(255,255,255,0.5);font-size:0.875rem}
 
-/* SAAS */
 .proto-home .saas-sec{background:#F4F6F4;padding:6rem 0}
 .proto-home .saas-inner{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
 .proto-home .saas-steps{display:flex;flex-direction:column;gap:1rem;margin-top:2rem}
@@ -130,7 +123,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .proto-home .tech-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:1.5rem}
 .proto-home .tech-badge{padding:0.35rem 0.9rem;border-radius:50px;font-size:0.75rem;font-weight:500;background:rgba(1,234,98,0.1);color:#01EA62;border:1px solid rgba(1,234,98,0.18)}
 
-/* CTA */
 .proto-home .cta-sec{background:#016B2D;padding:7rem 0;text-align:center;position:relative;overflow:hidden}
 .proto-home .cta-sec::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 120%,rgba(1,234,98,0.15),transparent 70%)}
 .proto-home .cta-sec h2{color:#fff;margin-bottom:1rem;position:relative}
@@ -138,7 +130,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .proto-home .btn-vivid{background:#01EA62;color:#050505;padding:1rem 2.5rem;border-radius:50px;text-decoration:none;font-weight:700;font-size:1rem;transition:all 0.2s;display:inline-flex;align-items:center;gap:10px;border:none;cursor:pointer;position:relative}
 .proto-home .btn-vivid:hover{transform:translateY(-3px);box-shadow:0 14px 35px rgba(1,234,98,0.3)}
 
-/* FOOTER */
 .proto-home footer{background:#050505;padding:4rem 0 2rem;border-top:1px solid rgba(255,255,255,0.06)}
 .proto-home .footer-inner{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
 .proto-home .footer-brand p{color:rgba(255,255,255,0.45);font-size:0.875rem;margin-top:1rem;max-width:240px}
@@ -149,7 +140,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .proto-home .footer-bottom p{color:rgba(255,255,255,0.3);font-size:0.8rem}
 .proto-home .footer-bottom span{color:#01EA62}
 
-/* EXEMPLES */
 .proto-home .exemples-sec{padding:5rem 0;background:#fff}
 .proto-home .exemples-sec.dark-bg{background:#050505}
 .proto-home .ex-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:3rem}
@@ -168,17 +158,14 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .proto-home .ex-card.dark-card .ex-result{color:#01EA62}
 .proto-home .ex-result::before{content:'→';font-size:0.85rem}
 
-/* ANIMATIONS */
 @keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .proto-home .hero-value-card{animation:floatA 6s ease-in-out infinite}
 .proto-home .hvc-row .hvc-small:first-child{animation:floatA 5s ease-in-out infinite 0.5s}
 .proto-home .hvc-row .hvc-small:last-child{animation:floatA 7s ease-in-out infinite 1s}
 
-/* FADE IN */
 .proto-home .fade-in{opacity:0;transform:translateY(18px);transition:opacity 0.55s ease,transform 0.55s ease}
 .proto-home .fade-in.visible{opacity:1;transform:translateY(0)}
 
-/* RESPONSIVE */
 @media(max-width:960px){
   .proto-home .hero-inner{grid-template-columns:1fr}
   .proto-home .hero-visual{display:none}
@@ -302,6 +289,7 @@ function FadeInBlock({ children }: { children: React.ReactNode }) {
 }
 
 export default function HomePage() {
+  const t = useTranslations()
   const locale = useLocale()
   const [scrolled, setScrolled] = useState(false)
 
@@ -329,9 +317,9 @@ export default function HomePage() {
             <span className="nav-logo-text">Corex</span>
           </Link>
           <div className="nav-links">
-            <a href="#offres">Nos offres</a>
-            <a href="#processus">Comment ça marche</a>
-            <a href="#saas">SaaS Builder</a>
+            <a href="#offres">{t('nav.offers')}</a>
+            <a href="#processus">{t('nav.howItWorks')}</a>
+            <a href="#saas">{t('nav.saasBuilder')}</a>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               <Link
                 href="/fr"
@@ -359,7 +347,7 @@ export default function HomePage() {
             </div>
           </div>
           <Link href={booking} className="nav-cta">
-            Prendre un rendez-vous →
+            {t('nav.booking')} →
           </Link>
         </div>
       </nav>
@@ -372,36 +360,34 @@ export default function HomePage() {
           <div>
             <div className="hero-badge">
               <span className="badge-dot" />
-              Votre partenaire tech
+              {t('hero.badge')}
             </div>
             <h1>
-              Your tech partner,
+              {t('hero.title')}
               <br />
-              <em>from day one.</em>
+              <em>{t('hero.titleEm')}</em>
             </h1>
-            <p className="hero-desc">
-              Nous digitalisons vos opérations et transformons vos idées en produits SaaS. Une seule équipe, deux expertises, des résultats concrets.
-            </p>
+            <p className="hero-desc">{t('hero.desc')}</p>
             <div className="hero-actions">
               <a href="#offres" className="btn-primary">
-                Découvrir nos offres →
+                {t('hero.ctaPrimary')} →
               </a>
               <Link href={booking} className="btn-secondary">
-                Prendre un RV
+                {t('hero.ctaSecondary')}
               </Link>
             </div>
           </div>
           <div className="hero-visual">
             <div className="hero-value-card hvc-main">
-              <div className="hvc-tag">Ce qu&apos;on fait</div>
-              <h3>Deux offres, zéro compromis.</h3>
-              <p>Digitalisation d&apos;entreprise ou construction de SaaS — on s&apos;engage à 100% sur votre projet.</p>
+              <div className="hvc-tag">{t('hero.cardTag')}</div>
+              <h3>{t('hero.cardTitle')}</h3>
+              <p>{t('hero.cardDesc')}</p>
             </div>
             <div className="hvc-row" style={{ marginTop: '1rem' }}>
               <div className="hero-value-card hvc-small">
-                <h4>Digitalisation</h4>
+                <h4>{t('hero.card1Title')}</h4>
                 <p style={{ fontSize: '0.8rem', marginBottom: '0.6rem' }}>
-                  ERP, CRM, e-commerce, automatisations
+                  {t('hero.card1Desc')}
                 </p>
                 <div className="service-chips">
                   <span className="s-chip green">ERP</span>
@@ -410,9 +396,9 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="hero-value-card hvc-small hvc-dark">
-                <h4>SaaS Builder</h4>
+                <h4>{t('hero.card2Title')}</h4>
                 <p style={{ fontSize: '0.8rem', marginBottom: '0.6rem' }}>
-                  De l&apos;idée au produit livré
+                  {t('hero.card2Desc')}
                 </p>
                 <div className="service-chips">
                   <span className="s-chip" style={{ background: 'rgba(1,234,98,0.12)', color: '#01EA62' }}>MVP</span>
@@ -430,25 +416,17 @@ export default function HomePage() {
         <div className="container">
           <FadeInBlock>
             <div className="section-header">
-              <span className="section-label">Nos offres</span>
-              <h2>
-                Deux expertises,
-                <br />
-                une seule vision.
-              </h2>
-              <p>
-                Que vous soyez une entreprise qui veut se digitaliser ou un entrepreneur avec une idée de produit, on a la bonne offre pour vous.
-              </p>
+              <span className="section-label">{t('offers.label')}</span>
+              <h2>{t('offers.title')}</h2>
+              <p>{t('offers.desc')}</p>
             </div>
           </FadeInBlock>
           <div className="offers-grid">
             <FadeInBlock>
               <div className="offer-card light">
-                <div className="offer-tag">Digitalisation</div>
-                <h3>Transformez votre entreprise avec les bons outils.</h3>
-                <p>
-                  ERP, CRM, e-commerce, sites sur mesure, automatisations — on construit les fondations digitales de votre croissance.
-                </p>
+                <div className="offer-tag">{t('offers.digital.tag')}</div>
+                <h3>{t('offers.digital.title')}</h3>
+                <p>{t('offers.digital.desc')}</p>
                 <div className="offer-services">
                   <span className="offer-service">ERP</span>
                   <span className="offer-service">CRM</span>
@@ -458,7 +436,7 @@ export default function HomePage() {
                   <span className="offer-service">Intégrations API</span>
                 </div>
                 <a href="#processus" className="offer-link">
-                  Voir comment ça marche →
+                  {t('offers.digital.link')} →
                 </a>
                 <div className="offer-bg-icon">
                   <svg viewBox="0 0 24 24" fill="currentColor" width="50" height="50">
@@ -469,11 +447,9 @@ export default function HomePage() {
             </FadeInBlock>
             <FadeInBlock>
               <div className="offer-card dark">
-                <div className="offer-tag">SaaS Builder</div>
-                <h3>De l&apos;idée au produit.</h3>
-                <p>
-                  Vous avez une idée de SaaS ? On la construit avec vous — de la conception au lancement, en passant par le MVP.
-                </p>
+                <div className="offer-tag">{t('offers.saas.tag')}</div>
+                <h3>{t('offers.saas.title')}</h3>
+                <p>{t('offers.saas.desc')}</p>
                 <div className="offer-services">
                   <span className="offer-service">Product Design</span>
                   <span className="offer-service">MVP rapide</span>
@@ -483,7 +459,7 @@ export default function HomePage() {
                   <span className="offer-service">Itération</span>
                 </div>
                 <a href="#saas" className="offer-link">
-                  En savoir plus →
+                  {t('offers.saas.link')} →
                 </a>
                 <div className="offer-bg-icon">
                   <svg viewBox="0 0 24 24" fill="currentColor" width="50" height="50">
@@ -501,15 +477,9 @@ export default function HomePage() {
         <div className="container">
           <FadeInBlock>
             <div className="section-header">
-              <span className="section-label">Digitalisation — Exemples de projets</span>
-              <h2>
-                Ce qu&apos;on peut construire
-                <br />
-                pour votre secteur.
-              </h2>
-              <p>
-                Des exemples concrets de ce qu&apos;une transformation digitale peut apporter à différents types d&apos;entreprises.
-              </p>
+              <span className="section-label">{t('examplesDigital.label')}</span>
+              <h2>{t('examplesDigital.title')}</h2>
+              <p>{t('examplesDigital.desc')}</p>
             </div>
           </FadeInBlock>
           <div className="ex-grid">
@@ -533,16 +503,10 @@ export default function HomePage() {
           <FadeInBlock>
             <div className="section-header">
               <span className="section-label" style={{ color: '#01EA62' }}>
-                SaaS Builder — Exemples de projets
+                {t('examplesSaas.label')}
               </span>
-              <h2 style={{ color: '#fff' }}>
-                Des idées qu&apos;on peut
-                <br />
-                transformer en produits.
-              </h2>
-              <p>
-                Exemples de SaaS qu&apos;on peut concevoir et développer avec vous, de zéro à la mise en production.
-              </p>
+              <h2 style={{ color: '#fff' }}>{t('examplesSaas.title')}</h2>
+              <p>{t('examplesSaas.desc')}</p>
             </div>
           </FadeInBlock>
           <div className="ex-grid">
@@ -565,27 +529,18 @@ export default function HomePage() {
         <div className="container">
           <FadeInBlock>
             <div className="section-header">
-              <span className="section-label">Comment ça marche</span>
-              <h2>
-                Simple, rapide,
-                <br />
-                structuré.
-              </h2>
-              <p>Notre processus est conçu pour aller vite sans perdre en qualité.</p>
+              <span className="section-label">{t('process.label')}</span>
+              <h2>{t('process.title')}</h2>
+              <p>{t('process.desc')}</p>
             </div>
           </FadeInBlock>
           <div className="process-grid">
-            {[
-              ['01', 'Appel découverte', 'On comprend votre contexte, vos besoins et vos objectifs en 30 minutes.'],
-              ['02', 'Proposition', 'On vous présente un plan clair — périmètre, délais, budget.'],
-              ['03', 'Développement', 'On construit avec des points de suivi réguliers et une transparence totale.'],
-              ['04', 'Livraison', 'Mise en production, formation et support pour assurer la continuité.'],
-            ].map(([n, t, d]) => (
-              <FadeInBlock key={n}>
+            {(['step1', 'step2', 'step3', 'step4'] as const).map((k, i) => (
+              <FadeInBlock key={k}>
                 <div className="process-step">
-                  <div className="step-num">{n}</div>
-                  <h4>{t}</h4>
-                  <p>{d}</p>
+                  <div className="step-num">{String(i + 1).padStart(2, '0')}</div>
+                  <h4>{t(`process.${k}.title`)}</h4>
+                  <p>{t(`process.${k}.desc`)}</p>
                 </div>
               </FadeInBlock>
             ))}
@@ -599,68 +554,31 @@ export default function HomePage() {
           <FadeInBlock>
             <div className="section-header">
               <span className="section-label" style={{ color: '#01EA62' }}>
-                Pourquoi Corex
+                {t('why.label')}
               </span>
-              <h2 style={{ color: '#fff' }}>Ce qui nous différencie.</h2>
+              <h2 style={{ color: '#fff' }}>{t('why.title')}</h2>
             </div>
           </FadeInBlock>
           <div className="why-grid">
-            {[
-              {
-                t: 'Livraison rapide',
-                d: 'On itère vite et livre des résultats concrets dès les premières semaines.',
-                svg: <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />,
-              },
-              {
-                t: 'Transparence totale',
-                d: "Vous voyez tout — l'avancement, les décisions, les blocages. Pas de mauvaises surprises.",
-                svg: (
-                  <>
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 8v4l3 3" />
-                  </>
-                ),
-              },
-              {
-                t: 'Équipe dédiée',
-                d: 'Focalisée sur votre projet uniquement, pas mutualisée entre 10 clients.',
-                svg: (
-                  <>
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                  </>
-                ),
-              },
-              {
-                t: 'Expertise technique',
-                d: 'Stack moderne, code propre, architecture scalable. On construit pour durer.',
-                svg: <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />,
-              },
-              {
-                t: 'Sécurité & souveraineté',
-                d: 'Vos données vous appartiennent. Solutions sécurisées et maîtrisées.',
-                svg: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
-              },
-              {
-                t: 'Support continu',
-                d: "Le projet ne s'arrête pas à la livraison. On reste là pour évoluer avec vous.",
-                svg: (
-                  <>
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 16v-4M12 8h.01" />
-                  </>
-                ),
-              },
-            ].map((it) => (
-              <FadeInBlock key={it.t}>
+            {(
+              [
+                ['item1', <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" key="i1" />],
+                ['item2', <><circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" /></>],
+                ['item3', <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></>],
+                ['item4', <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" key="i4" />],
+                ['item5', <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" key="i5" />],
+                ['item6', <><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></>],
+              ] as const
+            ).map(([k, svg]) => (
+              <FadeInBlock key={k}>
                 <div className="why-card">
                   <div className="why-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#01EA62" strokeWidth="2">
-                      {it.svg}
+                      {svg}
                     </svg>
                   </div>
-                  <h4>{it.t}</h4>
-                  <p>{it.d}</p>
+                  <h4>{t(`why.${k}.title`)}</h4>
+                  <p>{t(`why.${k}.desc`)}</p>
                 </div>
               </FadeInBlock>
             ))}
@@ -673,28 +591,17 @@ export default function HomePage() {
         <div className="container">
           <div className="saas-inner">
             <div>
-              <span className="section-label">SaaS Builder</span>
-              <h2>
-                De l&apos;idée
-                <br />
-                au produit.
-              </h2>
-              <p style={{ marginBottom: '0.5rem' }}>
-                Vous avez validé un problème, vous voyez la solution — il vous manque l&apos;équipe tech pour l&apos;exécuter. C&apos;est exactement ce qu&apos;on fait.
-              </p>
+              <span className="section-label">{t('saas.label')}</span>
+              <h2>{t('saas.title')}</h2>
+              <p style={{ marginBottom: '0.5rem' }}>{t('saas.desc')}</p>
               <div className="saas-steps" style={{ marginTop: '2rem' }}>
-                {[
-                  ['1', 'Cadrage produit', "On définit ensemble le périmètre du MVP, les user stories et l'architecture."],
-                  ['2', 'Design & prototype', "Maquettes interactives pour valider l'expérience avant de coder."],
-                  ['3', 'Développement MVP', "Construction rapide avec les bonnes technologies pour une mise sur marché rapide."],
-                  ['4', 'Lancement & itération', 'Mise en production, feedback, amélioration continue.'],
-                ].map(([n, t, d]) => (
-                  <FadeInBlock key={n}>
+                {(['step1', 'step2', 'step3', 'step4'] as const).map((k, i) => (
+                  <FadeInBlock key={k}>
                     <div className="saas-step">
-                      <div className="saas-num">{n}</div>
+                      <div className="saas-num">{i + 1}</div>
                       <div>
-                        <h4>{t}</h4>
-                        <p>{d}</p>
+                        <h4>{t(`saas.${k}.title`)}</h4>
+                        <p>{t(`saas.${k}.desc`)}</p>
                       </div>
                     </div>
                   </FadeInBlock>
@@ -722,10 +629,8 @@ export default function HomePage() {
                   </div>
                 ))}
                 <div className="tech-row">
-                  {['Next.js', 'Supabase', 'React', 'TypeScript', 'Node.js'].map((t) => (
-                    <span key={t} className="tech-badge">
-                      {t}
-                    </span>
+                  {['Next.js', 'Supabase', 'React', 'TypeScript', 'Node.js'].map((tech) => (
+                    <span key={tech} className="tech-badge">{tech}</span>
                   ))}
                 </div>
               </div>
@@ -737,12 +642,10 @@ export default function HomePage() {
       {/* CTA */}
       <section className="cta-sec" id="contact">
         <div className="container">
-          <h2>Prêt à démarrer ?</h2>
-          <p>
-            Réservez un appel découverte de 30 minutes. On analyse votre situation et on voit ensemble comment avancer.
-          </p>
+          <h2>{t('cta.title')}</h2>
+          <p>{t('cta.desc')}</p>
           <Link href={booking} className="btn-vivid">
-            Prendre un rendez-vous →
+            {t('cta.btn')} →
           </Link>
         </div>
       </section>
@@ -756,34 +659,34 @@ export default function HomePage() {
                 <div className="logo-mark">
                   <CorexLogoMark />
                 </div>
-                <span className="nav-logo-text" style={{ color: 'white' }}>
-                  Corex
-                </span>
+                <span className="nav-logo-text" style={{ color: 'white' }}>Corex</span>
               </Link>
-              <p>Your tech partner, from day one.</p>
+              <p>{t('footer.tagline')}</p>
             </div>
             <div className="footer-col">
-              <h5>Offres</h5>
-              <a href="#offres">Digitalisation</a>
-              <a href="#saas">SaaS Builder</a>
-              <a href="#processus">Notre processus</a>
+              <h5>{t('footer.col1Title')}</h5>
+              <a href="#offres">{t('footer.digitalisation')}</a>
+              <a href="#saas">{t('footer.saasBuilder')}</a>
+              <a href="#processus">{t('footer.process')}</a>
             </div>
             <div className="footer-col">
-              <h5>Entreprise</h5>
-              <Link href={`${home}/a-propos`}>À propos</Link>
-              <a href="#contact">Contact</a>
+              <h5>{t('footer.col2Title')}</h5>
+              <Link href={`${home}/a-propos`}>{t('footer.about')}</Link>
+              <a href="#contact">{t('footer.contact')}</a>
             </div>
             <div className="footer-col">
-              <h5>Contact</h5>
-              <a href="mailto:hello@corex.com">hello@corex.com</a>
-              <a href="#contact">Prendre un RV</a>
+              <h5>{t('footer.col3Title')}</h5>
+              <a href={`mailto:${t('footer.email')}`}>{t('footer.email')}</a>
+              <a href="#contact">{t('footer.bookingLink')}</a>
             </div>
           </div>
           <div className="footer-bottom">
-            <p>© 2026 Corex. Tous droits réservés.</p>
-            <p>
-              Fait avec <span>♥</span> par Corex
-            </p>
+            <p>{t('footer.copyright')}</p>
+            <p
+              dangerouslySetInnerHTML={{
+                __html: t('footer.madeWith').replace('♥', '<span>♥</span>'),
+              }}
+            />
           </div>
         </div>
       </footer>
