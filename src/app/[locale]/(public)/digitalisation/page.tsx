@@ -2,19 +2,19 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Digitalisation entreprise — ERP, CRM, E-commerce | Corex',
+  title: 'Digitalisation entreprise : ERP, CRM, E-commerce | Corex',
   description:
     'Transformez votre entreprise avec les bons outils digitaux. ERP, CRM, e-commerce, automatisations sur mesure.',
 }
 
 const SERVICES = [
   {
-    title: 'ERP — Gestion d’entreprise',
+    title: 'ERP : gestion d’entreprise',
     desc: "Centralisez vos opérations : stocks, achats, ventes, comptabilité dans un seul système adapté à votre activité.",
     icon: 'grid',
   },
   {
-    title: 'CRM — Relation client',
+    title: 'CRM : relation client',
     desc: "Gérez vos prospects, clients et opportunités. Automatisez vos relances et ne ratez plus aucune opportunité.",
     icon: 'users',
   },
@@ -35,7 +35,7 @@ const SERVICES = [
   },
   {
     title: 'Intégrations API',
-    desc: "Connectez tous vos outils existants. Salesforce, HubSpot, Stripe, Shopify et plus — tout dans un écosystème unifié.",
+    desc: "Connectez tous vos outils existants. Salesforce, HubSpot, Stripe, Shopify et plus, tout dans un écosystème unifié.",
     icon: 'link',
   },
 ]
@@ -160,7 +160,7 @@ export default async function DigitalisationPage({
               margin: '0 auto 2.5rem',
             }}
           >
-            ERP, CRM, e-commerce, sites sur mesure, automatisations — on construit les fondations digitales de votre croissance.
+            ERP, CRM, e-commerce, sites sur mesure, automatisations. On construit les fondations digitales de votre croissance.
           </p>
           <Link
             href={bookingHref}

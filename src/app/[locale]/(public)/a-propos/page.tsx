@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'À propos — Corex | Your tech partner, from day one',
+  title: 'À propos · Corex | Your tech partner, from day one',
   description:
     'Corex digitalise les entreprises et construit des produits SaaS. Votre partenaire tech de bout en bout.',
 }

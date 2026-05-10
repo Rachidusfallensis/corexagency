@@ -15,7 +15,7 @@
     "ctaSecondary": "Prendre un RV",
     "cardTag": "Ce qu'on fait",
     "cardTitle": "Deux offres, zéro compromis.",
-    "cardDesc": "Digitalisation d'entreprise ou construction de SaaS — on s'engage à 100% sur votre projet.",
+    "cardDesc": "Digitalisation d'entreprise ou construction de SaaS. On s'engage à 100% sur votre projet.",
     "card1Title": "Digitalisation",
     "card1Desc": "ERP, CRM, e-commerce, automatisations",
     "card2Title": "SaaS Builder",
@@ -28,23 +28,23 @@
     "digital": {
       "tag": "Digitalisation",
       "title": "Transformez votre entreprise avec les bons outils.",
-      "desc": "ERP, CRM, e-commerce, sites sur mesure, automatisations — on construit les fondations digitales de votre croissance.",
+      "desc": "ERP, CRM, e-commerce, sites sur mesure, automatisations. On construit les fondations digitales de votre croissance.",
       "link": "Voir comment ça marche"
     },
     "saas": {
       "tag": "SaaS Builder",
       "title": "De l'idée au produit.",
-      "desc": "Vous avez une idée de SaaS ? On la construit avec vous — de la conception au lancement, en passant par le MVP.",
+      "desc": "Vous avez une idée de SaaS ? On la construit avec vous, de la conception au lancement, en passant par le MVP.",
       "link": "En savoir plus"
     }
   },
   "examplesDigital": {
-    "label": "Digitalisation — Exemples de projets",
+    "label": "Digitalisation : exemples de projets",
     "title": "Ce qu'on peut construire pour votre secteur.",
     "desc": "Des exemples concrets de ce qu'une transformation digitale peut apporter à différents types d'entreprises."
   },
   "examplesSaas": {
-    "label": "SaaS Builder — Exemples de projets",
+    "label": "SaaS Builder : exemples de projets",
     "title": "Des idées qu'on peut transformer en produits.",
     "desc": "Exemples de SaaS qu'on peut concevoir et développer avec vous, de zéro à la mise en production."
   },
@@ -58,7 +58,7 @@
     },
     "step2": {
       "title": "Proposition",
-      "desc": "On vous présente un plan clair — périmètre, délais, budget."
+      "desc": "On vous présente un plan clair : périmètre, délais, budget."
     },
     "step3": {
       "title": "Développement",
@@ -78,7 +78,7 @@
     },
     "item2": {
       "title": "Transparence totale",
-      "desc": "Vous voyez tout — l'avancement, les décisions, les blocages. Pas de mauvaises surprises."
+      "desc": "Vous voyez tout : l'avancement, les décisions, les blocages. Pas de mauvaises surprises."
     },
     "item3": {
       "title": "Équipe dédiée",
@@ -100,7 +100,7 @@
   "saas": {
     "label": "SaaS Builder",
     "title": "De l'idée au produit.",
-    "desc": "Vous avez validé un problème — il vous manque l'équipe tech pour l'exécuter. C'est exactement ce qu'on fait.",
+    "desc": "Vous avez validé un problème, il vous manque l'équipe tech pour l'exécuter. C'est exactement ce qu'on fait.",
     "step1": {
       "title": "Cadrage produit",
       "desc": "On définit ensemble le périmètre du MVP, les user stories et l'architecture."

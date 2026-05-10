@@ -679,7 +679,7 @@ export default function HomePage() {
             </div>
             <FadeInBlock>
               <div className="saas-visual">
-                <p className="vis-label">Progression MVP — exemple</p>
+                <p className="vis-label">Progression MVP : exemple</p>
                 {[
                   ['Cadrage & Design', 'Semaine 1–2', 100],
                   ['Backend & API', 'Semaine 3–5', 80],
