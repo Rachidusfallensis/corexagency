@@ -18,6 +18,8 @@ import {
   isDateBlocked,
   parseISODate,
 } from '@/lib/booking/availability'
+import { localTimeToUTC } from '@/lib/timezone'
+import { TIMEZONES } from '@/lib/types/booking'
 import type {
   AvailabilityBlockRow,
   AvailabilityRuleRow,
@@ -50,10 +52,12 @@ function AddRuleModal({
   isOpen,
   onClose,
   onSubmit,
+  timezone,
 }: {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (rule: { days_of_week: number[]; start_time: string; end_time: string; slot_duration: number }) => void
+  onSubmit: (rule: { days_of_week: number[]; start_time: string; end_time: string; slot_duration: number; timezone: string }) => void
+  timezone: string
 }) {
   const [days, setDays] = useState<number[]>([])
   const [start, setStart] = useState('09:00')
@@ -63,6 +67,17 @@ function AddRuleModal({
   function toggleDay(i: number) {
     setDays((d) => (d.includes(i) ? d.filter((x) => x !== i) : [...d, i]))
   }
+
+  // Preview UTC equivalent
+  const today = new Date().toISOString().slice(0, 10)
+  const utcPreview = (() => {
+    try {
+      const { utcTime } = localTimeToUTC(today, start, timezone)
+      return utcTime
+    } catch {
+      return null
+    }
+  })()
 
   return (
     <div className={`modal-overlay${isOpen ? ' open' : ''}`} onClick={onClose}>
@@ -109,6 +124,20 @@ function AddRuleModal({
               <option value={90}>1h30</option>
             </select>
           </div>
+          {utcPreview && (
+            <div
+              style={{
+                fontSize: '0.75rem',
+                color: 'rgba(255,255,255,0.5)',
+                background: 'rgba(1,234,98,0.06)',
+                border: '1px solid rgba(1,234,98,0.15)',
+                borderRadius: '8px',
+                padding: '0.6rem 0.75rem',
+              }}
+            >
+              {start} {timezone} = {utcPreview} UTC
+            </div>
+          )}
         </div>
         <div className="modal-footer">
           <button type="button" className="modal-btn cancel-btn" onClick={onClose}>
@@ -117,7 +146,7 @@ function AddRuleModal({
           <button
             type="button"
             className="modal-btn success"
-            onClick={() => onSubmit({ days_of_week: days, start_time: start, end_time: end, slot_duration: duration })}
+            onClick={() => onSubmit({ days_of_week: days, start_time: start, end_time: end, slot_duration: duration, timezone })}
             disabled={days.length === 0}
           >
             Enregistrer
@@ -202,6 +231,17 @@ function DispoInner() {
   const [showRuleModal, setShowRuleModal] = useState(false)
   const [showBlockModal, setShowBlockModal] = useState(false)
   const [blockPreset, setBlockPreset] = useState<string | undefined>(undefined)
+  const [adminTimezone, setAdminTimezone] = useState<string>('America/Toronto')
+
+  useEffect(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('adminTimezone') : null
+    if (saved) setAdminTimezone(saved)
+  }, [])
+
+  function handleTimezoneChange(tz: string) {
+    setAdminTimezone(tz)
+    if (typeof window !== 'undefined') localStorage.setItem('adminTimezone', tz)
+  }
 
   const today = useMemo(() => startOfDay(new Date()), [])
   const [calYear, setCalYear] = useState(today.getFullYear())
@@ -327,6 +367,49 @@ function DispoInner() {
         .proto-admin .day-slot-status{font-size:0.72rem;color:rgba(255,255,255,0.5)}
         @media(max-width:1100px){.proto-admin .dispo-layout{grid-template-columns:1fr}}
       ` }} />
+
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem',
+          padding: '0.85rem 1.25rem',
+          background: 'rgba(1,234,98,0.06)',
+          border: '1px solid rgba(1,234,98,0.15)',
+          borderRadius: '12px',
+          marginBottom: '1.5rem',
+          flexWrap: 'wrap',
+        }}
+      >
+        <span style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)' }}>
+          🌍 Votre fuseau horaire actuel :
+        </span>
+        <select
+          value={adminTimezone}
+          onChange={(e) => handleTimezoneChange(e.target.value)}
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '8px',
+            padding: '0.4rem 0.75rem',
+            color: '#fff',
+            fontSize: '0.85rem',
+            fontWeight: 600,
+            cursor: 'pointer',
+            outline: 'none',
+            fontFamily: 'inherit',
+          }}
+        >
+          {TIMEZONES.map((tz) => (
+            <option key={tz.value} value={tz.value}>
+              {tz.flag} {tz.label} ({tz.offset})
+            </option>
+          ))}
+        </select>
+        <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.35)' }}>
+          Les créneaux seront stockés en UTC et convertis pour les visiteurs.
+        </span>
+      </div>
 
       <div className="dispo-layout">
         {/* COL gauche : règles + blocages */}
@@ -532,6 +615,7 @@ function DispoInner() {
 
       <AddRuleModal
         isOpen={showRuleModal}
+        timezone={adminTimezone}
         onClose={() => setShowRuleModal(false)}
         onSubmit={async (rule) => {
           const res = await addAvailabilityRule(rule)
