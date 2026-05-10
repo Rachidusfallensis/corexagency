@@ -14,6 +14,13 @@ function dateKey(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
 }
 
+// Parse 'YYYY-MM-DD' as a LOCAL date — avoids UTC parsing of `new Date(s)`
+// which would shift the day in timezones west of UTC.
+export function parseISODate(s: string): Date {
+  const [y, m, d] = s.split('-').map(Number)
+  return new Date(y, (m ?? 1) - 1, d ?? 1)
+}
+
 function startOfDay(d: Date): Date {
   const x = new Date(d)
   x.setHours(0, 0, 0, 0)
@@ -31,16 +38,16 @@ function fmtTime(h: number, m: number): string {
 
 function inRange(date: Date, from: string | null, until: string | null): boolean {
   const ts = startOfDay(date).getTime()
-  if (from && startOfDay(new Date(from)).getTime() > ts) return false
-  if (until && startOfDay(new Date(until)).getTime() < ts) return false
+  if (from && startOfDay(parseISODate(from)).getTime() > ts) return false
+  if (until && startOfDay(parseISODate(until)).getTime() < ts) return false
   return true
 }
 
 export function isDateBlocked(date: Date, blocks: AvailabilityBlock[]): boolean {
   const ts = startOfDay(date).getTime()
   return blocks.some((b) => {
-    const start = startOfDay(new Date(b.start_date)).getTime()
-    const end = startOfDay(new Date(b.end_date)).getTime()
+    const start = startOfDay(parseISODate(b.start_date)).getTime()
+    const end = startOfDay(parseISODate(b.end_date)).getTime()
     return ts >= start && ts <= end
   })
 }
@@ -66,10 +73,7 @@ export function generateSlots(
   const bookedTimes = new Set(
     reservations
       .filter((r) => r.status !== 'cancelled')
-      .filter((r) => {
-        const rd = new Date(r.slot_date)
-        return dateKey(rd) === dKey
-      })
+      .filter((r) => dateKey(parseISODate(r.slot_date)) === dKey)
       .map((r) => r.slot_time.slice(0, 5))
   )
 
