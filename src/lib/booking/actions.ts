@@ -52,7 +52,8 @@ function toIsoDate(key: string): string {
 }
 
 export async function createReservation(
-  state: BookingState
+  state: BookingState,
+  visitorTimezone?: string
 ): Promise<{ success: boolean; error?: string }> {
   const err = validateBooking(state)
   if (err) return { success: false, error: err }
@@ -89,6 +90,7 @@ export async function createReservation(
       slot_date: slotDate,
       slot_time: slotTime,
       status: 'pending',
+      visitor_timezone: visitorTimezone ?? null,
     })
     .select('id')
     .single()

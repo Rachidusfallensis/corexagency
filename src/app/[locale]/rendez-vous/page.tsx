@@ -271,6 +271,8 @@ export default function BookingPage() {
   const [state, setState] = useState<BookingState>(EMPTY_BOOKING_STATE)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  // UTC date for the picked slot (separate from visitor-local selectedDate driving the calendar)
+  const [selectedUtcDate, setSelectedUtcDate] = useState<string | null>(null)
 
   const [availLoaded, setAvailLoaded] = useState(false)
   const [rules, setRules] = useState<AvailabilityRule[]>([])
@@ -334,7 +336,11 @@ export default function BookingPage() {
     } else {
       setSubmitting(true)
       setSubmitError(null)
-      const res = await createReservation(state)
+      // Build a state with the UTC slot date for DB storage
+      const stateForDB = selectedUtcDate
+        ? { ...state, selectedDate: selectedUtcDate }
+        : state
+      const res = await createReservation(stateForDB, visitorTz || undefined)
       setSubmitting(false)
       if (res.success) setStep(6)
       else setSubmitError(res.error ?? 'Erreur')
@@ -369,6 +375,7 @@ export default function BookingPage() {
     setCalYear(Math.floor(next / 12))
     setCalMonth(next % 12)
     setState((s) => ({ ...s, selectedDate: null, selectedTime: null }))
+    setSelectedUtcDate(null)
   }
 
   const firstDow = new Date(calYear, calMonth, 1).getDay()
@@ -381,7 +388,9 @@ export default function BookingPage() {
         return new Date(y, m - 1, d)
       })()
     : null
-  const slots = selDateObj ? generateSlots(selDateObj, rules, reservations, blocks) : []
+  const slots = selDateObj
+    ? generateSlots(selDateObj, rules, reservations, blocks, visitorTz || undefined)
+    : []
   const slotsLabel = selDateObj
     ? `${DAY_NAMES[selDateObj.getDay()]} ${selDateObj.getDate()} ${MONTHS_FULL[selDateObj.getMonth()].toLowerCase()}`
     : ''
@@ -642,6 +651,7 @@ export default function BookingPage() {
                               onClick={() => {
                                 if (disabled) return
                                 setState((s) => ({ ...s, selectedDate: key, selectedTime: null }))
+                                setSelectedUtcDate(null)
                               }}
                             >
                               {d}
@@ -659,14 +669,18 @@ export default function BookingPage() {
                               const cls = `time-slot${sel ? ' selected' : ''}${!s.available ? ' unavailable' : ''}`
                               return (
                                 <div
-                                  key={s.time}
+                                  key={`${s.utcDate}|${s.time}`}
                                   className={cls}
                                   onClick={() => {
                                     if (!s.available) return
-                                    setState((st) => ({ ...st, selectedTime: s.time }))
+                                    setSelectedUtcDate(s.utcDate)
+                                    setState((st) => ({
+                                      ...st,
+                                      selectedTime: s.time,
+                                    }))
                                   }}
                                 >
-                                  {s.time}
+                                  {s.localTime}
                                 </div>
                               )
                             })}
