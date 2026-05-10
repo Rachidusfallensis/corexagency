@@ -366,6 +366,12 @@ function DispoInner() {
         .proto-admin .day-slot-time{font-weight:600}
         .proto-admin .day-slot-status{font-size:0.72rem;color:rgba(255,255,255,0.5)}
         @media(max-width:1100px){.proto-admin .dispo-layout{grid-template-columns:1fr}}
+        @media(max-width:768px){
+          .proto-admin .dispos-grid{grid-template-columns:1fr !important}
+          .proto-admin .cal-cell{font-size:0.7rem}
+          .proto-admin .cal-cell-count{font-size:0.5rem}
+          .proto-admin .cal-month{padding:0.85rem}
+        }
       ` }} />
 
       <div

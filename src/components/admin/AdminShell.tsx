@@ -228,7 +228,21 @@ const PROTO_ADMIN_CSS = `
 .proto-admin ::-webkit-scrollbar{width:4px;height:4px}
 .proto-admin ::-webkit-scrollbar-track{background:transparent}
 .proto-admin ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:2px}
-`
+
+/* MOBILE BOTTOM NAV */
+.proto-admin .mobile-bottom-nav{display:none}
+
+@media (max-width: 768px) {
+  .proto-admin .app{grid-template-columns:1fr !important}
+  .proto-admin .sidebar{display:none !important}
+  .proto-admin .main{padding-bottom:70px !important}
+  .proto-admin .topbar{padding:0 1rem !important}
+  .proto-admin .topbar-left h1{font-size:0.95rem !important}
+  .proto-admin .topbar-subtitle{display:none !important}
+  .proto-admin .topbar-actions-desktop{display:none !important}
+  .proto-admin .mobile-bottom-nav{display:flex !important;position:fixed;bottom:0;left:0;right:0;height:64px;background:#111;border-top:1px solid rgba(255,255,255,0.08);align-items:center;justify-content:space-around;z-index:50;padding:0 0.5rem}
+  .proto-admin .mobile-bottom-nav svg{width:20px !important;height:20px !important}
+}`
 
 const ICON_BASE = {
   width: 15,
@@ -358,11 +372,11 @@ export default function AdminShell({ title, subtitle, children }: AdminShellProp
             <div className="topbar">
               <div className="topbar-left">
                 <h1>{title}</h1>
-                {subtitle && <p>{subtitle}</p>}
+                {subtitle && <p className="topbar-subtitle">{subtitle}</p>}
               </div>
               <div className="topbar-right">
                 <RealtimeNotifications />
-                <Link href={`/${locale}`} className="topbar-btn secondary">
+                <Link href={`/${locale}`} className="topbar-btn secondary topbar-actions-desktop">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                     <polyline points="15 3 21 3 21 9" />
@@ -370,13 +384,50 @@ export default function AdminShell({ title, subtitle, children }: AdminShellProp
                   </svg>
                   Voir le site
                 </Link>
-                <NewDispoButton />
+                <span className="topbar-actions-desktop">
+                  <NewDispoButton />
+                </span>
               </div>
             </div>
 
             <div className="content">{children}</div>
           </main>
         </div>
+
+        {/* Mobile bottom navigation */}
+        <nav className="mobile-bottom-nav">
+          {items.map((it) => {
+            const active = it.href === base ? pathname === base : pathname.startsWith(it.href)
+            const labelMap: Record<string, string> = {
+              overview: 'Accueil',
+              reservations: 'RV',
+              dispos: 'Dispos',
+              queue: 'File',
+              leads: 'Leads',
+            }
+            return (
+              <Link
+                key={it.href}
+                href={it.href}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '3px',
+                  padding: '0.5rem',
+                  textDecoration: 'none',
+                  color: active ? '#01EA62' : 'rgba(255,255,255,0.4)',
+                  flex: 1,
+                }}
+              >
+                <NavIcon name={it.icon} />
+                <span style={{ fontSize: '0.6rem', fontWeight: 600 }}>
+                  {labelMap[it.icon]}
+                </span>
+              </Link>
+            )
+          })}
+        </nav>
       </div>
     </ToastProvider>
   )
