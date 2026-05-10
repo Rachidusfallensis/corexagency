@@ -2,92 +2,146 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
-import { usePathname } from 'next/navigation'
-import { LOGOS, LOGO_SIZES } from '@/lib/assets'
 
 export default function Navbar() {
   const t = useTranslations('nav')
   const locale = useLocale()
-  const pathname = usePathname()
-  const [scrolled, setScrolled] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname() ?? `/${locale}`
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  function switchTo(target: 'fr' | 'en') {
+    const rest = pathname.replace(/^\/(fr|en)/, '') || ''
+    router.push(`/${target}${rest}`)
+  }
 
-  const otherLocale = locale === 'fr' ? 'en' : 'fr'
-  const switchHref =
-    pathname?.replace(/^\/(fr|en)(?=\/|$)/, `/${otherLocale}`) ?? `/${otherLocale}`
-
-  const homeHref = `/${locale}`
-  const bookingHref = `/${locale}/rendez-vous`
-
-  // On the homepage, use bare hash so smooth-scroll works in-page.
-  // Elsewhere, use absolute path so clicking goes home then scrolls.
-  const isHome = pathname === homeHref || pathname === `${homeHref}/`
-  const anchor = (id: string) => (isHome ? `#${id}` : `${homeHref}#${id}`)
+  const linkStyle: React.CSSProperties = {
+    textDecoration: 'none',
+    color: '#6B7280',
+    fontSize: '0.9rem',
+    fontWeight: 500,
+  }
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-[100] h-16 px-8 border-b border-black/[0.07] backdrop-blur-[20px] transition-shadow duration-300 ${
-        scrolled ? 'shadow-[0_2px_24px_rgba(0,0,0,0.07)]' : ''
-      }`}
-      style={{ background: 'rgba(255,255,255,0.93)' }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 100,
+        background: 'rgba(255,255,255,0.93)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(0,0,0,0.07)',
+        height: '64px',
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 2rem',
+      }}
     >
-      <div className="max-w-[1200px] mx-auto h-full flex items-center justify-between">
-        <Link href={homeHref} className="flex items-center gap-2.5">
+      <div
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          position: 'relative',
+        }}
+      >
+        {/* Logo gauche */}
+        <Link href={`/${locale}`} style={{ display: 'inline-flex' }}>
           <Image
-            src={LOGOS.color}
+            src="/logos/Corex_Logo_color.png"
             alt="Corex"
-            width={LOGO_SIZES.nav.width}
-            height={LOGO_SIZES.nav.height}
+            width={120}
+            height={40}
             priority
           />
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
-          <a
-            href={anchor('offres')}
-            className="text-sm font-medium text-gray-mid hover:text-corex-black transition-colors"
-          >
+        {/* Liens centre — cachés mobile */}
+        <div
+          className="hidden md:flex"
+          style={{
+            alignItems: 'center',
+            gap: '2rem',
+            position: 'absolute',
+            left: '50%',
+            transform: 'translateX(-50%)',
+          }}
+        >
+          <Link href={`/${locale}#offres`} style={linkStyle}>
             {t('offers')}
-          </a>
-          <a
-            href={anchor('processus')}
-            className="text-sm font-medium text-gray-mid hover:text-corex-black transition-colors"
-          >
-            {t('howItWorks')}
-          </a>
-          <a
-            href={anchor('saas')}
-            className="text-sm font-medium text-gray-mid hover:text-corex-black transition-colors"
-          >
-            {t('saasBuilder')}
-          </a>
-          <Link
-            href={switchHref}
-            className="text-sm font-semibold tracking-wide"
-            aria-label={`Switch to ${otherLocale.toUpperCase()}`}
-          >
-            <span className="text-corex-black">{locale.toUpperCase()}</span>
-            <span className="text-gray-border mx-1.5">|</span>
-            <span className="text-gray-mid hover:text-corex-black transition-colors">
-              {otherLocale.toUpperCase()}
-            </span>
           </Link>
+          <Link href={`/${locale}#processus`} style={linkStyle}>
+            {t('howItWorks')}
+          </Link>
+          <Link href={`/${locale}#saas`} style={linkStyle}>
+            {t('saasBuilder')}
+          </Link>
+
+          {/* Switch langue */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+            }}
+          >
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={() => switchTo('fr')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') switchTo('fr')
+              }}
+              style={{
+                color: locale === 'fr' ? '#050505' : '#9CA3AF',
+                cursor: 'pointer',
+              }}
+            >
+              FR
+            </span>
+            <span style={{ color: '#D1D5DB' }}>|</span>
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={() => switchTo('en')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') switchTo('en')
+              }}
+              style={{
+                color: locale === 'en' ? '#050505' : '#9CA3AF',
+                cursor: 'pointer',
+              }}
+            >
+              EN
+            </span>
+          </div>
         </div>
 
+        {/* CTA droite */}
         <Link
-          href={bookingHref}
-          className="bg-corex-black text-white text-sm font-semibold rounded-full px-5 py-2.5 hover:bg-green-deep hover:-translate-y-px transition-all duration-200 inline-flex items-center gap-2"
+          href={`/${locale}/rendez-vous`}
+          style={{
+            background: '#050505',
+            color: '#ffffff',
+            padding: '0.6rem 1.4rem',
+            borderRadius: '50px',
+            textDecoration: 'none',
+            fontSize: '0.875rem',
+            fontWeight: 600,
+            whiteSpace: 'nowrap',
+            transition: 'background 0.2s',
+          }}
         >
-          <span className="hidden sm:inline">{t('booking')} →</span>
-          <span className="sm:hidden">{t('bookingShort')}</span>
+          {t('booking')} →
         </Link>
       </div>
     </nav>
