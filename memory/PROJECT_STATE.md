@@ -9,8 +9,8 @@
 | Champ | Valeur |
 |---|---|
 | Phase courante | **Phase 1 — Foundation (en cours)** |
-| Prompt en cours | `08` ✅ |
-| Dernier prompt complété | `08` (Pages Digitalisation + SaaS Builder + À propos) |
+| Prompt en cours | `09` ✅ |
+| Dernier prompt complété | `09` (Responsive + PWA + Cron + Calendrier admin) |
 | Date dernière maj | 2026-05-09 |
 | Branche de dev | `claude/init-corex-project-qdFMv` |
 
@@ -192,6 +192,12 @@
 
 ## Prochaine étape
 
-**Prompt 09 — Emails + page reschedule + polish final**
+**Prompt 10 — Emails transactionnels + page reschedule + polish final**
 
-Cible : implémenter les emails transactionnels (Resend ou SendGrid via Edge Function) — confirmation, annulation simple, annulation avec reschedule, invitation file. Page `/rendez-vous/replanifier/[token]` complète (validation token, pré-remplissage, ré-insertion). SEO/sitemap/robots, performance, polish.
+Cible : Resend / SendGrid via Edge Function, page `/rendez-vous/replanifier/[token]` complète (validation token, pré-remplissage, ré-insertion), SEO/sitemap/robots, performance, polish.
+
+### Prompt 09 (livré)
+- Responsive mobile homepage (media queries 768/480px) + menu hamburger fonctionnel + booking responsive
+- PWA : `public/manifest.json`, layout `metadata.manifest` + `viewport.themeColor` + `appleWebApp` + `icons.apple`
+- Cron Supabase keep-alive : `/api/keep-alive` GET avec auth `Bearer ${CRON_SECRET}` + `vercel.json` schedule `0 12 */5 * *` + var env `CRON_SECRET` dans `.env.example`
+- Calendrier admin mensuel interactif : grid 7 cols, statuts par jour (weekend/past/blocked/reserved/available/empty), nav mois ◄ ►, légende, panel détail au clic d'un jour avec liste des créneaux (libre / réservé par X) + bouton "Bloquer ce jour" (preset date dans modale)

@@ -2,7 +2,7 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
 import { Inter } from 'next/font/google'
 import { notFound } from 'next/navigation'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
@@ -15,7 +15,23 @@ export function generateStaticParams() {
 export const metadata: Metadata = {
   title: 'Corex — Your tech partner, from day one.',
   description:
-    "Digitalisation d'entreprise et SaaS Builder. Votre partenaire tech de A à Z."
+    "Digitalisation d'entreprise et SaaS Builder. Votre partenaire tech de A à Z.",
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Corex',
+  },
+  icons: {
+    apple: '/logos/Corex_Logo_icon.png',
+  },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: '#016B2D',
 }
 
 export default async function LocaleLayout({
