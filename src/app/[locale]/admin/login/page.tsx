@@ -65,6 +65,11 @@ export default function AdminLoginPage() {
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
       }}
     >
+      <style>{`
+        @media (max-width: 768px) {
+          .login-card { padding: 1.75rem !important; border-radius: 16px !important; }
+        }
+      `}</style>
       <Image
         src={LOGOS.blanc}
         alt="Corex"
@@ -76,6 +81,7 @@ export default function AdminLoginPage() {
 
       <form
         onSubmit={handleSubmit}
+        className="login-card"
         style={{
           width: '100%',
           maxWidth: 420,

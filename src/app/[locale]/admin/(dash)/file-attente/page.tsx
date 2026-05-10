@@ -56,6 +56,15 @@ function FileAttenteInner() {
 
   return (
     <>
+      <style>{`
+        @media (max-width: 768px) {
+          .proto-admin .queue-grid { grid-template-columns: 1fr 1fr 1fr !important; gap: 0.5rem !important; }
+          .proto-admin .queue-stat { padding: 0.75rem !important; }
+          .proto-admin .queue-stat .num { font-size: 1.2rem !important; }
+          .proto-admin .queue-item-header { padding: 0.75rem 0.85rem !important; }
+          .proto-admin .queue-expand { padding: 0 0.85rem 0.85rem !important; }
+        }
+      `}</style>
       <div className="queue-grid">
         <div className="queue-stat">
           <div className="num">{waiting.length}</div>

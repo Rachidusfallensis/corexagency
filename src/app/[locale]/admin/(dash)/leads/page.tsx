@@ -138,6 +138,50 @@ function LeadsInner() {
         </button>
       </div>
 
+      <style>{`
+        @media (max-width: 768px) {
+          .leads-table-wrap { display: none !important; }
+          .leads-mobile-cards { display: flex !important; }
+        }
+        .leads-mobile-cards { display: none; flex-direction: column; gap: 0.75rem; }
+      `}</style>
+
+      <div className="leads-mobile-cards">
+        {filtered.length === 0 ? (
+          <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', padding: '1.5rem', fontSize: '0.85rem' }}>
+            Aucun lead.
+          </p>
+        ) : (
+          filtered.map((l) => (
+            <div key={`m-${l.id}`} style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem', gap: '0.5rem' }}>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontWeight: 600, fontSize: '0.9rem', color: '#fff' }}>{l.contact_name}</div>
+                  <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)' }}>{l.contact_email}</div>
+                </div>
+                <StatusBadge status={l.status} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.78rem' }}>
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.4)' }}>Service</div>
+                  <ServiceBadge service={l.service} />
+                </div>
+                <div>
+                  <div style={{ color: 'rgba(255,255,255,0.4)' }}>Source</div>
+                  <div style={{ color: '#fff' }}>{SOURCE_LABELS[l.source] ?? l.source}</div>
+                </div>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <div style={{ color: 'rgba(255,255,255,0.4)' }}>Date</div>
+                  <div style={{ color: '#fff' }}>
+                    {new Date(l.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
       <div className="leads-table-wrap">
         <div style={{ overflowX: 'auto' }}>
           <table>
