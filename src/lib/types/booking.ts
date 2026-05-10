@@ -19,8 +19,15 @@ export interface BookingState {
 }
 
 export interface TimeSlot {
+  /** UTC HH:MM — what gets stored in DB */
   time: string
+  /** Visitor wall-clock HH:MM — what gets displayed */
+  localTime: string
+  /** UTC date (YYYY-MM-DD) — used for DB persistence + conflict check */
+  utcDate: string
   available: boolean
+  /** Visitor (or admin) timezone label this slot is presented in */
+  timezone: string
 }
 
 export interface AvailabilityRule {

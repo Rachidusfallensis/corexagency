@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { utcToLocalTime } from '@/lib/timezone'
 import type { ReservationRow } from '@/lib/types/admin'
 
 type DetailModalProps = {
@@ -21,10 +23,12 @@ const PROFILE_LABELS: Record<string, string> = {
   other: 'Autre',
 }
 
-function formatSlot(date: string, time: string) {
-  const [y, m, dd] = date.split('-').map(Number)
+const DEFAULT_ADMIN_TZ = 'America/Toronto'
+
+function prettyDate(s: string) {
+  const [y, m, dd] = s.split('-').map(Number)
   const d = new Date(y, (m ?? 1) - 1, dd ?? 1)
-  return `${d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })} • ${time.slice(0, 5)}`
+  return d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })
 }
 
 export default function DetailModal({
@@ -33,12 +37,26 @@ export default function DetailModal({
   reservation,
   onConfirm,
 }: DetailModalProps) {
+  const [adminTz, setAdminTz] = useState(DEFAULT_ADMIN_TZ)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setAdminTz(localStorage.getItem('adminTimezone') || DEFAULT_ADMIN_TZ)
+    }
+  }, [])
+
   if (!reservation) {
     return (
       <div className={`modal-overlay${isOpen ? ' open' : ''}`} onClick={onClose} />
     )
   }
   const r = reservation
+  const adminView = utcToLocalTime(r.slot_date.slice(0, 10), r.slot_time.slice(0, 5), adminTz)
+  const slotAdminLabel = `${prettyDate(adminView.localDate)} • ${adminView.localTime}`
+  const visitorTz = r.visitor_timezone ?? null
+  const showVisitor = visitorTz && visitorTz !== adminTz
+  const visitorView = showVisitor
+    ? utcToLocalTime(r.slot_date.slice(0, 10), r.slot_time.slice(0, 5), visitorTz)
+    : null
 
   return (
     <div
@@ -63,7 +81,7 @@ export default function DetailModal({
               {[
                 ['Email', r.contact_email],
                 ['Service', SERVICE_LABELS[r.service] ?? r.service],
-                ['Créneau', formatSlot(r.slot_date, r.slot_time), '#01EA62'],
+                ['Créneau', `${slotAdminLabel} (${adminTz})`, '#01EA62'],
                 ['Profil', PROFILE_LABELS[r.profile] ?? r.profile],
                 ['Téléphone', r.contact_phone ?? '—'],
                 ['Entreprise', r.contact_company ?? '—'],
@@ -77,6 +95,21 @@ export default function DetailModal({
               ))}
             </div>
           </div>
+          {visitorView && (
+            <div className="detail-section">
+              <h4>Heure visiteur</h4>
+              <div
+                className="detail-item"
+                style={{ background: 'rgba(96,165,250,0.08)' }}
+              >
+                <div className="key">{visitorTz}</div>
+                <div className="val" style={{ color: '#60A5FA' }}>
+                  {visitorView.localTime} le {prettyDate(visitorView.localDate)}
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="detail-section">
             <h4>Description du projet</h4>
             <div className="detail-note">{r.project_desc || '—'}</div>

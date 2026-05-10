@@ -15,6 +15,7 @@ export interface ReservationRow {
   reschedule_token: string | null
   confirmed_at: string | null
   cancelled_at: string | null
+  visitor_timezone?: string | null
 }
 
 export interface QueueRow {
