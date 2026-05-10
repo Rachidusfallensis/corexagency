@@ -1,8 +1,5 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import ExamplesDigital from '@/components/home/ExamplesDigital'
-import Process from '@/components/home/Process'
-import CtaSection from '@/components/home/CtaSection'
 
 export const metadata: Metadata = {
   title: 'Digitalisation entreprise — ERP, CRM, E-commerce | Corex',
@@ -255,9 +252,22 @@ export default async function DigitalisationPage({
         </div>
       </section>
 
-      <ExamplesDigital />
-      <Process />
-      <CtaSection />
+      <section style={{ background: '#016B2D', padding: '5rem 0', textAlign: 'center' }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 2rem' }}>
+          <h2 style={{ color: '#fff', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '1rem' }}>
+            Prêt à digitaliser votre activité&nbsp;?
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,0.7)', maxWidth: '480px', margin: '0 auto 2.5rem', lineHeight: 1.75 }}>
+            30 minutes pour comprendre votre situation et voir comment on peut vous aider.
+          </p>
+          <Link
+            href={bookingHref}
+            style={{ background: '#01EA62', color: '#050505', padding: '1rem 2.5rem', borderRadius: '50px', fontWeight: 700, fontSize: '1rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '10px' }}
+          >
+            Prendre un rendez-vous →
+          </Link>
+        </div>
+      </section>
     </>
   )
 }
