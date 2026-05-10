@@ -25,6 +25,26 @@ export const metadata: Metadata = {
   icons: {
     apple: '/logos/Corex_Logo_icon.png',
   },
+  openGraph: {
+    title: 'Corex — Your tech partner, from day one.',
+    description: 'Digitalisation et SaaS Builder.',
+    url: 'https://corexagency.vercel.app',
+    siteName: 'Corex',
+    images: [
+      {
+        url: 'https://corexagency.vercel.app/logos/Corex_Logo_Blanc.png',
+        width: 1200,
+        height: 630,
+        alt: 'Corex',
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Corex — Your tech partner, from day one.',
+    images: ['https://corexagency.vercel.app/logos/Corex_Logo_Blanc.png'],
+  },
 }
 
 export const viewport: Viewport = {

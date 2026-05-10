@@ -164,3 +164,106 @@ export async function createQueueEntry(data: {
 
   return { success: true }
 }
+
+export type RescheduleData =
+  | { valid: false; expired?: boolean }
+  | {
+      valid: true
+      reservation: {
+        id: string
+        service: string
+        profile: string
+        project_desc: string
+        contact_name: string
+        contact_email: string
+        contact_phone: string | null
+        contact_company: string | null
+        slot_date: string
+        slot_time: string
+      }
+    }
+
+export async function getRescheduleData(token: string): Promise<RescheduleData> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('reservations')
+    .select('*')
+    .eq('reschedule_token', token)
+    .eq('status', 'cancelled')
+    .single()
+
+  if (!data) return { valid: false }
+  if (!data.cancelled_at) return { valid: false }
+
+  const cancelledAt = new Date(data.cancelled_at)
+  const diffDays =
+    (Date.now() - cancelledAt.getTime()) / (1000 * 60 * 60 * 24)
+  if (diffDays > 7) return { valid: false, expired: true }
+
+  return {
+    valid: true,
+    reservation: {
+      id: data.id,
+      service: data.service,
+      profile: data.profile,
+      project_desc: data.project_desc,
+      contact_name: data.contact_name,
+      contact_email: data.contact_email,
+      contact_phone: data.contact_phone,
+      contact_company: data.contact_company,
+      slot_date: data.slot_date,
+      slot_time: data.slot_time,
+    },
+  }
+}
+
+export async function confirmReschedule(
+  token: string,
+  newDate: string,
+  newTime: string
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = await createClient()
+  const rescheduleData = await getRescheduleData(token)
+  if (!rescheduleData.valid) {
+    return {
+      success: false,
+      error: rescheduleData.expired ? 'Token expiré' : 'Token invalide',
+    }
+  }
+
+  const res = rescheduleData.reservation
+
+  const { data: existing } = await supabase
+    .from('reservations')
+    .select('id')
+    .eq('slot_date', newDate)
+    .eq('slot_time', newTime)
+    .neq('status', 'cancelled')
+    .limit(1)
+
+  if (existing && existing.length > 0) {
+    return { success: false, error: 'Créneau déjà réservé' }
+  }
+
+  const { error: insErr } = await supabase.from('reservations').insert({
+    service: res.service,
+    profile: res.profile,
+    project_desc: res.project_desc,
+    contact_name: res.contact_name,
+    contact_email: res.contact_email,
+    contact_phone: res.contact_phone,
+    contact_company: res.contact_company,
+    slot_date: newDate,
+    slot_time: newTime,
+    status: 'pending',
+  })
+
+  if (insErr) return { success: false, error: insErr.message }
+
+  await supabase
+    .from('reservations')
+    .update({ reschedule_token: null })
+    .eq('reschedule_token', token)
+
+  return { success: true }
+}
