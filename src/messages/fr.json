@@ -12,7 +12,14 @@
     "titleEm": "from day one.",
     "desc": "Nous digitalisons vos opérations et transformons vos idées en produits SaaS. Une seule équipe, deux expertises, des résultats concrets.",
     "ctaPrimary": "Découvrir nos offres",
-    "ctaSecondary": "Prendre un RV"
+    "ctaSecondary": "Prendre un RV",
+    "cardTag": "Ce qu'on fait",
+    "cardTitle": "Deux offres, zéro compromis.",
+    "cardDesc": "Digitalisation d'entreprise ou construction de SaaS — on s'engage à 100% sur votre projet.",
+    "card1Title": "Digitalisation",
+    "card1Desc": "ERP, CRM, e-commerce, automatisations",
+    "card2Title": "SaaS Builder",
+    "card2Desc": "De l'idée au produit livré"
   },
   "offers": {
     "label": "Nos offres",
@@ -108,7 +115,7 @@
     },
     "step4": {
       "title": "Lancement & itération",
-      "desc": "Mise en production, collecte de feedback, amélioration continue."
+      "desc": "Mise en production, feedback, amélioration continue."
     }
   },
   "cta": {

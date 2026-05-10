@@ -12,22 +12,29 @@
     "titleEm": "from day one.",
     "desc": "We digitalize your operations and turn your ideas into SaaS products. One team, two expertises, concrete results.",
     "ctaPrimary": "Discover our services",
-    "ctaSecondary": "Book a call"
+    "ctaSecondary": "Book a call",
+    "cardTag": "What we do",
+    "cardTitle": "Two offers, zero compromise.",
+    "cardDesc": "Business digitalization or SaaS construction — we commit 100% to your project.",
+    "card1Title": "Digitalisation",
+    "card1Desc": "ERP, CRM, e-commerce, automations",
+    "card2Title": "SaaS Builder",
+    "card2Desc": "From idea to delivered product"
   },
   "offers": {
     "label": "Our services",
     "title": "Two expertises, one vision.",
-    "desc": "Whether you're a company looking to digitalize or an entrepreneur with a product idea, we have the right offer for you.",
+    "desc": "Whether you are a company looking to digitalize or an entrepreneur with a product idea, we have the right offer for you.",
     "digital": {
       "tag": "Digitalisation",
       "title": "Transform your business with the right tools.",
-      "desc": "ERP, CRM, e-commerce, custom websites, automations — we build the digital foundations of your growth.",
+      "desc": "ERP, CRM, e-commerce, custom sites, automations — we build the digital foundations of your growth.",
       "link": "See how it works"
     },
     "saas": {
       "tag": "SaaS Builder",
       "title": "From idea to product.",
-      "desc": "Got a SaaS idea? We build it with you — from design to launch, including the MVP.",
+      "desc": "You have a SaaS idea? We build it with you — from conception to launch, including the MVP.",
       "link": "Learn more"
     }
   },
@@ -87,13 +94,13 @@
     },
     "item6": {
       "title": "Ongoing support",
-      "desc": "The project doesn't stop at delivery. We stay to grow with you."
+      "desc": "The project does not stop at delivery. We stay to grow with you."
     }
   },
   "saas": {
     "label": "SaaS Builder",
     "title": "From idea to product.",
-    "desc": "You've validated a problem — you just need the tech team to execute it. That's exactly what we do.",
+    "desc": "You have validated a problem — you just need the tech team to execute it. That is exactly what we do.",
     "step1": {
       "title": "Product scoping",
       "desc": "We define the MVP scope, user stories and architecture together."
@@ -113,7 +120,7 @@
   },
   "cta": {
     "title": "Ready to get started?",
-    "desc": "Book a 30-minute discovery call. We'll analyze your situation and figure out the best path forward together.",
+    "desc": "Book a 30-minute discovery call. We will analyze your situation and figure out the best path forward together.",
     "btn": "Book a call"
   },
   "footer": {
