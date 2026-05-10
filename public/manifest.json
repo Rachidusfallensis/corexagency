@@ -1,9 +1,9 @@
 {
-  "name": "Corex — Your tech partner",
+  "name": "Corex",
   "short_name": "Corex",
   "description": "Digitalisation et SaaS Builder",
   "start_url": "/fr",
-  "display": "standalone",
+  "display": "browser",
   "background_color": "#050505",
   "theme_color": "#016B2D",
   "orientation": "portrait",

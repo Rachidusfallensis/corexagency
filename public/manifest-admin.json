@@ -1,0 +1,42 @@
+{
+  "name": "Corex Admin",
+  "short_name": "Admin",
+  "description": "Dashboard admin Corex",
+  "start_url": "/fr/admin",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#016B2D",
+  "orientation": "portrait",
+  "scope": "/fr/admin",
+  "icons": [
+    {
+      "src": "/logos/Corex_Logo_icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logos/Corex_Logo_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Réservations",
+      "url": "/fr/admin/reservations",
+      "description": "Gérer les réservations"
+    },
+    {
+      "name": "Disponibilités",
+      "url": "/fr/admin/disponibilites",
+      "description": "Gérer les disponibilités"
+    },
+    {
+      "name": "File d'attente",
+      "url": "/fr/admin/file-attente",
+      "description": "File d'attente"
+    }
+  ]
+}
