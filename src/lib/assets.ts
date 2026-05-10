@@ -5,7 +5,7 @@ export const LOGOS = {
 } as const
 
 export const LOGO_SIZES = {
-  nav: { width: 120, height: 40 },
+  nav: { width: 140, height: 47 },
   footer: { width: 100, height: 33 },
   icon: { width: 36, height: 36 },
   booking: { width: 110, height: 37 },
