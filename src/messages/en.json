@@ -15,7 +15,7 @@
     "ctaSecondary": "Book a call",
     "cardTag": "What we do",
     "cardTitle": "Two offers, zero compromise.",
-    "cardDesc": "Business digitalization or SaaS construction — we commit 100% to your project.",
+    "cardDesc": "Business digitalization or SaaS construction. We commit 100% to your project.",
     "card1Title": "Digitalisation",
     "card1Desc": "ERP, CRM, e-commerce, automations",
     "card2Title": "SaaS Builder",
@@ -28,23 +28,23 @@
     "digital": {
       "tag": "Digitalisation",
       "title": "Transform your business with the right tools.",
-      "desc": "ERP, CRM, e-commerce, custom sites, automations — we build the digital foundations of your growth.",
+      "desc": "ERP, CRM, e-commerce, custom sites, automations. We build the digital foundations of your growth.",
       "link": "See how it works"
     },
     "saas": {
       "tag": "SaaS Builder",
       "title": "From idea to product.",
-      "desc": "You have a SaaS idea? We build it with you — from conception to launch, including the MVP.",
+      "desc": "You have a SaaS idea? We build it with you, from conception to launch, including the MVP.",
       "link": "Learn more"
     }
   },
   "examplesDigital": {
-    "label": "Digitalisation — Project examples",
+    "label": "Digitalisation: project examples",
     "title": "What we can build for your industry.",
     "desc": "Concrete examples of what a digital transformation can bring to different types of businesses."
   },
   "examplesSaas": {
-    "label": "SaaS Builder — Project examples",
+    "label": "SaaS Builder: project examples",
     "title": "Ideas we can turn into products.",
     "desc": "Examples of SaaS we can design and develop with you, from zero to production."
   },
@@ -58,7 +58,7 @@
     },
     "step2": {
       "title": "Proposal",
-      "desc": "We present a clear plan — scope, timeline, budget."
+      "desc": "We present a clear plan: scope, timeline, budget."
     },
     "step3": {
       "title": "Development",
@@ -78,7 +78,7 @@
     },
     "item2": {
       "title": "Total transparency",
-      "desc": "You see everything — progress, decisions, blockers. No bad surprises."
+      "desc": "You see everything: progress, decisions, blockers. No bad surprises."
     },
     "item3": {
       "title": "Dedicated team",
@@ -100,7 +100,7 @@
   "saas": {
     "label": "SaaS Builder",
     "title": "From idea to product.",
-    "desc": "You have validated a problem — you just need the tech team to execute it. That is exactly what we do.",
+    "desc": "You have validated a problem, you just need the tech team to execute it. That is exactly what we do.",
     "step1": {
       "title": "Product scoping",
       "desc": "We define the MVP scope, user stories and architecture together."

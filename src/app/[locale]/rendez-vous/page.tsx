@@ -452,7 +452,7 @@ export default function BookingPage() {
           </div>
 
           <div className="left-bottom">
-            <p>© 2026 Corex — Your tech partner, from day one.</p>
+            <p>© 2026 Corex · Your tech partner, from day one.</p>
           </div>
         </div>
 
@@ -569,7 +569,7 @@ export default function BookingPage() {
                 ) : (
                   <>
                     <h2>Aucun créneau disponible</h2>
-                    <p className="step-desc">Rejoignez la liste d&apos;attente — on vous contacte dès qu&apos;un créneau se libère.</p>
+                    <p className="step-desc">Rejoignez la liste d&apos;attente. On vous contacte dès qu&apos;un créneau se libère.</p>
                     <div className="options-grid" style={{ marginBottom: '1.5rem' }}>
                       {URGENCIES.map((u) => (
                         <button
@@ -662,7 +662,7 @@ export default function BookingPage() {
 
                       {state.selectedDate && slots.length > 0 && (
                         <div>
-                          <div className="slots-label">Horaires disponibles — {slotsLabel}</div>
+                          <div className="slots-label">Horaires disponibles : {slotsLabel}</div>
                           <div className="time-slots">
                             {slots.map((s) => {
                               const sel = state.selectedTime === s.time
