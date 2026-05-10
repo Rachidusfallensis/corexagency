@@ -9,8 +9,8 @@
 | Champ | Valeur |
 |---|---|
 | Phase courante | **Phase 1 — Foundation (en cours)** |
-| Prompt en cours | `09` ✅ |
-| Dernier prompt complété | `09` (Responsive + PWA + Cron + Calendrier admin) |
+| Prompt en cours | `10` ✅ |
+| Dernier prompt complété | `10` (Realtime notifications + reschedule + SEO + 404) |
 | Date dernière maj | 2026-05-09 |
 | Branche de dev | `claude/init-corex-project-qdFMv` |
 
