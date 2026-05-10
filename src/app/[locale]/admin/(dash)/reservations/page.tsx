@@ -21,12 +21,17 @@ const PROFILE_LABELS: Record<string, string> = {
   other: 'Autre',
 }
 
+function parseLocal(s: string) {
+  const [y, m, d] = s.split('-').map(Number)
+  return new Date(y, (m ?? 1) - 1, d ?? 1)
+}
 function formatSlot(date: string, time: string) {
-  const d = new Date(date)
+  const d = parseLocal(date)
   return `${d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })} • ${time.slice(0, 5)}`
 }
-function formatDate(d: string) {
-  return new Date(d).toLocaleDateString('fr-FR', {
+function formatDate(iso: string) {
+  // created_at is full ISO timestamp; fine to parse via Date
+  return new Date(iso).toLocaleDateString('fr-FR', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',

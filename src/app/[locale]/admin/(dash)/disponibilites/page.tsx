@@ -16,6 +16,7 @@ import {
   dateKey,
   generateSlots,
   isDateBlocked,
+  parseISODate,
 } from '@/lib/booking/availability'
 import type {
   AvailabilityBlockRow,
@@ -258,7 +259,7 @@ function DispoInner() {
     const m: Record<string, ReservationRow[]> = {}
     for (const r of reservations) {
       if (r.status === 'cancelled') continue
-      const d = new Date(r.slot_date)
+      const d = parseISODate(r.slot_date)
       const k = dateKey(d)
       ;(m[k] ||= []).push(r)
     }
