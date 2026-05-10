@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useLocale } from 'next-intl'
-import { LOGOS, LOGO_SIZES } from '@/lib/assets'
+import { LOGOS } from '@/lib/assets'
 import { createClient } from '@/lib/supabase/client'
 
 export default function AdminLoginPage() {
@@ -30,77 +30,130 @@ export default function AdminLoginPage() {
     router.refresh()
   }
 
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    background: 'rgba(255,255,255,0.04)',
+    border: '1.5px solid rgba(255,255,255,0.07)',
+    borderRadius: '10px',
+    padding: '0.75rem 1rem',
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: '0.9rem',
+    fontFamily: 'inherit',
+    outline: 'none',
+    transition: 'border-color 0.2s',
+  }
+  const labelStyle: React.CSSProperties = {
+    display: 'block',
+    fontSize: '0.72rem',
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    letterSpacing: '0.07em',
+    color: 'rgba(255,255,255,0.5)',
+    marginBottom: '0.4rem',
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center px-6" style={{ background: '#050505' }}>
-      <div className="w-full max-w-[400px] flex flex-col items-center">
-        <Image
-          src={LOGOS.blanc}
-          alt="Corex"
-          width={LOGO_SIZES.nav.width}
-          height={LOGO_SIZES.nav.height}
-          priority
-        />
-        <h1 className="text-2xl font-bold text-white mt-8 mb-8">Accès admin</h1>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: '#0A0A0A',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem 1.5rem',
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+      }}
+    >
+      <Image
+        src={LOGOS.blanc}
+        alt="Corex"
+        width={140}
+        height={47}
+        priority
+        style={{ marginBottom: '2.5rem' }}
+      />
 
-        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
-          <div className="flex flex-col">
-            <label
-              className="text-[0.78rem] font-semibold uppercase tracking-[0.06em] mb-1.5"
-              style={{ color: 'rgba(255,255,255,0.5)' }}
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
-              className="rounded-xl px-4 py-3 text-[0.9rem] text-white outline-none focus:border-green-vivid/50"
-              style={{
-                background: 'rgba(255,255,255,0.04)',
-                border: '1.5px solid rgba(255,255,255,0.1)',
-              }}
-            />
-          </div>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          width: '100%',
+          maxWidth: 420,
+          background: '#111',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderRadius: '20px',
+          padding: '2.5rem',
+        }}
+      >
+        <h1
+          style={{
+            fontSize: '1.4rem',
+            fontWeight: 700,
+            color: '#fff',
+            marginBottom: '1.75rem',
+            letterSpacing: '-0.02em',
+          }}
+        >
+          Accès admin
+        </h1>
 
-          <div className="flex flex-col">
-            <label
-              className="text-[0.78rem] font-semibold uppercase tracking-[0.06em] mb-1.5"
-              style={{ color: 'rgba(255,255,255,0.5)' }}
-            >
-              Mot de passe
-            </label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              className="rounded-xl px-4 py-3 text-[0.9rem] text-white outline-none focus:border-green-vivid/50"
-              style={{
-                background: 'rgba(255,255,255,0.04)',
-                border: '1.5px solid rgba(255,255,255,0.1)',
-              }}
-            />
-          </div>
+        <div style={{ marginBottom: '1.1rem' }}>
+          <label style={labelStyle}>Email</label>
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+            style={inputStyle}
+          />
+        </div>
 
-          {error && (
-            <p className="text-[0.85rem]" style={{ color: '#EF4444' }}>
-              {error}
-            </p>
-          )}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <label style={labelStyle}>Mot de passe</label>
+          <input
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            style={inputStyle}
+          />
+        </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-full py-3.5 mt-2 text-[0.9rem] font-bold disabled:opacity-50"
-            style={{ background: '#01EA62', color: '#050505' }}
+        {error && (
+          <p
+            style={{
+              fontSize: '0.85rem',
+              color: '#EF4444',
+              marginBottom: '1rem',
+            }}
           >
-            {loading ? 'Connexion…' : 'Se connecter'}
-          </button>
-        </form>
-      </div>
+            {error}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            width: '100%',
+            padding: '0.85rem 1.25rem',
+            background: '#01EA62',
+            color: '#050505',
+            border: 'none',
+            borderRadius: '50px',
+            fontSize: '0.9rem',
+            fontWeight: 700,
+            cursor: loading ? 'wait' : 'pointer',
+            opacity: loading ? 0.7 : 1,
+            fontFamily: 'inherit',
+            transition: 'opacity 0.2s',
+          }}
+        >
+          {loading ? 'Connexion…' : 'Se connecter'}
+        </button>
+      </form>
     </div>
   )
 }
