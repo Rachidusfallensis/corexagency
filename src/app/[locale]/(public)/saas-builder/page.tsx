@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "SaaS Builder — De l'idée au produit | Corex",
+  title: "SaaS Builder : de l'idée au produit | Corex",
   description:
     'Construisez votre SaaS de A à Z avec une équipe tech dédiée. MVP en 8 semaines.',
 }
@@ -110,7 +110,7 @@ export default async function SaasBuilderPage({
               margin: '0 auto 2.5rem',
             }}
           >
-            Vous avez validé un problème et vous voyez la solution — il vous manque l&apos;équipe tech pour l&apos;exécuter. C&apos;est exactement ce qu&apos;on fait.
+            Vous avez validé un problème et vous voyez la solution. Il vous manque l&apos;équipe tech pour l&apos;exécuter. C&apos;est exactement ce qu&apos;on fait.
           </p>
           <Link
             href={bookingHref}
