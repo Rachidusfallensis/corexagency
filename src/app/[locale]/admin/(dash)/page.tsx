@@ -38,6 +38,12 @@ export default async function AdminOverview() {
 
   return (
     <AdminShell title="Vue d'ensemble" subtitle={today}>
+      <style>{`
+        @media (max-width: 768px) {
+          .proto-admin .stats-row { grid-template-columns: 1fr 1fr !important; gap: 0.75rem !important; }
+          .proto-admin .main-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
       <div className="stats-row">
         <StatCard
           value={stats.pending}
