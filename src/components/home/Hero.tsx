@@ -13,7 +13,8 @@ export default function Hero() {
         position: 'relative',
         overflow: 'hidden',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
+        paddingTop: '80px',
       }}
     >
       {/* Background décoratif — radial gradient vert */}
@@ -43,7 +44,7 @@ export default function Hero() {
         style={{
           maxWidth: '1200px',
           margin: '0 auto',
-          padding: '2rem 2rem 2rem',
+          padding: '0 2rem',
           width: '100%',
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
