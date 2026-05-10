@@ -332,6 +332,31 @@ export default function HomePage() {
             <a href="#offres">Nos offres</a>
             <a href="#processus">Comment ça marche</a>
             <a href="#saas">SaaS Builder</a>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Link
+                href="/fr"
+                style={{
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  color: locale === 'fr' ? '#050505' : '#9CA3AF',
+                  textDecoration: 'none',
+                }}
+              >
+                FR
+              </Link>
+              <span style={{ color: '#D1D5DB' }}>|</span>
+              <Link
+                href="/en"
+                style={{
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  color: locale === 'en' ? '#050505' : '#9CA3AF',
+                  textDecoration: 'none',
+                }}
+              >
+                EN
+              </Link>
+            </div>
           </div>
           <Link href={booking} className="nav-cta">
             Prendre un rendez-vous →
