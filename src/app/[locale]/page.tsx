@@ -247,6 +247,24 @@ export default function HomePage() {
   const locale = useLocale()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [cms, setCms] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    let active = true
+    fetch(`/api/content?locale=${locale}`)
+      .then((r) => r.json())
+      .then((data: Record<string, string>) => {
+        if (active) setCms(data)
+      })
+      .catch(() => {
+        /* fallback i18n */
+      })
+    return () => {
+      active = false
+    }
+  }, [locale])
+
+  const c = (key: string, fallback: string) => cms[key] || fallback
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -429,28 +447,28 @@ export default function HomePage() {
           <div>
             <div className="hero-badge">
               <span className="badge-dot" />
-              {t('hero.badge')}
+              {c('hero.badge', t('hero.badge'))}
             </div>
             <h1>
-              {t('hero.title')}
+              {c('hero.title', t('hero.title'))}
               <br />
-              <em>{t('hero.titleEm')}</em>
+              <em>{c('hero.titleEm', t('hero.titleEm'))}</em>
             </h1>
-            <p className="hero-desc">{t('hero.desc')}</p>
+            <p className="hero-desc">{c('hero.desc', t('hero.desc'))}</p>
             <div className="hero-actions">
               <a href="#offres" className="btn-primary">
-                {t('hero.ctaPrimary')} →
+                {c('hero.ctaPrimary', t('hero.ctaPrimary'))} →
               </a>
               <Link href={booking} className="btn-secondary">
-                {t('hero.ctaSecondary')}
+                {c('hero.ctaSecondary', t('hero.ctaSecondary'))}
               </Link>
             </div>
           </div>
           <div className="hero-visual">
             <div className="hero-value-card hvc-main">
               <div className="hvc-tag">{t('hero.cardTag')}</div>
-              <h3>{t('hero.cardTitle')}</h3>
-              <p>{t('hero.cardDesc')}</p>
+              <h3>{c('hero.cardTitle', t('hero.cardTitle'))}</h3>
+              <p>{c('hero.cardDesc', t('hero.cardDesc'))}</p>
             </div>
             <div className="hvc-row" style={{ marginTop: '1rem' }}>
               <div className="hero-value-card hvc-small">
@@ -486,16 +504,16 @@ export default function HomePage() {
           <FadeInBlock>
             <div className="section-header">
               <span className="section-label">{t('offers.label')}</span>
-              <h2>{t('offers.title')}</h2>
-              <p>{t('offers.desc')}</p>
+              <h2>{c('offers.title', t('offers.title'))}</h2>
+              <p>{c('offers.desc', t('offers.desc'))}</p>
             </div>
           </FadeInBlock>
           <div className="offers-grid">
             <FadeInBlock>
               <div className="offer-card light">
                 <div className="offer-tag">{t('offers.digital.tag')}</div>
-                <h3>{t('offers.digital.title')}</h3>
-                <p>{t('offers.digital.desc')}</p>
+                <h3>{c('offers.digital.title', t('offers.digital.title'))}</h3>
+                <p>{c('offers.digital.desc', t('offers.digital.desc'))}</p>
                 <div className="offer-services">
                   <span className="offer-service">ERP</span>
                   <span className="offer-service">CRM</span>
@@ -517,8 +535,8 @@ export default function HomePage() {
             <FadeInBlock>
               <div className="offer-card dark">
                 <div className="offer-tag">{t('offers.saas.tag')}</div>
-                <h3>{t('offers.saas.title')}</h3>
-                <p>{t('offers.saas.desc')}</p>
+                <h3>{c('offers.saas.title', t('offers.saas.title'))}</h3>
+                <p>{c('offers.saas.desc', t('offers.saas.desc'))}</p>
                 <div className="offer-services">
                   <span className="offer-service">Product Design</span>
                   <span className="offer-service">MVP rapide</span>
@@ -599,7 +617,7 @@ export default function HomePage() {
           <FadeInBlock>
             <div className="section-header">
               <span className="section-label">{t('process.label')}</span>
-              <h2>{t('process.title')}</h2>
+              <h2>{c('process.title', t('process.title'))}</h2>
               <p>{t('process.desc')}</p>
             </div>
           </FadeInBlock>
@@ -608,8 +626,8 @@ export default function HomePage() {
               <FadeInBlock key={k}>
                 <div className="process-step">
                   <div className="step-num">{String(i + 1).padStart(2, '0')}</div>
-                  <h4>{t(`process.${k}.title`)}</h4>
-                  <p>{t(`process.${k}.desc`)}</p>
+                  <h4>{c(`process.${k}.title`, t(`process.${k}.title`))}</h4>
+                  <p>{c(`process.${k}.desc`, t(`process.${k}.desc`))}</p>
                 </div>
               </FadeInBlock>
             ))}
@@ -711,10 +729,10 @@ export default function HomePage() {
       {/* CTA */}
       <section className="cta-sec" id="contact">
         <div className="container">
-          <h2>{t('cta.title')}</h2>
-          <p>{t('cta.desc')}</p>
+          <h2>{c('cta.title', t('cta.title'))}</h2>
+          <p>{c('cta.desc', t('cta.desc'))}</p>
           <Link href={booking} className="btn-vivid">
-            {t('cta.btn')} →
+            {c('cta.btn', t('cta.btn'))} →
           </Link>
         </div>
       </section>
@@ -733,7 +751,7 @@ export default function HomePage() {
                   style={{ display: 'block' }}
                 />
               </Link>
-              <p>{t('footer.tagline')}</p>
+              <p>{c('footer.tagline', t('footer.tagline'))}</p>
             </div>
             <div className="footer-col">
               <h5>{t('footer.col1Title')}</h5>
@@ -748,7 +766,7 @@ export default function HomePage() {
             </div>
             <div className="footer-col">
               <h5>{t('footer.col3Title')}</h5>
-              <a href={`mailto:${t('footer.email')}`}>{t('footer.email')}</a>
+              <a href={`mailto:${c('contact.email', t('footer.email'))}`}>{c('contact.email', t('footer.email'))}</a>
               <a href="#contact">{t('footer.bookingLink')}</a>
             </div>
           </div>

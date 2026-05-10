@@ -9,8 +9,8 @@
 | Champ | Valeur |
 |---|---|
 | Phase courante | **Phase 1 — Foundation (en cours)** |
-| Prompt en cours | `13` ✅ |
-| Dernier prompt complété | `13` (Responsive mobile complet — dashboard + homepage + booking) |
+| Prompt en cours | `14` ✅ |
+| Dernier prompt complété | `14` (Mini CMS éditeur contenu + intégration homepage) |
 | Date dernière maj | 2026-05-09 |
 | Branche de dev | `claude/init-corex-project-qdFMv` |
 
