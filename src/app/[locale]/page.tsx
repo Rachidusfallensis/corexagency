@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
@@ -251,16 +252,6 @@ const EXAMPLES_SAAS = [
   },
 ]
 
-function CorexLogoMark() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M4 8C8 6 12 12 16 18C20 16 20 16 20 16" stroke="#01EA62" strokeWidth="2.5" strokeLinecap="round" />
-      <path d="M4 16C8 14 12 12 16 10C20 8 20 8 20 8" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-      <ellipse cx="12" cy="12" rx="4" ry="8" stroke="#01EA62" strokeWidth="1.5" fill="none" transform="rotate(-15 12 12)" />
-    </svg>
-  )
-}
-
 function FadeInBlock({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement | null>(null)
   const [visible, setVisible] = useState(false)
@@ -311,10 +302,14 @@ export default function HomePage() {
       <nav style={{ boxShadow: scrolled ? '0 2px 24px rgba(0,0,0,0.07)' : 'none' }}>
         <div className="nav-inner">
           <Link href={home} className="nav-logo">
-            <div className="logo-mark">
-              <CorexLogoMark />
-            </div>
-            <span className="nav-logo-text">Corex</span>
+            <Image
+              src="/logos/Corex_Logo_color.png"
+              alt="Corex"
+              width={120}
+              height={40}
+              priority
+              style={{ display: 'block' }}
+            />
           </Link>
           <div className="nav-links">
             <a href="#offres">{t('nav.offers')}</a>
@@ -656,10 +651,13 @@ export default function HomePage() {
           <div className="footer-inner">
             <div className="footer-brand">
               <Link href={home} className="nav-logo" style={{ display: 'inline-flex', marginBottom: '0.5rem' }}>
-                <div className="logo-mark">
-                  <CorexLogoMark />
-                </div>
-                <span className="nav-logo-text" style={{ color: 'white' }}>Corex</span>
+                <Image
+                  src="/logos/Corex_Logo_Blanc.png"
+                  alt="Corex"
+                  width={100}
+                  height={33}
+                  style={{ display: 'block' }}
+                />
               </Link>
               <p>{t('footer.tagline')}</p>
             </div>
