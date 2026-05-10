@@ -190,6 +190,29 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   .proto-home .footer-inner{grid-template-columns:1fr}
   .proto-home .ex-grid{grid-template-columns:1fr}
 }
+
+.proto-home .mobile-menu-btn{display:none;background:transparent;border:none;cursor:pointer;padding:0.5rem}
+
+@media (max-width: 768px) {
+  .proto-home .nav-links { display: none !important; }
+  .proto-home .nav-cta { padding: 0.5rem 1rem; font-size: 0.78rem; }
+  .proto-home .mobile-menu-btn { display: block !important; }
+  .proto-home .hero-inner { grid-template-columns: 1fr !important; padding: 5rem 1.25rem 2rem !important; gap: 2rem !important; }
+  .proto-home .hero-visual { display: none !important; }
+  .proto-home .hero h1 { font-size: 2.5rem !important; }
+  .proto-home .offers-grid { grid-template-columns: 1fr !important; }
+  .proto-home .ex-grid { grid-template-columns: 1fr !important; }
+  .proto-home .process-grid { grid-template-columns: 1fr 1fr !important; }
+  .proto-home .why-grid { grid-template-columns: 1fr !important; }
+  .proto-home .saas-inner { grid-template-columns: 1fr !important; }
+  .proto-home .footer-inner { grid-template-columns: 1fr 1fr !important; gap: 2rem !important; }
+}
+
+@media (max-width: 480px) {
+  .proto-home .process-grid { grid-template-columns: 1fr !important; }
+  .proto-home .footer-inner { grid-template-columns: 1fr !important; }
+  .proto-home .hero h1 { font-size: 2rem !important; }
+}
 `
 
 function FadeInBlock({ children }: { children: React.ReactNode }) {
@@ -223,6 +246,7 @@ export default function HomePage() {
   const t = useTranslations()
   const locale = useLocale()
   const [scrolled, setScrolled] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -286,8 +310,116 @@ export default function HomePage() {
           <Link href={booking} className="nav-cta">
             {t('nav.booking')} →
           </Link>
+          <button
+            type="button"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="mobile-menu-btn"
+            aria-label="Menu"
+            style={{ marginLeft: '0.5rem' }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#050505" strokeWidth="2">
+              {mobileOpen ? (
+                <>
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </>
+              ) : (
+                <>
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="18" x2="21" y2="18" />
+                </>
+              )}
+            </svg>
+          </button>
         </div>
       </nav>
+
+      {mobileOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '64px',
+            left: 0,
+            right: 0,
+            background: 'rgba(255,255,255,0.98)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            borderBottom: '1px solid rgba(0,0,0,0.07)',
+            padding: '1rem 1.5rem 1.5rem',
+            zIndex: 99,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
+          }}
+        >
+          {[
+            { href: `/${locale}#offres`, label: t('nav.offers') },
+            { href: `/${locale}#processus`, label: t('nav.howItWorks') },
+            { href: `/${locale}#saas`, label: t('nav.saasBuilder') },
+          ].map((it) => (
+            <Link
+              key={it.href}
+              href={it.href}
+              onClick={() => setMobileOpen(false)}
+              style={{
+                color: '#050505',
+                textDecoration: 'none',
+                fontSize: '1rem',
+                fontWeight: 500,
+                padding: '0.5rem 0',
+                borderBottom: '1px solid rgba(0,0,0,0.06)',
+              }}
+            >
+              {it.label}
+            </Link>
+          ))}
+          <div style={{ display: 'flex', gap: '8px', padding: '0.75rem 0' }}>
+            <Link
+              href="/fr"
+              onClick={() => setMobileOpen(false)}
+              style={{
+                fontWeight: 700,
+                fontSize: '0.9rem',
+                color: locale === 'fr' ? '#050505' : '#9CA3AF',
+                textDecoration: 'none',
+              }}
+            >
+              FR
+            </Link>
+            <span style={{ color: '#D1D5DB' }}>|</span>
+            <Link
+              href="/en"
+              onClick={() => setMobileOpen(false)}
+              style={{
+                fontWeight: 700,
+                fontSize: '0.9rem',
+                color: locale === 'en' ? '#050505' : '#9CA3AF',
+                textDecoration: 'none',
+              }}
+            >
+              EN
+            </Link>
+          </div>
+          <Link
+            href={`/${locale}/rendez-vous`}
+            onClick={() => setMobileOpen(false)}
+            style={{
+              background: '#050505',
+              color: '#fff',
+              padding: '0.85rem 1.5rem',
+              borderRadius: '50px',
+              textDecoration: 'none',
+              fontSize: '0.9rem',
+              fontWeight: 600,
+              textAlign: 'center',
+              marginTop: '0.5rem',
+            }}
+          >
+            {t('nav.booking')} →
+          </Link>
+        </div>
+      )}
 
       {/* HERO */}
       <section className="hero">
