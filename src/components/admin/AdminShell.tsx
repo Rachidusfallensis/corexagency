@@ -240,7 +240,8 @@ const PROTO_ADMIN_CSS = `
   .proto-admin .topbar-left h1{font-size:0.95rem !important}
   .proto-admin .topbar-subtitle{display:none !important}
   .proto-admin .topbar-actions-desktop{display:none !important}
-  .proto-admin .mobile-bottom-nav{display:flex !important;position:fixed;bottom:0;left:0;right:0;height:64px;background:#111;border-top:1px solid rgba(255,255,255,0.08);align-items:center;justify-content:space-around;z-index:50;padding:0 0.5rem}
+  .proto-admin .mobile-bottom-nav{display:flex !important;position:fixed;bottom:0;left:0;right:0;height:64px;background:#111;border-top:1px solid rgba(255,255,255,0.08);align-items:center;justify-content:space-around;z-index:50;padding:0 0.25rem;overflow-x:auto;scrollbar-width:none}
+  .proto-admin .mobile-bottom-nav::-webkit-scrollbar{display:none}
   .proto-admin .mobile-bottom-nav svg{width:20px !important;height:20px !important}
 }`
 
@@ -300,6 +301,13 @@ function NavIcon({ name }: { name: string }) {
           <circle cx="9" cy="7" r="4" />
         </svg>
       )
+    case 'content':
+      return (
+        <svg {...ICON_BASE}>
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+        </svg>
+      )
     default:
       return null
   }
@@ -322,6 +330,7 @@ export default function AdminShell({ title, subtitle, children }: AdminShellProp
     { href: `${base}/disponibilites`, label: 'Disponibilités', icon: 'dispos' as const },
     { href: `${base}/file-attente`, label: "File d'attente", icon: 'queue' as const },
     { href: `${base}/leads`, label: 'Leads', icon: 'leads' as const },
+    { href: `${base}/contenu`, label: 'Contenu', icon: 'content' as const },
   ]
 
   return (
@@ -404,6 +413,7 @@ export default function AdminShell({ title, subtitle, children }: AdminShellProp
               dispos: 'Dispos',
               queue: 'File',
               leads: 'Leads',
+              content: 'Contenu',
             }
             return (
               <Link
