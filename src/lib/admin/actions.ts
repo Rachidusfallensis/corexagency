@@ -161,11 +161,15 @@ export async function addAvailabilityRule(rule: {
   start_time: string
   end_time: string
   slot_duration: number
+  timezone?: string
 }): Promise<ActionResult> {
   await requireAdmin()
   if (rule.days_of_week.length === 0) return { success: false, error: 'Sélectionnez au moins un jour' }
   const svc = createServiceClient()
-  const { error } = await svc.from('availability_rules').insert(rule)
+  const { error } = await svc.from('availability_rules').insert({
+    ...rule,
+    timezone: rule.timezone ?? 'America/Toronto',
+  })
   if (error) return { success: false, error: error.message }
   revalidatePath('/[locale]/admin', 'layout')
   return { success: true }

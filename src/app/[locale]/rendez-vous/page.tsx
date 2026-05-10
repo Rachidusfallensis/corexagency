@@ -16,6 +16,7 @@ import {
   hasAnySlotInNext30Days,
   isDateBlocked,
 } from '@/lib/booking/availability'
+import { getVisitorTimezone } from '@/lib/timezone'
 import {
   EMPTY_BOOKING_STATE,
   type AvailabilityBlock,
@@ -280,6 +281,12 @@ export default function BookingPage() {
   const today = useMemo(() => startOfDay(new Date()), [])
   const [calYear, setCalYear] = useState(today.getFullYear())
   const [calMonth, setCalMonth] = useState(today.getMonth())
+
+  // Visitor timezone (detected client-side)
+  const [visitorTz, setVisitorTz] = useState<string>('UTC')
+  useEffect(() => {
+    setVisitorTz(getVisitorTimezone())
+  }, [])
 
   // Queue fallback state
   const [urgency, setUrgency] = useState<Urgency>('medium')
@@ -669,6 +676,16 @@ export default function BookingPage() {
                       {state.selectedDate && slots.length === 0 && (
                         <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.78rem' }}>Aucun créneau ce jour-là.</p>
                       )}
+                      <div
+                        style={{
+                          fontSize: '0.75rem',
+                          color: 'rgba(255,255,255,0.4)',
+                          textAlign: 'center',
+                          marginTop: '0.75rem',
+                        }}
+                      >
+                        🕐 Horaires affichés en heure locale ({visitorTz})
+                      </div>
                     </div>
                   )}
                 </>
