@@ -12,6 +12,7 @@ import {
   confirmReservation,
   getReservations,
 } from '@/lib/admin/actions'
+import { utcToLocalTime } from '@/lib/timezone'
 import type { ReservationRow } from '@/lib/types/admin'
 
 const PROFILE_LABELS: Record<string, string> = {
@@ -47,11 +48,19 @@ const FILTERS: Array<{ value: string; label: string; type: 'status' | 'service' 
   { value: 'saas', label: 'SaaS Builder', type: 'service' },
 ]
 
+const DEFAULT_ADMIN_TZ = 'America/Toronto'
+
 function ReservationsInner() {
   const toast = useToast()
   const [reservations, setReservations] = useState<ReservationRow[]>([])
   const [statusFilter, setStatusFilter] = useState('all')
   const [serviceFilter, setServiceFilter] = useState('all')
+  const [adminTz, setAdminTz] = useState(DEFAULT_ADMIN_TZ)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setAdminTz(localStorage.getItem('adminTimezone') || DEFAULT_ADMIN_TZ)
+    }
+  }, [])
   const [detail, setDetail] = useState<ReservationRow | null>(null)
   const [cancelTarget, setCancelTarget] = useState<ReservationRow | null>(null)
   const [pending, startTransition] = useTransition()
@@ -160,7 +169,28 @@ function ReservationsInner() {
                         {PROFILE_LABELS[r.profile] ?? r.profile}
                       </span>
                     </td>
-                    <td><div className="res-date">{formatSlot(r.slot_date, r.slot_time)}</div></td>
+                    <td>
+                      {(() => {
+                        const adminView = utcToLocalTime(r.slot_date.slice(0, 10), r.slot_time.slice(0, 5), adminTz)
+                        const dPretty = parseLocal(adminView.localDate).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })
+                        const adminLine = `${dPretty} • ${adminView.localTime}`
+                        const visitorTz = r.visitor_timezone ?? null
+                        const showVisitor = visitorTz && visitorTz !== adminTz
+                        const visitorView = showVisitor
+                          ? utcToLocalTime(r.slot_date.slice(0, 10), r.slot_time.slice(0, 5), visitorTz)
+                          : null
+                        return (
+                          <>
+                            <div className="res-date">{adminLine} <span style={{ opacity: 0.5 }}>({adminTz.split('/').pop()})</span></div>
+                            {visitorView && (
+                              <div className="res-date" style={{ fontSize: '0.7rem', opacity: 0.6 }}>
+                                → {visitorView.localTime} ({visitorTz!.split('/').pop()})
+                              </div>
+                            )}
+                          </>
+                        )
+                      })()}
+                    </td>
                     <td><div className="res-date">{formatDate(r.created_at)}</div></td>
                     <td><StatusBadge status={r.status} /></td>
                     <td>
