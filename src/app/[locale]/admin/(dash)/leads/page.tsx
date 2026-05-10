@@ -37,17 +37,7 @@ function csvEscape(v: string | null | undefined): string {
 }
 
 function buildCsv(rows: LeadRow[]): string {
-  const header = [
-    'Nom',
-    'Email',
-    'Téléphone',
-    'Entreprise',
-    'Service',
-    'Profil',
-    'Source',
-    'Statut',
-    'Date',
-  ]
+  const header = ['Nom', 'Email', 'Téléphone', 'Entreprise', 'Service', 'Profil', 'Source', 'Statut', 'Date']
   const lines = [header.join(',')]
   for (const r of rows) {
     lines.push(
@@ -107,31 +97,18 @@ function LeadsInner() {
 
   return (
     <>
-      <div className="flex gap-3 mb-5 flex-wrap items-center">
-        <div className="relative">
-          <svg
-            width={13}
-            height={13}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            className="absolute left-2.5 top-1/2 -translate-y-1/2 opacity-40"
-          >
+      <div className="leads-filters">
+        <div className="search-wrap">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
           <input
             type="text"
+            className="search-input"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher un lead..."
-            className="rounded-lg pl-8 pr-3 py-2 text-[0.82rem] text-white outline-none w-[220px]"
-            style={{
-              background: '#111111',
-              border: '1px solid rgba(255,255,255,0.07)',
-              fontFamily: 'inherit',
-            }}
           />
         </div>
         {FILTERS.map((f) => {
@@ -142,33 +119,17 @@ function LeadsInner() {
             <button
               key={`${f.type}-${f.value}`}
               type="button"
+              className={`filter-btn${active ? ' active' : ''}`}
               onClick={() =>
-                f.type === 'service'
-                  ? setServiceFilter(f.value)
-                  : setSourceFilter(f.value)
+                f.type === 'service' ? setServiceFilter(f.value) : setSourceFilter(f.value)
               }
-              className="px-3 py-1.5 rounded-full text-[0.72rem] font-semibold"
-              style={{
-                background: active ? 'rgba(1,234,98,0.1)' : 'transparent',
-                color: active ? '#01EA62' : 'rgba(255,255,255,0.5)',
-                border: '1px solid rgba(255,255,255,0.07)',
-              }}
             >
               {f.label}
             </button>
           )
         })}
-        <button
-          type="button"
-          onClick={exportCsv}
-          className="ml-auto px-3.5 py-2 rounded-lg text-[0.78rem] font-semibold flex items-center gap-1.5"
-          style={{
-            background: 'rgba(255,255,255,0.05)',
-            color: 'rgba(255,255,255,0.5)',
-            border: '1px solid rgba(255,255,255,0.07)',
-          }}
-        >
-          <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+        <button type="button" className="export-btn" onClick={exportCsv}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />
@@ -177,81 +138,53 @@ function LeadsInner() {
         </button>
       </div>
 
-      <div
-        className="rounded-[18px] overflow-hidden"
-        style={{
-          background: '#111111',
-          border: '1px solid rgba(255,255,255,0.07)',
-        }}
-      >
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+      <div className="leads-table-wrap">
+        <div style={{ overflowX: 'auto' }}>
+          <table>
             <thead>
               <tr>
-                {['Contact', 'Service', 'Profil', 'Source', 'Statut', 'Date'].map((h) => (
-                  <th
-                    key={h}
-                    className="text-left text-[0.68rem] font-bold uppercase tracking-[0.07em] px-5 py-3 whitespace-nowrap"
-                    style={{ color: 'rgba(255,255,255,0.25)' }}
-                  >
-                    {h}
-                  </th>
-                ))}
+                <th>Contact</th>
+                <th>Service</th>
+                <th>Profil</th>
+                <th>Source</th>
+                <th>Statut</th>
+                <th>Date</th>
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan={6}
-                    className="px-5 py-8 text-center text-[0.85rem]"
-                    style={{ color: 'rgba(255,255,255,0.3)' }}
-                  >
+                  <td colSpan={6} style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', padding: '2rem' }}>
                     Aucun lead.
                   </td>
                 </tr>
               ) : (
                 filtered.map((l) => (
-                  <tr
-                    key={l.id}
-                    style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}
-                  >
-                    <td className="px-5 py-3.5">
-                      <div className="text-[0.85rem] font-semibold">{l.contact_name}</div>
-                      <div
-                        className="text-[0.72rem]"
-                        style={{ color: 'rgba(255,255,255,0.5)' }}
-                      >
-                        {l.contact_email}
+                  <tr key={l.id}>
+                    <td>
+                      <div className="res-name">{l.contact_name}</div>
+                      <div className="res-email">{l.contact_email}</div>
+                    </td>
+                    <td><ServiceBadge service={l.service} /></td>
+                    <td>
+                      <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
+                        {PROFILE_LABELS[l.profile] ?? l.profile}
+                      </span>
+                    </td>
+                    <td>
+                      <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
+                        {SOURCE_LABELS[l.source] ?? l.source}
+                      </span>
+                    </td>
+                    <td><StatusBadge status={l.status} /></td>
+                    <td>
+                      <div className="res-date">
+                        {new Date(l.created_at).toLocaleDateString('fr-FR', {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
                       </div>
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <ServiceBadge service={l.service} />
-                    </td>
-                    <td
-                      className="px-5 py-3.5 text-[0.75rem]"
-                      style={{ color: 'rgba(255,255,255,0.5)' }}
-                    >
-                      {PROFILE_LABELS[l.profile] ?? l.profile}
-                    </td>
-                    <td
-                      className="px-5 py-3.5 text-[0.75rem]"
-                      style={{ color: 'rgba(255,255,255,0.5)' }}
-                    >
-                      {SOURCE_LABELS[l.source] ?? l.source}
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <StatusBadge status={l.status} />
-                    </td>
-                    <td
-                      className="px-5 py-3.5 text-[0.8rem] whitespace-nowrap"
-                      style={{ color: 'rgba(255,255,255,0.5)' }}
-                    >
-                      {new Date(l.created_at).toLocaleDateString('fr-FR', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                      })}
                     </td>
                   </tr>
                 ))
