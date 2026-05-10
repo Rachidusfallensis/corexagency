@@ -138,14 +138,15 @@ const PROTO_CSS = `
 .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
 
 @media(max-width:768px){
-  .booking-wrap{grid-template-columns:1fr}
-  .left-panel{display:none}
+  .booking-wrap{grid-template-columns:1fr !important}
+  .left-panel{display:none !important}
   .proto-booking{overflow:auto;height:auto}
-  .right-panel{min-height:100vh}
-  .step{padding:1.5rem;position:relative;transform:none;opacity:1;pointer-events:all;display:none}
+  .right-panel{min-height:100vh;height:100vh}
+  .step{padding:1.5rem !important;position:relative;transform:none;opacity:1;pointer-events:all;display:none}
   .step.active{display:flex}
-  .input-row{grid-template-columns:1fr}
-  .profile-grid{grid-template-columns:1fr}
+  .input-row{grid-template-columns:1fr !important}
+  .profile-grid{grid-template-columns:1fr !important}
+  .time-slots{grid-template-columns:repeat(2,1fr) !important}
 }
 `
 
