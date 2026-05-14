@@ -9,9 +9,9 @@
 | Champ | Valeur |
 |---|---|
 | Phase courante | **Phase 1 — Foundation (en cours)** |
-| Prompt en cours | `14` ✅ |
-| Dernier prompt complété | `14` (Mini CMS éditeur contenu + intégration homepage) |
-| Date dernière maj | 2026-05-09 |
+| Prompt en cours | `16` ✅ |
+| Dernier prompt complété | `16` (Page Projets + Exemples + Dashboard Admin projets) |
+| Date dernière maj | 2026-05-14 |
 | Branche de dev | `claude/init-corex-project-qdFMv` |
 
 ---
@@ -190,9 +190,30 @@
 
 ---
 
+### Prompt 16 (livré)
+| Chemin | Rôle |
+|---|---|
+| `supabase/migrations/add_projects.sql` | Tables `projects` + `project_images` + RLS lecture publique sur `status='published'`. À exécuter dans Supabase + créer bucket Storage `project-images` (public) manuellement. |
+| `src/lib/types/project.ts` | Types `ProjectRow`, `ProjectImageRow`, `ProjectWithImages`, `ProjectInput`, `ProjectCategory`, `ProjectStatus` |
+| `src/lib/admin/project-actions.ts` | 8 Server Actions admin (CRUD + upload cover/image + delete image) protégées par `requireAdmin()`. Slugify built-in. Upload via service-role vers bucket `project-images`. |
+| `src/lib/data/projects.ts` | Lectures publiques `getPublishedProjects`, `getPublishedProjectBySlug`, `getPrevNextPublishedProjects` |
+| `src/app/[locale]/(public)/projets/page.tsx` | Page liste publique — hero noir + section "Projets livrés" (Server, dynamic) avec filtre client + section "Exemples par secteur" (réutilise `EXAMPLES_DIGITAL/SAAS_FR/EN`) + CTA |
+| `src/app/[locale]/(public)/projets/ProjectsFilterClient.tsx` | Filtre client (Tous/Digitalisation/SaaS) avec cards Next/Image |
+| `src/app/[locale]/(public)/projets/[slug]/page.tsx` | Page détail — hero (badges catégorie + secteur), cover, grid 2 cols (description + sidebar stack/tags/lien externe/CTA RV) + galerie + prev/next |
+| `src/app/[locale]/admin/(dash)/projets/page.tsx` | Dashboard admin — grid de cards (cover + statut + slug + actions Modifier/Suppr), modale 3 onglets (Général : catégorie/statut/secteur/slug/lien/stack/tags/ordre — Contenu : titres+résumés+descriptions+résultats FR/EN — Médias : upload cover + galerie avec delete), modale confirm delete |
+| `src/app/[locale]/page.tsx` (modifié) | Suppression des 2 sections `exemples-sec` (digital + saas) ; remplacées par une promo card "Voir nos projets" avec lien `/projets`. Imports `EXAMPLES_DIGITAL/SAAS_*` retirés. Lien "Projets" ajouté dans nav desktop + mobile menu. |
+| `src/components/layout/Navbar.tsx` (modifié) | Lien "Projets" ajouté entre "Nos offres" et "Comment ça marche" |
+| `src/components/admin/AdminShell.tsx` (modifié) | Item sidebar "Projets" (icône layers cube) ajouté après Leads, label mobile bottom-nav "Projets" |
+| `src/messages/{fr,en}.json` (modifiés) | Bloc `projects.*` complet (heroLabel/heroTitle/heroDesc/filters/realized*/examples*/viewProject/back/summary/description/stack/tags/result/gallery/prev/next/externalLink/homeCta/homeCtaDesc/empty/notFound) + `nav.projects` |
+| `next.config.ts` (modifié) | `images.remotePatterns` ajouté pour `*.supabase.co/storage/v1/object/public/**` (covers + galerie) |
+
+**Action utilisateur restante :**
+1. Exécuter `supabase/migrations/add_projects.sql` dans Supabase SQL Editor
+2. Storage → créer bucket `project-images` (public, MIME image/*, optionnel limite 5 Mo)
+
 ## Prochaine étape
 
-**Prompt 10 — Emails transactionnels + page reschedule + polish final**
+**Prompt 17 — Emails transactionnels + polish final**
 
 Cible : Resend / SendGrid via Edge Function, page `/rendez-vous/replanifier/[token]` complète (validation token, pré-remplissage, ré-insertion), SEO/sitemap/robots, performance, polish.
 
