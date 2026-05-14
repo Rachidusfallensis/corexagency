@@ -77,6 +77,9 @@ export default function Navbar() {
           <Link href={`/${locale}#offres`} style={linkStyle}>
             {t('offers')}
           </Link>
+          <Link href={`/${locale}/projets`} style={linkStyle}>
+            {t('projects')}
+          </Link>
           <Link href={`/${locale}#processus`} style={linkStyle}>
             {t('howItWorks')}
           </Link>

@@ -4,12 +4,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
-import {
-  EXAMPLES_DIGITAL_FR,
-  EXAMPLES_DIGITAL_EN,
-  EXAMPLES_SAAS_FR,
-  EXAMPLES_SAAS_EN,
-} from '@/lib/data/offers'
 
 const PROTO_CSS = `
 *{margin:0;padding:0;box-sizing:border-box}
@@ -275,8 +269,7 @@ export default function HomePage() {
 
   const home = `/${locale}`
   const booking = `/${locale}/rendez-vous`
-  const examplesDigital = locale === 'en' ? EXAMPLES_DIGITAL_EN : EXAMPLES_DIGITAL_FR
-  const examplesSaas = locale === 'en' ? EXAMPLES_SAAS_EN : EXAMPLES_SAAS_FR
+  const projects = `/${locale}/projets`
 
   return (
     <div className="proto-home">
@@ -297,6 +290,7 @@ export default function HomePage() {
           </Link>
           <div className="nav-links">
             <a href="#offres">{t('nav.offers')}</a>
+            <Link href={projects}>{t('nav.projects')}</Link>
             <a href="#processus">{t('nav.howItWorks')}</a>
             <a href="#saas">{t('nav.saasBuilder')}</a>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -373,6 +367,7 @@ export default function HomePage() {
         >
           {[
             { href: `/${locale}#offres`, label: t('nav.offers') },
+            { href: `/${locale}/projets`, label: t('nav.projects') },
             { href: `/${locale}#processus`, label: t('nav.howItWorks') },
             { href: `/${locale}#saas`, label: t('nav.saasBuilder') },
           ].map((it) => (
@@ -559,55 +554,128 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* EXEMPLES DIGITALISATION */}
-      <section className="exemples-sec" id="exemples-digital">
+      {/* PROJETS — promo vers /projets */}
+      <section className="exemples-sec" id="projets-promo">
         <div className="container">
           <FadeInBlock>
-            <div className="section-header">
-              <span className="section-label">{t('examplesDigital.label')}</span>
-              <h2>{t('examplesDigital.title')}</h2>
-              <p>{t('examplesDigital.desc')}</p>
+            <div
+              style={{
+                background: '#050505',
+                color: '#fff',
+                borderRadius: 28,
+                padding: '3.5rem 3rem',
+                display: 'grid',
+                gridTemplateColumns: '1.4fr 1fr',
+                gap: '2.5rem',
+                alignItems: 'center',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+              className="projets-promo"
+            >
+              <style>{`
+                @media (max-width: 768px) {
+                  .projets-promo { grid-template-columns: 1fr !important; padding: 2.25rem 1.5rem !important; }
+                }
+              `}</style>
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  pointerEvents: 'none',
+                  background:
+                    'radial-gradient(ellipse 50% 80% at 100% 50%,rgba(1,234,98,0.10),transparent 70%)',
+                }}
+              />
+              <div style={{ position: 'relative' }}>
+                <span
+                  style={{
+                    display: 'inline-block',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    color: '#01EA62',
+                    marginBottom: '0.75rem',
+                  }}
+                >
+                  {t('projects.heroLabel')}
+                </span>
+                <h2 style={{ color: '#fff', marginBottom: '0.85rem' }}>
+                  {t('projects.heroTitle')}
+                </h2>
+                <p
+                  style={{
+                    color: 'rgba(255,255,255,0.65)',
+                    marginBottom: '1.75rem',
+                    fontSize: '1rem',
+                    lineHeight: 1.7,
+                  }}
+                >
+                  {t('projects.homeCtaDesc')}
+                </p>
+                <Link
+                  href={projects}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    background: '#01EA62',
+                    color: '#050505',
+                    padding: '0.85rem 1.8rem',
+                    borderRadius: 50,
+                    textDecoration: 'none',
+                    fontWeight: 700,
+                    fontSize: '0.95rem',
+                  }}
+                >
+                  {t('projects.homeCta')} →
+                </Link>
+              </div>
+              <div
+                style={{
+                  position: 'relative',
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '0.75rem',
+                }}
+              >
+                {['Restauration', 'Immobilier', 'Santé', 'SaaS RH'].map((s, i) => (
+                  <div
+                    key={s}
+                    style={{
+                      padding: '1.1rem',
+                      borderRadius: 14,
+                      background:
+                        i % 2 === 0
+                          ? 'rgba(1,234,98,0.08)'
+                          : 'rgba(255,255,255,0.04)',
+                      border:
+                        i % 2 === 0
+                          ? '1px solid rgba(1,234,98,0.2)'
+                          : '1px solid rgba(255,255,255,0.07)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: '0.7rem',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        color: i % 2 === 0 ? '#01EA62' : 'rgba(255,255,255,0.5)',
+                        marginBottom: 5,
+                      }}
+                    >
+                      Secteur
+                    </div>
+                    <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#fff' }}>
+                      {s}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </FadeInBlock>
-          <div className="ex-grid">
-            {examplesDigital.map((ex) => (
-              <FadeInBlock key={ex.sector}>
-                <div className="ex-card">
-                  <div className="ex-sector green">{ex.sector}</div>
-                  <h4>{ex.title}</h4>
-                  <p>{ex.desc}</p>
-                  <div className="ex-result">{ex.result}</div>
-                </div>
-              </FadeInBlock>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* EXEMPLES SAAS */}
-      <section className="exemples-sec dark-bg" id="exemples-saas">
-        <div className="container">
-          <FadeInBlock>
-            <div className="section-header">
-              <span className="section-label" style={{ color: '#01EA62' }}>
-                {t('examplesSaas.label')}
-              </span>
-              <h2 style={{ color: '#fff' }}>{t('examplesSaas.title')}</h2>
-              <p>{t('examplesSaas.desc')}</p>
-            </div>
-          </FadeInBlock>
-          <div className="ex-grid">
-            {examplesSaas.map((ex) => (
-              <FadeInBlock key={ex.sector}>
-                <div className="ex-card dark-card">
-                  <div className="ex-sector vivid">{ex.sector}</div>
-                  <h4>{ex.title}</h4>
-                  <p>{ex.desc}</p>
-                  <div className="ex-result">{ex.result}</div>
-                </div>
-              </FadeInBlock>
-            ))}
-          </div>
         </div>
       </section>
 
