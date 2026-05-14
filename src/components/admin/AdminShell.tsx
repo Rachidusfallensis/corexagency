@@ -308,6 +308,14 @@ function NavIcon({ name }: { name: string }) {
           <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
         </svg>
       )
+    case 'projects':
+      return (
+        <svg {...ICON_BASE}>
+          <polygon points="12 2 2 7 12 12 22 7 12 2" />
+          <polyline points="2 17 12 22 22 17" />
+          <polyline points="2 12 12 17 22 12" />
+        </svg>
+      )
     default:
       return null
   }
@@ -330,6 +338,7 @@ export default function AdminShell({ title, subtitle, children }: AdminShellProp
     { href: `${base}/disponibilites`, label: 'Disponibilités', icon: 'dispos' as const },
     { href: `${base}/file-attente`, label: "File d'attente", icon: 'queue' as const },
     { href: `${base}/leads`, label: 'Leads', icon: 'leads' as const },
+    { href: `${base}/projets`, label: 'Projets', icon: 'projects' as const },
     { href: `${base}/contenu`, label: 'Contenu', icon: 'content' as const },
   ]
 
@@ -418,6 +427,7 @@ export default function AdminShell({ title, subtitle, children }: AdminShellProp
               dispos: 'Dispos',
               queue: 'File',
               leads: 'Leads',
+              projects: 'Projets',
               content: 'Contenu',
             }
             return (
