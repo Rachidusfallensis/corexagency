@@ -36,6 +36,9 @@ export default function Footer() {
             <Link href={`${homeHref}/digitalisation`} className={linkClass}>
               {t('digitalisation')}
             </Link>
+            <Link href={`${homeHref}/projets`} className={linkClass}>
+              {t('projects')}
+            </Link>
             <Link href={`${homeHref}/saas-builder`} className={linkClass}>
               {t('saasBuilder')}
             </Link>
