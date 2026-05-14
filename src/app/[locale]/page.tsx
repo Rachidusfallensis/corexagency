@@ -824,6 +824,7 @@ export default function HomePage() {
             <div className="footer-col">
               <h5>{t('footer.col1Title')}</h5>
               <a href="#offres">{t('footer.digitalisation')}</a>
+              <Link href={projects}>{t('footer.projects')}</Link>
               <a href="#saas">{t('footer.saasBuilder')}</a>
               <a href="#processus">{t('footer.process')}</a>
             </div>

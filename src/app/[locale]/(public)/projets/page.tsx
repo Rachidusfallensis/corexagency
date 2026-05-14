@@ -163,20 +163,68 @@ export default async function ProjectsPage({ params }: PageProps) {
       </section>
 
       {/* EXEMPLES SECTORIELS */}
-      <section style={{ padding: '4rem 0 5rem', background: '#F4F6F4' }}>
+      <section style={{ padding: '5rem 0 5rem', background: '#050505', color: '#fff' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 2rem' }}>
-          <div style={{ marginBottom: '2.5rem' }}>
+          {/* Séparateur visuel */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1rem',
+              marginBottom: '2rem',
+            }}
+          >
+            <div
+              style={{
+                flex: 1,
+                height: 1,
+                background:
+                  'linear-gradient(90deg, transparent 0%, rgba(1,234,98,0.4) 100%)',
+              }}
+            />
+            <span
+              style={{
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                color: '#01EA62',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              ◆ Exemples
+            </span>
+            <div
+              style={{
+                flex: 1,
+                height: 1,
+                background:
+                  'linear-gradient(90deg, rgba(1,234,98,0.4) 0%, transparent 100%)',
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
             <h2
               style={{
                 fontSize: 'clamp(1.8rem,3vw,2.4rem)',
                 fontWeight: 700,
                 letterSpacing: '-0.02em',
-                marginBottom: '0.5rem',
+                marginBottom: '0.75rem',
+                color: '#fff',
               }}
             >
               {t('examplesTitle')}
             </h2>
-            <p style={{ color: '#6B7280', fontSize: '1rem', maxWidth: 620 }}>
+            <p
+              style={{
+                color: 'rgba(255,255,255,0.6)',
+                fontSize: '1rem',
+                maxWidth: 620,
+                margin: '0 auto',
+                lineHeight: 1.65,
+              }}
+            >
               {t('examplesDesc')}
             </p>
           </div>
@@ -187,7 +235,7 @@ export default async function ProjectsPage({ params }: PageProps) {
               fontWeight: 700,
               textTransform: 'uppercase',
               letterSpacing: '0.1em',
-              color: '#016B2D',
+              color: '#01EA62',
               marginBottom: '1.25rem',
             }}
           >
@@ -205,10 +253,11 @@ export default async function ProjectsPage({ params }: PageProps) {
               <article
                 key={ex.sector + ex.title}
                 style={{
-                  background: '#fff',
-                  border: '1px solid rgba(0,0,0,0.07)',
+                  background: '#111',
+                  border: '1px solid rgba(255,255,255,0.07)',
                   borderRadius: 16,
                   padding: '1.5rem',
+                  color: '#fff',
                 }}
               >
                 <span
@@ -220,23 +269,38 @@ export default async function ProjectsPage({ params }: PageProps) {
                     letterSpacing: '0.05em',
                     padding: '0.25rem 0.75rem',
                     borderRadius: 50,
-                    background: 'rgba(1,107,45,0.08)',
-                    color: '#016B2D',
+                    background: 'rgba(1,234,98,0.1)',
+                    color: '#01EA62',
                     marginBottom: '1rem',
                   }}
                 >
                   {ex.sector}
                 </span>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                <h4
+                  style={{
+                    fontSize: '0.95rem',
+                    fontWeight: 600,
+                    marginBottom: '0.5rem',
+                    color: '#fff',
+                  }}
+                >
                   {ex.title}
                 </h4>
-                <p style={{ fontSize: '0.82rem', color: '#6B7280', lineHeight: 1.65 }}>{ex.desc}</p>
+                <p
+                  style={{
+                    fontSize: '0.82rem',
+                    color: 'rgba(255,255,255,0.6)',
+                    lineHeight: 1.65,
+                  }}
+                >
+                  {ex.desc}
+                </p>
                 <div
                   style={{
                     marginTop: '0.85rem',
                     fontSize: '0.78rem',
                     fontWeight: 600,
-                    color: '#016B2D',
+                    color: '#01EA62',
                   }}
                 >
                   → {ex.result}
@@ -251,7 +315,7 @@ export default async function ProjectsPage({ params }: PageProps) {
               fontWeight: 700,
               textTransform: 'uppercase',
               letterSpacing: '0.1em',
-              color: '#016B2D',
+              color: '#01EA62',
               marginBottom: '1.25rem',
             }}
           >
@@ -284,7 +348,7 @@ export default async function ProjectsPage({ params }: PageProps) {
                     letterSpacing: '0.05em',
                     padding: '0.25rem 0.75rem',
                     borderRadius: 50,
-                    background: 'rgba(1,234,98,0.12)',
+                    background: 'rgba(1,234,98,0.1)',
                     color: '#01EA62',
                     marginBottom: '1rem',
                   }}
@@ -304,7 +368,7 @@ export default async function ProjectsPage({ params }: PageProps) {
                 <p
                   style={{
                     fontSize: '0.82rem',
-                    color: 'rgba(255,255,255,0.5)',
+                    color: 'rgba(255,255,255,0.6)',
                     lineHeight: 1.65,
                   }}
                 >
