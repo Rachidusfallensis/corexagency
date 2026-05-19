@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Image from 'next/image'
 import AdminShell from '@/components/admin/AdminShell'
 import { useToast } from '@/components/admin/Toast'
@@ -61,6 +61,61 @@ const EMPTY_FORM: FormState = {
   display_order: 0,
 }
 
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024
+const COMPRESS_THRESHOLD = 500 * 1024
+const SCREENSHOT_SLOTS = 5
+
+// Compress > 500 KB images client-side (downscale + JPEG q=0.85)
+async function compressImage(
+  file: File,
+  maxWidth = 1920,
+  quality = 0.85
+): Promise<File> {
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file)
+    const img = new window.Image()
+    img.onload = () => {
+      let { width, height } = img
+      if (width > maxWidth) {
+        height = Math.round((height * maxWidth) / width)
+        width = maxWidth
+      }
+      const canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')
+      if (!ctx) {
+        URL.revokeObjectURL(url)
+        resolve(file)
+        return
+      }
+      ctx.drawImage(img, 0, 0, width, height)
+      canvas.toBlob(
+        (blob) => {
+          URL.revokeObjectURL(url)
+          if (!blob) {
+            resolve(file)
+            return
+          }
+          const compressed = new File(
+            [blob],
+            file.name.replace(/\.[^.]+$/, '.jpg'),
+            { type: 'image/jpeg' }
+          )
+          resolve(compressed)
+        },
+        'image/jpeg',
+        quality
+      )
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      resolve(file)
+    }
+    img.src = url
+  })
+}
+
 function ProjectsAdminInner() {
   const toast = useToast()
   const [projects, setProjects] = useState<ProjectRow[]>([])
@@ -69,9 +124,9 @@ function ProjectsAdminInner() {
   const [activeTab, setActiveTab] = useState<Tab>('general')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [form, setForm] = useState<FormState>(EMPTY_FORM)
+  const [initialForm, setInitialForm] = useState<FormState>(EMPTY_FORM)
   const [current, setCurrent] = useState<ProjectWithImages | null>(null)
   const [saving, setSaving] = useState(false)
-  const [uploading, setUploading] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
 
   async function refresh() {
@@ -85,10 +140,42 @@ function ProjectsAdminInner() {
     refresh()
   }, [])
 
+  const hasUnsavedChanges = useCallback(() => {
+    return JSON.stringify(form) !== JSON.stringify(initialForm)
+  }, [form, initialForm])
+
+  const handleCloseModal = useCallback(() => {
+    if (hasUnsavedChanges()) {
+      const ok = window.confirm(
+        'Fermer sans sauvegarder ? Les modifications du formulaire seront perdues.'
+      )
+      if (!ok) return
+    }
+    setModalOpen(false)
+    setCurrent(null)
+    setEditingId(null)
+    setForm(EMPTY_FORM)
+    setInitialForm(EMPTY_FORM)
+  }, [hasUnsavedChanges])
+
+  // ESC to close — with same confirm guard
+  useEffect(() => {
+    if (!modalOpen) return
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        handleCloseModal()
+      }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [modalOpen, handleCloseModal])
+
   function openCreate() {
     setEditingId(null)
     setCurrent(null)
     setForm(EMPTY_FORM)
+    setInitialForm(EMPTY_FORM)
     setActiveTab('general')
     setModalOpen(true)
   }
@@ -104,7 +191,7 @@ function ProjectsAdminInner() {
       return
     }
     setCurrent(p)
-    setForm({
+    const next: FormState = {
       slug: p.slug,
       category: p.category,
       sector: p.sector,
@@ -121,14 +208,9 @@ function ProjectsAdminInner() {
       tags: (p.tags ?? []).join(', '),
       status: p.status,
       display_order: p.display_order,
-    })
-  }
-
-  function closeModal() {
-    setModalOpen(false)
-    setCurrent(null)
-    setEditingId(null)
-    setForm(EMPTY_FORM)
+    }
+    setForm(next)
+    setInitialForm(next)
   }
 
   function patch<K extends keyof FormState>(key: K, value: FormState[K]) {
@@ -183,8 +265,9 @@ function ProjectsAdminInner() {
       return
     }
     toast.show(editingId ? 'Projet mis à jour' : 'Projet créé', 'success')
+    setInitialForm(form)
     if (!editingId && 'data' in res && res.data?.id) {
-      // Continue in edit mode to upload media
+      // Reload as edit so user can upload media without re-opening
       await openEdit(res.data.id)
     } else if (editingId) {
       const p = await getProjectByIdAdmin(editingId)
@@ -209,11 +292,9 @@ function ProjectsAdminInner() {
       toast.show("Crée d'abord le projet (onglet Général)", 'danger')
       return
     }
-    setUploading(true)
     const fd = new FormData()
     fd.append('file', file)
     const res = await uploadProjectCover(editingId, fd)
-    setUploading(false)
     if (!res.success) {
       toast.show(res.error ?? 'Erreur upload', 'danger')
       return
@@ -229,11 +310,9 @@ function ProjectsAdminInner() {
       toast.show("Crée d'abord le projet (onglet Général)", 'danger')
       return
     }
-    setUploading(true)
     const fd = new FormData()
     fd.append('file', file)
     const res = await uploadProjectImage(editingId, fd)
-    setUploading(false)
     if (!res.success) {
       toast.show(res.error ?? 'Erreur upload', 'danger')
       return
@@ -437,7 +516,6 @@ function ProjectsAdminInner() {
       {/* DELETE CONFIRM */}
       {confirmDelete && (
         <div
-          className="modal-overlay open"
           onClick={() => setConfirmDelete(null)}
           style={{
             position: 'fixed',
@@ -519,33 +597,34 @@ function ProjectsAdminInner() {
       {/* EDIT MODAL */}
       {modalOpen && (
         <div
+          onClick={handleCloseModal}
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0,0,0,0.75)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            background: 'rgba(0,0,0,0.85)',
+            backdropFilter: 'blur(8px)',
             zIndex: 150,
-            padding: '1.5rem',
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+            padding: '2rem 1rem',
+            overflowY: 'auto',
           }}
-          onClick={closeModal}
         >
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
               background: '#111',
-              border: '1px solid rgba(255,255,255,0.12)',
+              border: '1px solid rgba(255,255,255,0.1)',
               borderRadius: 20,
-              width: 720,
-              maxWidth: '100%',
-              maxHeight: 'calc(100vh - 3rem)',
-              overflow: 'hidden',
+              width: '100%',
+              maxWidth: 720,
+              margin: 'auto',
               display: 'flex',
               flexDirection: 'column',
             }}
           >
+            {/* HEADER */}
             <div
               style={{
                 padding: '1.25rem 1.5rem',
@@ -555,22 +634,27 @@ function ProjectsAdminInner() {
                 justifyContent: 'space-between',
               }}
             >
-              <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700 }}>
                 {editingId ? 'Modifier le projet' : 'Nouveau projet'}
               </h3>
               <button
                 type="button"
-                onClick={closeModal}
+                onClick={handleCloseModal}
                 style={{
-                  width: 30,
-                  height: 30,
-                  borderRadius: 7,
-                  background: 'rgba(255,255,255,0.05)',
-                  color: 'rgba(255,255,255,0.5)',
+                  width: 32,
+                  height: 32,
+                  borderRadius: 8,
+                  background: 'rgba(255,255,255,0.06)',
+                  color: 'rgba(255,255,255,0.6)',
                   border: 'none',
                   cursor: 'pointer',
                   fontFamily: 'inherit',
+                  fontSize: '1.1rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
+                aria-label="Fermer"
               >
                 ×
               </button>
@@ -582,6 +666,7 @@ function ProjectsAdminInner() {
                 display: 'flex',
                 borderBottom: '1px solid rgba(255,255,255,0.07)',
                 padding: '0 1.5rem',
+                overflowX: 'auto',
               }}
             >
               {[
@@ -597,8 +682,7 @@ function ProjectsAdminInner() {
                     padding: '0.85rem 1rem',
                     background: 'transparent',
                     border: 'none',
-                    color:
-                      activeTab === tab.key ? '#01EA62' : 'rgba(255,255,255,0.5)',
+                    color: activeTab === tab.key ? '#01EA62' : 'rgba(255,255,255,0.5)',
                     fontSize: '0.85rem',
                     fontWeight: 600,
                     cursor: 'pointer',
@@ -608,6 +692,7 @@ function ProjectsAdminInner() {
                         ? '2px solid #01EA62'
                         : '2px solid transparent',
                     marginBottom: -1,
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   {tab.label}
@@ -615,7 +700,7 @@ function ProjectsAdminInner() {
               ))}
             </div>
 
-            <div style={{ padding: '1.5rem', overflowY: 'auto', flex: 1 }}>
+            <div style={{ padding: '1.5rem' }}>
               {activeTab === 'general' && (
                 <GeneralTab form={form} patch={patch} editingId={editingId} />
               )}
@@ -624,10 +709,10 @@ function ProjectsAdminInner() {
                 <MediaTab
                   current={current}
                   editingId={editingId}
-                  uploading={uploading}
                   onUploadCover={handleUploadCover}
                   onUploadImage={handleUploadImage}
                   onDeleteImage={handleDeleteImage}
+                  onToastError={(msg) => toast.show(msg, 'danger')}
                 />
               )}
             </div>
@@ -638,47 +723,63 @@ function ProjectsAdminInner() {
                 borderTop: '1px solid rgba(255,255,255,0.07)',
                 display: 'flex',
                 gap: '0.5rem',
-                justifyContent: 'flex-end',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
               }}
             >
-              <button
-                type="button"
-                onClick={closeModal}
+              <div
                 style={{
-                  padding: '0.6rem 1.25rem',
-                  borderRadius: 9,
-                  background: 'rgba(255,255,255,0.05)',
-                  color: 'rgba(255,255,255,0.5)',
-                  border: 'none',
-                  fontSize: '0.82rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
+                  fontSize: '0.72rem',
+                  color: hasUnsavedChanges()
+                    ? '#FBBF24'
+                    : 'rgba(255,255,255,0.35)',
                 }}
               >
-                Fermer
-              </button>
-              {(activeTab === 'general' || activeTab === 'content') && (
+                {hasUnsavedChanges()
+                  ? '● Modifications non enregistrées'
+                  : '✓ À jour'}
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
                 <button
                   type="button"
-                  onClick={handleSave}
-                  disabled={saving}
+                  onClick={handleCloseModal}
                   style={{
                     padding: '0.6rem 1.25rem',
                     borderRadius: 9,
-                    background: '#01EA62',
-                    color: '#050505',
+                    background: 'rgba(255,255,255,0.05)',
+                    color: 'rgba(255,255,255,0.6)',
                     border: 'none',
                     fontSize: '0.82rem',
-                    fontWeight: 700,
-                    cursor: saving ? 'wait' : 'pointer',
-                    opacity: saving ? 0.7 : 1,
+                    fontWeight: 600,
+                    cursor: 'pointer',
                     fontFamily: 'inherit',
                   }}
                 >
-                  {saving ? 'Enregistrement...' : editingId ? 'Enregistrer' : 'Créer'}
+                  Fermer
                 </button>
-              )}
+                {(activeTab === 'general' || activeTab === 'content') && (
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={saving}
+                    style={{
+                      padding: '0.6rem 1.25rem',
+                      borderRadius: 9,
+                      background: '#01EA62',
+                      color: '#050505',
+                      border: 'none',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      cursor: saving ? 'wait' : 'pointer',
+                      opacity: saving ? 0.7 : 1,
+                      fontFamily: 'inherit',
+                    }}
+                  >
+                    {saving ? 'Enregistrement...' : editingId ? 'Enregistrer' : 'Créer'}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -687,7 +788,7 @@ function ProjectsAdminInner() {
   )
 }
 
-// ============ TABS ============
+// ============ HELPERS ============
 
 function inputStyle(): React.CSSProperties {
   return {
@@ -714,13 +815,7 @@ function labelStyle(): React.CSSProperties {
   }
 }
 
-function Field({
-  label,
-  children,
-}: {
-  label: string
-  children: React.ReactNode
-}) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: '1rem' }}>
       <label style={labelStyle()}>{label}</label>
@@ -728,6 +823,224 @@ function Field({
     </div>
   )
 }
+
+// ============ IMAGE UPLOAD ZONE (drag&drop + click + compress) ============
+
+function ImageUploadZone({
+  label,
+  preview,
+  aspect = '16 / 9',
+  onUpload,
+  onDelete,
+  onError,
+  disabled,
+}: {
+  label: string
+  preview?: string | null
+  aspect?: string
+  onUpload: (file: File) => Promise<void>
+  onDelete?: () => void
+  onError: (msg: string) => void
+  disabled?: boolean
+}) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [dragging, setDragging] = useState(false)
+  const [uploading, setUploading] = useState(false)
+
+  async function handleFile(file: File) {
+    if (!file.type.startsWith('image/')) {
+      onError('Format non supporté. Utilisez JPG, PNG ou WebP.')
+      return
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      onError('Image trop volumineuse (max 10 Mo).')
+      return
+    }
+    setUploading(true)
+    try {
+      const toUpload =
+        file.size > COMPRESS_THRESHOLD ? await compressImage(file) : file
+      await onUpload(toUpload)
+    } catch (err) {
+      console.error('Upload error:', err)
+      onError("Erreur lors de l'upload.")
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  return (
+    <div>
+      {label && (
+        <div
+          style={{
+            fontSize: '0.7rem',
+            color: 'rgba(255,255,255,0.5)',
+            marginBottom: '0.4rem',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '0.07em',
+          }}
+        >
+          {label}
+        </div>
+      )}
+
+      {preview ? (
+        <div
+          style={{
+            position: 'relative',
+            borderRadius: 12,
+            overflow: 'hidden',
+            aspectRatio: aspect,
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.07)',
+          }}
+        >
+          <Image
+            src={preview}
+            alt=""
+            fill
+            style={{ objectFit: 'cover' }}
+            sizes="(max-width: 768px) 100vw, 640px"
+            unoptimized
+          />
+          {onDelete && (
+            <button
+              type="button"
+              onClick={onDelete}
+              disabled={uploading || disabled}
+              aria-label="Supprimer"
+              style={{
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                background: 'rgba(0,0,0,0.7)',
+                border: 'none',
+                borderRadius: '50%',
+                width: 28,
+                height: 28,
+                cursor: uploading ? 'wait' : 'pointer',
+                color: '#fff',
+                fontSize: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'inherit',
+              }}
+            >
+              ×
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={uploading || disabled}
+            style={{
+              position: 'absolute',
+              bottom: 8,
+              right: 8,
+              background: 'rgba(1,234,98,0.9)',
+              border: 'none',
+              borderRadius: 8,
+              padding: '0.3rem 0.75rem',
+              cursor: uploading ? 'wait' : 'pointer',
+              color: '#050505',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              fontFamily: 'inherit',
+            }}
+          >
+            {uploading ? 'Upload...' : 'Changer'}
+          </button>
+        </div>
+      ) : (
+        <div
+          onClick={() => {
+            if (!uploading && !disabled) inputRef.current?.click()
+          }}
+          onDragOver={(e) => {
+            e.preventDefault()
+            if (!uploading && !disabled) setDragging(true)
+          }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={async (e) => {
+            e.preventDefault()
+            setDragging(false)
+            if (uploading || disabled) return
+            const file = e.dataTransfer.files[0]
+            if (file) await handleFile(file)
+          }}
+          style={{
+            border: `2px dashed ${
+              dragging ? '#01EA62' : 'rgba(255,255,255,0.15)'
+            }`,
+            borderRadius: 12,
+            padding: '1.5rem 1rem',
+            textAlign: 'center',
+            cursor: uploading || disabled ? 'wait' : 'pointer',
+            background: dragging
+              ? 'rgba(1,234,98,0.05)'
+              : 'rgba(255,255,255,0.02)',
+            transition: 'all 0.2s',
+            aspectRatio: aspect,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: disabled ? 0.5 : 1,
+          }}
+        >
+          {uploading ? (
+            <div style={{ color: '#01EA62', fontSize: '0.85rem', fontWeight: 600 }}>
+              ⏳ Upload en cours...
+            </div>
+          ) : (
+            <>
+              <div style={{ fontSize: '1.6rem', marginBottom: '0.35rem' }}>📁</div>
+              <div
+                style={{
+                  color: 'rgba(255,255,255,0.6)',
+                  fontSize: '0.82rem',
+                  marginBottom: 2,
+                  fontWeight: 500,
+                }}
+              >
+                Glisser une image ici
+              </div>
+              <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.72rem' }}>
+                ou cliquer pour choisir
+              </div>
+              <div
+                style={{
+                  color: 'rgba(255,255,255,0.2)',
+                  fontSize: '0.68rem',
+                  marginTop: '0.4rem',
+                }}
+              >
+                JPG, PNG, WebP · Max 10 Mo
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={async (e) => {
+          const file = e.target.files?.[0]
+          if (file) await handleFile(file)
+          e.target.value = ''
+        }}
+      />
+    </div>
+  )
+}
+
+// ============ TABS ============
 
 function GeneralTab({
   form,
@@ -911,17 +1224,17 @@ function ContentTab({
 function MediaTab({
   current,
   editingId,
-  uploading,
   onUploadCover,
   onUploadImage,
   onDeleteImage,
+  onToastError,
 }: {
   current: ProjectWithImages | null
   editingId: string | null
-  uploading: boolean
-  onUploadCover: (f: File) => void
-  onUploadImage: (f: File) => void
-  onDeleteImage: (id: string) => void
+  onUploadCover: (f: File) => Promise<void>
+  onUploadImage: (f: File) => Promise<void>
+  onDeleteImage: (id: string) => Promise<void>
+  onToastError: (msg: string) => void
 }) {
   if (!editingId) {
     return (
@@ -941,156 +1254,46 @@ function MediaTab({
     )
   }
 
+  const images = current?.images ?? []
+  const totalSlots = Math.max(SCREENSHOT_SLOTS, images.length + 1)
+  const slots = useMemo(
+    () => Array.from({ length: totalSlots }, (_, i) => images[i] ?? null),
+    [totalSlots, images]
+  )
+
   return (
     <>
-      {/* COVER */}
-      <div style={{ marginBottom: '2rem' }}>
-        <label style={labelStyle()}>Image de couverture</label>
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            aspectRatio: '16 / 9',
-            borderRadius: 12,
-            overflow: 'hidden',
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.07)',
-            marginBottom: '0.75rem',
-          }}
-        >
-          {current?.cover_image ? (
-            <Image
-              src={current.cover_image}
-              alt=""
-              fill
-              style={{ objectFit: 'cover' }}
-              sizes="(max-width: 768px) 100vw, 640px"
-            />
-          ) : (
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'rgba(255,255,255,0.3)',
-                fontSize: '0.85rem',
-              }}
-            >
-              Aucune couverture
-            </div>
-          )}
-        </div>
-        <label
-          style={{
-            display: 'inline-block',
-            padding: '0.5rem 1rem',
-            borderRadius: 9,
-            background: 'rgba(1,234,98,0.1)',
-            color: '#01EA62',
-            fontSize: '0.78rem',
-            fontWeight: 600,
-            cursor: uploading ? 'wait' : 'pointer',
-          }}
-        >
-          {uploading ? 'Upload...' : current?.cover_image ? 'Remplacer' : 'Uploader'}
-          <input
-            type="file"
-            accept="image/*"
-            style={{ display: 'none' }}
-            disabled={uploading}
-            onChange={(e) => {
-              const f = e.target.files?.[0]
-              if (f) onUploadCover(f)
-              e.target.value = ''
-            }}
-          />
-        </label>
+      <div style={{ marginBottom: '1.75rem' }}>
+        <ImageUploadZone
+          label="Image de couverture"
+          preview={current?.cover_image ?? null}
+          aspect="16 / 9"
+          onUpload={onUploadCover}
+          onError={onToastError}
+        />
       </div>
 
-      {/* GALLERY */}
       <div>
-        <label style={labelStyle()}>Galerie</label>
+        <div style={labelStyle()}>Galerie / Screenshots</div>
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-            gap: '0.6rem',
-            marginBottom: '0.75rem',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+            gap: '0.75rem',
           }}
         >
-          {(current?.images ?? []).map((img) => (
-            <div
-              key={img.id}
-              style={{
-                position: 'relative',
-                aspectRatio: '4 / 3',
-                borderRadius: 10,
-                overflow: 'hidden',
-                background: 'rgba(255,255,255,0.04)',
-              }}
-            >
-              <Image
-                src={img.image_url}
-                alt=""
-                fill
-                style={{ objectFit: 'cover' }}
-                sizes="200px"
-              />
-              <button
-                type="button"
-                onClick={() => onDeleteImage(img.id)}
-                style={{
-                  position: 'absolute',
-                  top: 6,
-                  right: 6,
-                  width: 24,
-                  height: 24,
-                  borderRadius: 6,
-                  background: 'rgba(0,0,0,0.65)',
-                  color: '#EF4444',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '0.95rem',
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontFamily: 'inherit',
-                }}
-                aria-label="Supprimer"
-              >
-                ×
-              </button>
-            </div>
+          {slots.map((img, i) => (
+            <ImageUploadZone
+              key={img?.id ?? `slot-${i}`}
+              label={`Screenshot ${i + 1}`}
+              preview={img?.image_url ?? null}
+              aspect="4 / 3"
+              onUpload={onUploadImage}
+              onDelete={img ? () => onDeleteImage(img.id) : undefined}
+              onError={onToastError}
+            />
           ))}
         </div>
-        <label
-          style={{
-            display: 'inline-block',
-            padding: '0.5rem 1rem',
-            borderRadius: 9,
-            background: 'rgba(1,234,98,0.1)',
-            color: '#01EA62',
-            fontSize: '0.78rem',
-            fontWeight: 600,
-            cursor: uploading ? 'wait' : 'pointer',
-          }}
-        >
-          {uploading ? 'Upload...' : '+ Ajouter une image'}
-          <input
-            type="file"
-            accept="image/*"
-            style={{ display: 'none' }}
-            disabled={uploading}
-            onChange={(e) => {
-              const f = e.target.files?.[0]
-              if (f) onUploadImage(f)
-              e.target.value = ''
-            }}
-          />
-        </label>
       </div>
     </>
   )
