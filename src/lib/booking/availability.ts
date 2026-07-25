@@ -106,6 +106,8 @@ export function generateSlots(
     const startMin = sh * 60 + sm
     const endMin = eh * 60 + em
     const dur = rule.slot_duration
+    
+    if (dur <= 0) continue // Prevent infinite loop
 
     for (let t = startMin; t + dur <= endMin; t += dur) {
       const wall = fmtTime(Math.floor(t / 60), t % 60)
