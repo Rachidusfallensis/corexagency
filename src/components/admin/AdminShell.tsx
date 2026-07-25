@@ -108,6 +108,7 @@ const PROTO_ADMIN_CSS = `
 .proto-admin .status-badge.pending{background:rgba(251,191,36,0.1);color:#FBBF24}.proto-admin .status-badge.pending::before{background:#FBBF24}
 .proto-admin .status-badge.confirmed{background:rgba(1,234,98,0.1);color:var(--gv)}.proto-admin .status-badge.confirmed::before{background:var(--gv)}
 .proto-admin .status-badge.cancelled{background:rgba(239,68,68,0.1);color:#EF4444}.proto-admin .status-badge.cancelled::before{background:#EF4444}
+.proto-admin .status-badge.rescheduled{background:rgba(217,70,239,0.1);color:#D946EF}.proto-admin .status-badge.rescheduled::before{background:#D946EF}
 .proto-admin .status-badge.waiting{background:rgba(156,163,175,0.1);color:#9CA3AF}.proto-admin .status-badge.waiting::before{background:#9CA3AF}
 .proto-admin .status-badge.invited{background:rgba(96,165,250,0.1);color:#60A5FA}.proto-admin .status-badge.invited::before{background:#60A5FA}
 .proto-admin .status-badge.converted{background:rgba(1,234,98,0.1);color:var(--gv)}.proto-admin .status-badge.converted::before{background:var(--gv)}

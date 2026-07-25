@@ -89,7 +89,7 @@ export function generateSlots(
   // Booked set: keyed by `${utc_date}|${utc_time_HHMM}`
   const bookedKeys = new Set(
     reservations
-      .filter((r) => r.status !== 'cancelled')
+      .filter((r) => r.status !== 'cancelled' && r.status !== 'rescheduled')
       .map((r) => `${r.slot_date.slice(0, 10)}|${r.slot_time.slice(0, 5)}`)
   )
 

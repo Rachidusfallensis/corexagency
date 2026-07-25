@@ -168,6 +168,7 @@ const STEP_HINTS = [
 ]
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const PHONE_RE = /^(?:\+[\d\s-]{8,}|\d{10,})$/
 
 const SERVICE_OPTIONS = [
   {
@@ -274,6 +275,27 @@ export default function BookingPage() {
   // UTC date for the picked slot (separate from visitor-local selectedDate driving the calendar)
   const [selectedUtcDate, setSelectedUtcDate] = useState<string | null>(null)
 
+  useEffect(() => {
+    try {
+      const savedState = sessionStorage.getItem('corex_booking_state')
+      if (savedState) setState(JSON.parse(savedState))
+      
+      const savedStep = sessionStorage.getItem('corex_booking_step')
+      if (savedStep) {
+        const p = parseInt(savedStep, 10)
+        // Don't auto-restore confirmation step
+        if (p >= 1 && p < 6) setStep(p)
+      }
+    } catch (e) {}
+  }, [])
+
+  useEffect(() => {
+    if (step < 6) {
+      sessionStorage.setItem('corex_booking_state', JSON.stringify(state))
+      sessionStorage.setItem('corex_booking_step', step.toString())
+    }
+  }, [state, step])
+
   const [availLoaded, setAvailLoaded] = useState(false)
   const [rules, setRules] = useState<AvailabilityRule[]>([])
   const [blocks, setBlocks] = useState<AvailabilityBlock[]>([])
@@ -323,9 +345,11 @@ export default function BookingPage() {
       case 3: return !!state.profile
       case 4: return !!state.selectedDate && !!state.selectedTime
       case 5:
+        const validPhone = !state.contact.phone || PHONE_RE.test(state.contact.phone.trim())
         return !!state.contact.firstname.trim() &&
           !!state.contact.lastname.trim() &&
-          EMAIL_RE.test(state.contact.email)
+          EMAIL_RE.test(state.contact.email) &&
+          validPhone
       default: return false
     }
   }
@@ -342,8 +366,26 @@ export default function BookingPage() {
         : state
       const res = await createReservation(stateForDB, visitorTz || undefined)
       setSubmitting(false)
-      if (res.success) setStep(6)
-      else setSubmitError(res.error ?? 'Erreur')
+      if (res.success) {
+        sessionStorage.removeItem('corex_booking_state')
+        sessionStorage.removeItem('corex_booking_step')
+        setStep(6)
+      } else {
+        if (res.error?.includes('Ce créneau vient d\'être pris')) {
+          setSubmitError(res.error)
+          setStep(4) // Retour au calendrier
+          // Refresh availability
+          setAvailLoaded(false)
+          getAvailabilityData().then((data) => {
+            setRules(data.rules)
+            setBlocks(data.blocks)
+            setReservations(data.reservations)
+            setAvailLoaded(true)
+          }).catch(() => {})
+        } else {
+          setSubmitError(res.error ?? 'Erreur')
+        }
+      }
     }
   }
   function handleBack() {

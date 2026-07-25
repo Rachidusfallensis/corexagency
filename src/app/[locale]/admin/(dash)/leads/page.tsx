@@ -5,8 +5,10 @@ import AdminShell from '@/components/admin/AdminShell'
 import StatusBadge from '@/components/admin/StatusBadge'
 import ServiceBadge from '@/components/admin/ServiceBadge'
 import { useToast } from '@/components/admin/Toast'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { getLeads } from '@/lib/admin/actions'
 import type { LeadRow } from '@/lib/types/admin'
+import Skeleton from '@/components/admin/Skeleton'
 
 const PROFILE_LABELS: Record<string, string> = {
   startup: 'Startup',
@@ -59,14 +61,39 @@ function buildCsv(rows: LeadRow[]): string {
 
 function LeadsInner() {
   const toast = useToast()
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+  
+  const page = parseInt(searchParams.get('page') || '1', 10)
+  const limit = 10
+
+  const [loading, setLoading] = useState(true)
+  const [total, setTotal] = useState(0)
   const [leads, setLeads] = useState<LeadRow[]>([])
   const [search, setSearch] = useState('')
   const [serviceFilter, setServiceFilter] = useState('all')
   const [sourceFilter, setSourceFilter] = useState('all')
 
+  async function refresh(currentPage: number) {
+    setLoading(true)
+    try {
+      const res = await getLeads({ page: currentPage, limit })
+      setLeads(res.data)
+      setTotal(res.total)
+    } catch (err: any) {
+      if (err.message?.includes('authentifié')) {
+        toast.show('Session expirée', 'danger')
+        router.push(`/${pathname.split('/')[1]}/admin/login`)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
-    getLeads().then(setLeads)
-  }, [])
+    refresh(page)
+  }, [page])
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -147,10 +174,24 @@ function LeadsInner() {
       `}</style>
 
       <div className="leads-mobile-cards">
-        {filtered.length === 0 ? (
-          <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', padding: '1.5rem', fontSize: '0.85rem' }}>
-            Aucun lead.
-          </p>
+        {loading ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={`skel-m-${i}`} style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '1rem' }}>
+              <Skeleton width="60%" height="20px" style={{ marginBottom: '8px' }} />
+              <Skeleton width="40%" height="14px" style={{ marginBottom: '16px' }} />
+              <Skeleton width="100%" height="40px" />
+            </div>
+          ))
+        ) : filtered.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'rgba(255,255,255,0.4)' }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ marginBottom: '1rem' }}>
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            <div>Aucun lead trouvé.</div>
+          </div>
         ) : (
           filtered.map((l) => (
             <div key={`m-${l.id}`} style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '1rem' }}>
@@ -196,10 +237,29 @@ function LeadsInner() {
               </tr>
             </thead>
             <tbody>
-              {filtered.length === 0 ? (
+              {loading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={`skel-${i}`}>
+                    <td><Skeleton width="120px" height="18px" /><Skeleton width="150px" height="14px" style={{ marginTop: '4px' }} /></td>
+                    <td><Skeleton width="100px" height="24px" borderRadius="12px" /></td>
+                    <td><Skeleton width="80px" height="14px" /></td>
+                    <td><Skeleton width="80px" height="14px" /></td>
+                    <td><Skeleton width="90px" height="24px" borderRadius="12px" /></td>
+                    <td><Skeleton width="90px" height="18px" /></td>
+                  </tr>
+                ))
+              ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', padding: '2rem' }}>
-                    Aucun lead.
+                  <td colSpan={6} style={{ textAlign: 'center', padding: '4rem 2rem', color: 'rgba(255,255,255,0.4)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                      </svg>
+                      <div>Aucun lead trouvé.</div>
+                    </div>
                   </td>
                 </tr>
               ) : (
@@ -237,6 +297,36 @@ function LeadsInner() {
           </table>
         </div>
       </div>
+      
+      {Math.ceil(total / limit) > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '1.5rem', padding: '1rem 0' }}>
+          <button
+            className="action-btn view"
+            disabled={page <= 1}
+            onClick={() => {
+              const params = new URLSearchParams(searchParams.toString())
+              params.set('page', (page - 1).toString())
+              router.push(`${pathname}?${params.toString()}`)
+            }}
+          >
+            Précédent
+          </button>
+          <span style={{ display: 'flex', alignItems: 'center', fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)' }}>
+            Page {page} / {Math.ceil(total / limit)}
+          </span>
+          <button
+            className="action-btn view"
+            disabled={page >= Math.ceil(total / limit)}
+            onClick={() => {
+              const params = new URLSearchParams(searchParams.toString())
+              params.set('page', (page + 1).toString())
+              router.push(`${pathname}?${params.toString()}`)
+            }}
+          >
+            Suivant
+          </button>
+        </div>
+      )}
     </>
   )
 }
