@@ -6,6 +6,7 @@ const LABELS: Record<string, string> = {
   pending: 'En attente',
   confirmed: 'Confirmé',
   cancelled: 'Annulé',
+  rescheduled: 'Replanifié',
   waiting: 'En file',
   invited: 'Invité',
   converted: 'Converti',

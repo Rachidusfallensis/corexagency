@@ -223,6 +223,42 @@ function AddBlockModal({
   )
 }
 
+function ConflictModal({ conflicts, onConfirm, onCancel }: { conflicts: ReservationRow[], onConfirm: () => void, onCancel: () => void }) {
+  if (!conflicts || !conflicts.length) return null;
+  return (
+    <div className="modal-overlay open" onClick={onCancel}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header" style={{ borderBottomColor: 'rgba(239, 68, 68, 0.2)' }}>
+          <h3 style={{ color: '#EF4444' }}>Attention : Conflits détectés</h3>
+          <button type="button" className="modal-close" onClick={onCancel}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div className="modal-body">
+          <p style={{ fontSize: '0.85rem', marginBottom: '1rem', color: 'var(--text2)', lineHeight: '1.5' }}>
+            Cette action va impacter <strong>{conflicts.length}</strong> réservation(s) existante(s).
+            Ces réservations <strong>ne seront pas annulées automatiquement</strong> mais se retrouveront hors de vos disponibilités. Vous devrez les gérer manuellement.
+          </p>
+          <div style={{ maxHeight: '200px', overflowY: 'auto', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', padding: '0.5rem' }}>
+            {conflicts.map((r, i) => (
+               <div key={i} style={{ padding: '0.5rem', borderBottom: i === conflicts.length - 1 ? 'none' : '1px solid rgba(255,255,255,0.05)', fontSize: '0.8rem' }}>
+                 <strong style={{ color: '#fff' }}>{r.contact_name}</strong> — le {r.slot_date.slice(0,10)} à {r.slot_time.slice(0,5)}
+               </div>
+            ))}
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="modal-btn cancel-btn" onClick={onCancel}>Annuler</button>
+          <button type="button" className="modal-btn danger" onClick={onConfirm}>Forcer l'action</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function DispoInner() {
   const toast = useToast()
   const [rules, setRules] = useState<AvailabilityRuleRow[]>([])
@@ -232,6 +268,8 @@ function DispoInner() {
   const [showBlockModal, setShowBlockModal] = useState(false)
   const [blockPreset, setBlockPreset] = useState<string | undefined>(undefined)
   const [adminTimezone, setAdminTimezone] = useState<string>('America/Toronto')
+  const [conflicts, setConflicts] = useState<ReservationRow[] | null>(null)
+  const [pendingAction, setPendingAction] = useState<(() => Promise<void>) | null>(null)
 
   useEffect(() => {
     const saved = typeof window !== 'undefined' ? localStorage.getItem('adminTimezone') : null
@@ -256,7 +294,7 @@ function DispoInner() {
     ])
     setRules(r)
     setBlocks(b)
-    setReservations(res)
+    setReservations(res.data)
   }
 
   useEffect(() => {
@@ -449,6 +487,15 @@ function DispoInner() {
                       className="rule-del"
                       onClick={async () => {
                         const res = await deleteAvailabilityRule(r.id)
+                        if (!res.success && res.conflicts) {
+                          setConflicts(res.conflicts)
+                          setPendingAction(() => async () => {
+                            const r2 = await deleteAvailabilityRule(r.id, true)
+                            if (r2.success) { toast.show('Règle supprimée', 'success'); await refresh(); setConflicts(null) }
+                            else { toast.show(r2.error || 'Erreur', 'danger'); setConflicts(null) }
+                          })
+                          return
+                        }
                         if (res.success) {
                           toast.show('Règle supprimée', 'success')
                           await refresh()
@@ -639,13 +686,31 @@ function DispoInner() {
         presetStart={blockPreset}
         onSubmit={async (b) => {
           const res = await addAvailabilityBlock(b)
+          if (!res.success && res.conflicts) {
+            setConflicts(res.conflicts)
+            setPendingAction(() => async () => {
+              const r2 = await addAvailabilityBlock(b, true)
+              if (r2.success) { toast.show('Blocage ajouté', 'success'); setShowBlockModal(false); await refresh(); setConflicts(null) }
+              else { toast.show(r2.error || 'Erreur', 'danger'); setConflicts(null) }
+            })
+            return
+          }
           if (res.success) {
-            toast.show('Période bloquée', 'success')
+            toast.show('Blocage ajouté', 'success')
             setShowBlockModal(false)
             await refresh()
           } else toast.show(res.error ?? 'Erreur', 'danger')
         }}
       />
+      {conflicts && (
+        <ConflictModal
+          conflicts={conflicts}
+          onCancel={() => { setConflicts(null); setPendingAction(null) }}
+          onConfirm={() => {
+            if (pendingAction) pendingAction()
+          }}
+        />
+      )}
     </>
   )
 }

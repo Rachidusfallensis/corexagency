@@ -11,6 +11,24 @@ import type {
   ReservationRow,
   StatsData,
 } from '@/lib/types/admin'
+import { generateSlots, parseISODate } from '@/lib/booking/availability'
+
+function generateToken() {
+  const array = new Uint8Array(32)
+  crypto.getRandomValues(array)
+  return Array.from(array)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
+}
+
+async function hashToken(token: string) {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(token)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
+}
 
 async function requireAdmin() {
   const supabase = await createClient()
@@ -21,7 +39,7 @@ async function requireAdmin() {
   return user
 }
 
-type ActionResult = { success: boolean; error?: string }
+type ActionResult = { success: boolean; error?: string; conflicts?: ReservationRow[] }
 
 export async function getStats(): Promise<StatsData> {
   await requireAdmin()
@@ -52,14 +70,22 @@ export async function getStats(): Promise<StatsData> {
 export async function getReservations(filters?: {
   status?: string
   service?: string
-}): Promise<ReservationRow[]> {
+  page?: number
+  limit?: number
+}): Promise<{ data: ReservationRow[]; total: number }> {
   await requireAdmin()
   const svc = createServiceClient()
-  let q = svc.from('reservations').select('*').order('created_at', { ascending: false })
+  let q = svc.from('reservations').select('*', { count: 'exact' }).order('created_at', { ascending: false })
   if (filters?.status && filters.status !== 'all') q = q.eq('status', filters.status)
   if (filters?.service && filters.service !== 'all') q = q.eq('service', filters.service)
-  const { data } = await q
-  return (data ?? []) as ReservationRow[]
+  
+  if (filters?.page && filters?.limit) {
+    const from = (filters.page - 1) * filters.limit
+    q = q.range(from, from + filters.limit - 1)
+  }
+
+  const { data, count } = await q
+  return { data: (data ?? []) as ReservationRow[], total: count ?? 0 }
 }
 
 export async function confirmReservation(id: string): Promise<ActionResult> {
@@ -87,10 +113,33 @@ export async function cancelReservation(
     cancelled_at: new Date().toISOString(),
     admin_note: reason,
   }
-  if (withReschedule) update.reschedule_token = crypto.randomUUID()
 
   const { error } = await svc.from('reservations').update(update).eq('id', id)
   if (error) return { success: false, error: error.message }
+
+  if (withReschedule) {
+    const plainToken = generateToken()
+    const hashed = await hashToken(plainToken)
+
+    const expiresAt = new Date()
+    expiresAt.setDate(expiresAt.getDate() + 7)
+
+    const { error: tokenErr } = await svc.from('reschedule_tokens').insert({
+      token_hash: hashed,
+      reservation_id: id,
+      expires_at: expiresAt.toISOString(),
+    })
+
+    if (tokenErr) {
+      console.error('Erreur insertion token:', tokenErr)
+    } else {
+      console.log('\n--- EMAIL SIMULATION ---')
+      console.log(`Lien de replanification pour ${id}:`)
+      console.log(`http://localhost:3000/rendez-vous/replanifier/${plainToken}`)
+      console.log('------------------------\n')
+    }
+  }
+
   revalidatePath('/[locale]/admin', 'layout')
   return { success: true }
 }
@@ -136,14 +185,22 @@ export async function rejectFromQueue(id: string): Promise<ActionResult> {
 export async function getLeads(filters?: {
   service?: string
   source?: string
-}): Promise<LeadRow[]> {
+  page?: number
+  limit?: number
+}): Promise<{ data: LeadRow[]; total: number }> {
   await requireAdmin()
   const svc = createServiceClient()
-  let q = svc.from('leads').select('*').order('created_at', { ascending: false })
+  let q = svc.from('leads').select('*', { count: 'exact' }).order('created_at', { ascending: false })
   if (filters?.service && filters.service !== 'all') q = q.eq('service', filters.service)
   if (filters?.source && filters.source !== 'all') q = q.eq('source', filters.source)
-  const { data } = await q
-  return (data ?? []) as LeadRow[]
+
+  if (filters?.page && filters?.limit) {
+    const from = (filters.page - 1) * filters.limit
+    q = q.range(from, from + filters.limit - 1)
+  }
+
+  const { data, count } = await q
+  return { data: (data ?? []) as LeadRow[], total: count ?? 0 }
 }
 
 export async function getAvailabilityRules(): Promise<AvailabilityRuleRow[]> {
@@ -175,9 +232,41 @@ export async function addAvailabilityRule(rule: {
   return { success: true }
 }
 
-export async function deleteAvailabilityRule(id: string): Promise<ActionResult> {
+export async function deleteAvailabilityRule(id: string, force?: boolean): Promise<ActionResult> {
   await requireAdmin()
   const svc = createServiceClient()
+
+  if (!force) {
+    const { data: rules } = await svc.from('availability_rules').select('*').neq('id', id)
+    const { data: blocks } = await svc.from('availability_blocks').select('*')
+    const todayStr = new Date().toISOString().slice(0, 10)
+    const { data: activeRes } = await svc
+      .from('reservations')
+      .select('*')
+      .in('status', ['pending', 'confirmed'])
+      .gte('slot_date', todayStr)
+      
+    const conflicts: ReservationRow[] = []
+    if (activeRes && rules && blocks) {
+      for (const res of activeRes) {
+        const slots = generateSlots(
+          parseISODate(res.slot_date.slice(0, 10)),
+          rules as any[],
+          [],
+          blocks as any[]
+        )
+        const slotExists = slots.some(s => s.time === res.slot_time.slice(0, 5))
+        if (!slotExists) {
+          conflicts.push(res as ReservationRow)
+        }
+      }
+    }
+    
+    if (conflicts.length > 0) {
+      return { success: false, conflicts }
+    }
+  }
+
   const { error } = await svc.from('availability_rules').delete().eq('id', id)
   if (error) return { success: false, error: error.message }
   revalidatePath('/[locale]/admin', 'layout')
@@ -194,13 +283,26 @@ export async function getAvailabilityBlocks(): Promise<AvailabilityBlockRow[]> {
   return (data ?? []) as AvailabilityBlockRow[]
 }
 
-export async function addAvailabilityBlock(block: {
-  start_date: string
-  end_date: string
-  reason?: string
-}): Promise<ActionResult> {
+export async function addAvailabilityBlock(
+  block: { start_date: string; end_date: string; reason?: string },
+  force?: boolean
+): Promise<ActionResult> {
   await requireAdmin()
   const svc = createServiceClient()
+
+  if (!force) {
+    const { data: conflicts } = await svc
+      .from('reservations')
+      .select('*')
+      .in('status', ['pending', 'confirmed'])
+      .gte('slot_date', block.start_date)
+      .lte('slot_date', block.end_date)
+      
+    if (conflicts && conflicts.length > 0) {
+      return { success: false, conflicts: conflicts as ReservationRow[] }
+    }
+  }
+
   const { error } = await svc.from('availability_blocks').insert({
     start_date: block.start_date,
     end_date: block.end_date,

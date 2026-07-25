@@ -1,6 +1,6 @@
 export type Service = 'digitalisation' | 'saas' | 'other'
 export type Profile = 'startup' | 'pme' | 'freelance' | 'other'
-export type BookingStatus = 'pending' | 'confirmed' | 'cancelled'
+export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'rescheduled'
 export type Urgency = 'high' | 'medium' | 'low'
 
 export interface BookingState {

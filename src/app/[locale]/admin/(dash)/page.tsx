@@ -2,7 +2,7 @@ import AdminShell from '@/components/admin/AdminShell'
 import StatCard from '@/components/admin/StatCard'
 import StatusBadge from '@/components/admin/StatusBadge'
 import ServiceBadge from '@/components/admin/ServiceBadge'
-import { getReservations, getStats } from '@/lib/admin/actions'
+import { getReservations, getStats, getAvailabilityRules } from '@/lib/admin/actions'
 
 const today = new Date().toLocaleDateString('fr-FR', {
   weekday: 'long',
@@ -22,12 +22,14 @@ function formatSlot(date: string, time: string) {
 }
 
 export default async function AdminOverview() {
-  const [stats, reservations] = await Promise.all([
+  const [stats, reservationsRes, rules] = await Promise.all([
     getStats(),
-    getReservations(),
+    getReservations({ limit: 5 }), // Fetch only 5 for the dashboard
+    getAvailabilityRules(),
   ])
 
-  const recent = reservations.slice(0, 5)
+  const reservations = reservationsRes.data
+  const recent = reservations
   const upcoming = reservations
     .filter((r) => r.status === 'confirmed')
     .filter((r) => parseLocal(r.slot_date) >= (() => { const t = new Date(); t.setHours(0,0,0,0); return t })())
@@ -43,7 +45,34 @@ export default async function AdminOverview() {
           .proto-admin .stats-row { grid-template-columns: 1fr 1fr !important; gap: 0.75rem !important; }
           .proto-admin .main-grid { grid-template-columns: 1fr !important; }
         }
+        .proto-admin .critical-warning {
+          background: rgba(239, 68, 68, 0.1);
+          border: 1px solid rgba(239, 68, 68, 0.3);
+          border-radius: 12px;
+          padding: 1rem 1.25rem;
+          color: #EF4444;
+          font-size: 0.85rem;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          margin-bottom: 1.5rem;
+        }
       `}</style>
+
+      {rules.length === 0 && (
+        <div className="critical-warning">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <div>
+            <strong>Attention : Aucune règle de disponibilité n'est configurée.</strong> La prise de rendez-vous est actuellement bloquée pour les visiteurs. Veuillez configurer vos disponibilités.
+          </div>
+        </div>
+      )}
+
       <div className="stats-row">
         <StatCard
           value={stats.pending}

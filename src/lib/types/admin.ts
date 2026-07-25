@@ -10,7 +10,7 @@ export interface ReservationRow {
   contact_company: string | null
   slot_date: string
   slot_time: string
-  status: 'pending' | 'confirmed' | 'cancelled'
+  status: 'pending' | 'confirmed' | 'cancelled' | 'rescheduled'
   admin_note: string | null
   reschedule_token: string | null
   confirmed_at: string | null
