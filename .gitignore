@@ -40,3 +40,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# skills 
+_bmad/*
+_bmad-output/*
+.agent/*
+.agents/*
+.claude/*
+.opencode/*
+.bmad-loop/*
+docs/*

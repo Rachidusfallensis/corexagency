@@ -61,56 +61,31 @@ export async function createReservation(
   const supabase = await createClient()
   const slotDate = toIsoDate(state.selectedDate!)
   const slotTime = state.selectedTime!
-
-  // Re-check slot is still free
-  const { data: existing, error: checkErr } = await supabase
-    .from('reservations')
-    .select('id')
-    .eq('slot_date', slotDate)
-    .eq('slot_time', slotTime)
-    .neq('status', 'cancelled')
-    .limit(1)
-
-  if (checkErr) return { success: false, error: checkErr.message }
-  if (existing && existing.length > 0)
-    return { success: false, error: 'Ce créneau vient d\'être pris.' }
-
   const contactName = `${state.contact.firstname} ${state.contact.lastname}`.trim()
 
-  const { data: reservation, error: insErr } = await supabase
-    .from('reservations')
-    .insert({
-      service: state.service,
-      profile: state.profile,
-      project_desc: state.projectDesc,
-      contact_name: contactName,
-      contact_email: state.contact.email,
-      contact_phone: state.contact.phone || null,
-      contact_company: state.contact.company || null,
-      slot_date: slotDate,
-      slot_time: slotTime,
-      status: 'pending',
-      visitor_timezone: visitorTimezone ?? null,
-    })
-    .select('id')
-    .single()
-
-  if (insErr || !reservation) {
-    return { success: false, error: insErr?.message ?? 'Erreur insertion' }
-  }
-
-  await supabase.from('leads').insert({
-    source: 'booking',
+  const payload = {
     service: state.service,
     profile: state.profile,
-    contact_name: contactName,
-    contact_email: state.contact.email,
-    contact_phone: state.contact.phone || null,
-    contact_company: state.contact.company || null,
-    project_desc: state.projectDesc,
-    status: 'new',
-    reservation_id: reservation.id,
+    projectDesc: state.projectDesc,
+    contactName,
+    contactEmail: state.contact.email,
+    contactPhone: state.contact.phone || null,
+    contactCompany: state.contact.company || null,
+    slotDate,
+    slotTime,
+    visitorTimezone: visitorTimezone ?? null,
+  }
+
+  const { error: rpcErr } = await supabase.rpc('create_reservation', {
+    payload,
   })
+
+  if (rpcErr) {
+    if (rpcErr.message.includes('SLOT_TAKEN') || rpcErr.code === 'P0001') {
+      return { success: false, error: 'Ce créneau vient d\'être pris.' }
+    }
+    return { success: false, error: rpcErr.message }
+  }
 
   return { success: true }
 }
